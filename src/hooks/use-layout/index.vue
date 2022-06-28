@@ -4,6 +4,9 @@
 
 <template>
   <div class="xprocess__header"></div>
+  <div class="xprocess__header-tools">
+    <slot name="tools" />
+  </div>
   <div class="xprocess__header-next">
     <div class="xprocess__sidebar">
       <slot name="left" />
@@ -20,9 +23,15 @@
     height: 60px;
     border: 1px #eee solid;
   }
+  &__header-tools {
+    display: flex;
+    align-items: center;
+    height: 35px;
+    background-color: #f7f8f9;
+  }
   &__header-next {
     display: flex;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 90px);
   }
   &__sidebar {
     width: 200px;

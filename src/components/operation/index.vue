@@ -6,10 +6,11 @@ import { useDrag } from '../../hooks/use-drag'
 import {
   handleOperationDotMouseDown,
   handleOperationDotMouseMove,
+  handleOperationDotMouseUp,
   handleOperationSizeMouseDown,
   handleOperationSizeMouseMove,
   Edge,
-  DirectionString
+  DirectionString,
 } from './state'
 
 const type = inject<SvgType>('type')
@@ -22,7 +23,7 @@ const refDotEls = ref<Array<HTMLElement>>([])
 const refDotEl = ref<HTMLElement | null>()
 const refSizeEls = ref<Array<HTMLElement>>([])
 const refSizeEl = ref<HTMLElement | null>()
-const hasOperation = computed(() => type !== SVG_TYPE.CURVE)
+const hasOperation = computed(() => type !== SVG_TYPE.LINE)
 const isActive = computed(() => editorState?.currentNode?.id === nodeId)
 
 const onOperationDotMouseDown = (e: MouseEvent, i: number, edgeString: Edge) => {
@@ -44,6 +45,10 @@ watchEffect(() => {
     // 事件注册对于同一元素只会绑定一个事件
     registerCallback('mousemove', {
       handler: handleOperationDotMouseMove,
+      draggedWrapperEl: refDotEl.value!
+    })
+    registerCallback('mouseup', {
+      handler: handleOperationDotMouseUp,
       draggedWrapperEl: refDotEl.value!
     })
   }
@@ -96,6 +101,7 @@ watchEffect(() => {
   bottom: 0;
   pointer-events: none;
   border: 1px transparent solid;
+  z-index: 10000;
   &.active {
     border-color: #3b8ff6;
   }

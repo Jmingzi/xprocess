@@ -1,28 +1,61 @@
 <script setup lang="ts">
-import { ref, onMounted, provide } from 'vue'
-import NodeWrap from '../node-wrap/index.vue'
+import { ref, onMounted, provide, computed } from 'vue'
+import Operation from '../operation/index.vue'
 import { useCanvas } from './canvas/use-canvas'
 import { useDrag, IEventHandler } from '../../hooks/use-drag'
-import { SvgType } from '../svg-type/base'
-import { state as editorState, setCurrentNode, isMovable } from '../editor/state'
+import { state as editorState, setCurrentNode, isMovable, getDirection, DEFAULT_FONT } from '../editor/state'
+import { SvgType, SVG_TYPE } from '../svg-type/base'
+import XText from '../text/index.vue'
 
 const { rect: canvasRect, inCanvas, isStartInCanvas } = useCanvas()
 const { onMouseDown: handleMouseDown, registerCallback } = useDrag()
 const elRef = ref<HTMLElement | null>(null)
 const emits = defineEmits(['move', 'drop'])
 const props = defineProps<{
-  position: number[],
-  type: SvgType,
-  nodeId: number
+  id: number
+  type: SvgType
+  start: number[]
+  end: number[]
 }>()
 
 provide('type', props.type)
-provide('nodeId', props.nodeId)
+provide('nodeId', props.id)
+
+const position = computed(() => {
+  const { start, end, type } = props
+  // x, y 是图形左上角的点
+  let x: number = start[0]
+  let y: number = start[1]
+  if (type === SVG_TYPE.LINE) {
+    // start, end 是线条的起点和终点
+    // 需要转换为左上角点的位置
+    const { isLeftTop, isLeftBottom, isRightTop, isRightBottom } = getDirection(start, end)
+    if (isRightBottom) {
+      x = start[0]
+      y = start[1]
+    } else if (isRightTop) {
+      x = start[0]
+      y = end[1]
+    } else if (isLeftTop) {
+      x = end[0]
+      y = end[1]
+    } else if (isLeftBottom) {
+      x = end[0]
+      y = start[1]
+    }
+  }
+
+  const { left, top } = canvasRect!.value!
+  return {
+    left: `${x - left}px`,
+    top: `${y - top}px`
+  }
+})
 
 const onMouseDown = (e: MouseEvent) => {
-  if (isMovable(props.nodeId)) {
+  if (isMovable(props.id)) {
     handleMouseDown(e)
-    setCurrentNode(props.nodeId)
+    setCurrentNode(props.id)
     isStartInCanvas.value = inCanvas(e)
   }
 }
@@ -32,6 +65,18 @@ const handlerMove: IEventHandler = (data, e) => {
     emits('move', data, e)
   }
 }
+
+const onDoubleClick = () => {
+  if (!editorState.currentNode) {
+    return
+  }
+  // 创建空的文本内容
+  editorState.currentNode.fontEditable = true
+  if (!editorState.currentNode.font) {
+    editorState.currentNode.font = { ...DEFAULT_FONT }
+  }
+}
+
 onMounted(() => {
   registerCallback('mousemove', {
     handler: handlerMove,
@@ -42,12 +87,10 @@ onMounted(() => {
 
 <template>
   <div
-    :style="{
-      left: `${position[0] - canvasRect.left}px`,
-      top: `${position[1] - canvasRect.top}px`
-    }"
+    :style="position"
     class="drop"
     @mousedown="onMouseDown"
+    @dblclick="onDoubleClick"
   >
     <div
       :ref="v => elRef = v"
@@ -55,7 +98,8 @@ onMounted(() => {
     >
       <slot />
     </div>
-    <NodeWrap />
+    <XText />
+    <Operation />
   </div>
 </template>
 

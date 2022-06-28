@@ -1,47 +1,48 @@
 import { reactive } from 'vue'
 import { IEventHandlerData } from '../../hooks/use-drag'
-import { DEFAULT_PROPS, SvgType, SvgBase, SVG_TYPE } from '../svg-type/base'
+import { DEFAULT_PROPS, IPropsRect, IPropsLine, SVG_TYPE } from '../svg-type/base'
+import { Edge } from '../operation/state'
 
-type NodeBase = {
-  id: number;
-  type: SvgType;
-  // 起点位置
-  position: number[];
-} & SvgBase
-
-export type NodeRect = NodeBase & {
-  round: number;
-  fromLines: NodeLine[],
+export type NodeRect = Omit<IPropsRect, 'width' | 'height'> & {
+  id: number
+  fromLines: NodeLine[]
   toLines: NodeLine[]
+  font?: IFont
+  fontEditable?: boolean
 }
 
-export type NodeLine = NodeBase & {
-  direction: {
-    isLeftTop: boolean;
-    isRightTop: boolean;
-    isRightBottom: boolean;
-    isLeftBottom: boolean;
-  },
-  fromNode: {
-    id: number,
-    edge: {
-      isTop: boolean;
-      isRight: boolean;
-      isBottom: boolean;
-      isLeft: boolean;
-    }
-  }
+export type IFont = {
+  content: string
+  fontSize: number
+  bold: boolean
+  italics: boolean
+  underline: boolean
+  color: string
+  horizontalAlign: 'left' | 'center' | 'right'
 }
 
-export type XProcessNode = NodeLine | NodeRect
+type NodeLineAttach = {
+  nodeId: number,
+  edge: 'top' | 'right' | 'bottom' | 'left'
+  ratioX: number
+  ratioY: number
+}
+export type NodeLine = IPropsLine & {
+  id: number
+  fromNode: NodeLineAttach
+  toNode: NodeLineAttach
+}
 
-type LocalListItemRect = Omit<NodeRect, 'id' | 'position' | 'fromLines' | 'toLines'>
-type LocalListItemCurve = Omit<NodeLine, 'id' | 'position' | 'direction' | 'fromNode'>
-type LocalListItem = LocalListItemRect | LocalListItemCurve
+export type XProcessNode = NodeRect
+
+type LocalListItemRect = Omit<NodeRect, 'id' | 'fromLines' | 'toLines'>
+// type LocalListItemCurve = Omit<NodeLine, 'id' | 'position' | 'direction' | 'fromNode'>
+export type LocalListItem = LocalListItemRect
 type State = {
   currentNode?: XProcessNode
   localComponentList: LocalListItem[]
-  result: XProcessNode[]
+  nodes: XProcessNode[]
+  lines: NodeLine[]
 }
 
 export const state = reactive<State>({
@@ -49,17 +50,24 @@ export const state = reactive<State>({
   localComponentList: [
     {
       ...DEFAULT_PROPS,
-      type: 'rect-round',
+      type: 'rect',
       round: 5,
-      fill: '#fff'
+      fill: '#ffffff'
     }
-    // {
-    //   type: 'curve',
-    //   ...DEFAULT_PROPS
-    // }
   ],
-  result: []
+  nodes: [],
+  lines: []
 })
+
+export const DEFAULT_FONT: IFont = {
+  content: '',
+  fontSize: 13,
+  italics: false,
+  bold: false,
+  underline: false,
+  color: '#333333',
+  horizontalAlign: 'center'
+}
 
 export function createItem () {
   return {
@@ -70,68 +78,78 @@ export function createItem () {
 export function onDrop (data: IEventHandlerData, node: LocalListItem) {
   const item = createItem()
   const localItem = state.localComponentList.find(x => x.type === node.type) as LocalListItemRect
-  const newItem = {
+  const newItem: NodeRect = {
     ...item,
     ...localItem,
-    position: [data.endTopLeftX, data.endTopLeftY],
+    start: [data.endTopLeftX, data.endTopLeftY],
+    end: [data.endTopLeftX + 100, data.endTopLeftY + 50],
     fromLines: [],
     toLines: []
   }
-  state.result.push(newItem)
+  state.nodes.push(newItem)
   setCurrentNode(newItem.id)
+  return newItem
 }
 
 /**
  * 在画布上拖拽节点
  */
 export function onMoving (data: IEventHandlerData, item: XProcessNode) {
-  const { startX, startY, endX, endY, endTopLeftX, endTopLeftY, direction: nodeMoveDirection } = data
-  const node = state.result.find(it => it.id === item.id) as NodeRect
-  const oldNodePosition = currentNodeCopy.position.slice()
-  node.position = [endTopLeftX, endTopLeftY]
+  const { endTopLeftX, endTopLeftY } = data
+  const node = state.nodes.find(it => it.id === item.id) as NodeRect
+  const width = Math.abs(node.end[0] - node.start[0])
+  const height = Math.abs(node.end[1] - node.start[1])
+  node.start = [endTopLeftX, endTopLeftY]
+  node.end = [endTopLeftX + width, endTopLeftY + height]
   // 移动所有的线条
   node.fromLines.forEach(line => {
-    const copyLine = currentNodeCopy.fromLines.find(x => x.id === line.id)!
-    const lineRelativePosition = [
-      copyLine.position[0] - oldNodePosition[0],
-      copyLine.position[1] - oldNodePosition[1]
-    ]
     // 修改线条的起点坐标
-    line.position = [
-      node.position[0] + lineRelativePosition[0],
-      node.position[1] + lineRelativePosition[1]
+    line.start = [
+      node.start[0] + line.fromNode.ratioX * width,
+      node.start[1] + line.fromNode.ratioY * height
     ]
-    // 修改线条的宽度
-    // const { isLeftTop, isRightTop, isRightBottom, isLeftBottom } = line.direction
-    const lineDirection = line.direction
-    // const lineEdge = line.fromNode.edge
-    const deltaX = Math.abs(endX - startX)
-    const deltaY = Math.abs(endY - startY)
-    // const { isLeft, isTop, isRight, isBottom } = line.fromNode.edge
-    const isAddWidth = (lineDirection.isRightTop || lineDirection.isRightBottom) &&
-        (nodeMoveDirection.isLeftTop || nodeMoveDirection.isLeftBottom)
-    const isAddHeight = (lineDirection.isRightBottom || lineDirection.isLeftBottom) &&
-        (nodeMoveDirection.isLeftTop || nodeMoveDirection.isRightTop) ||
-        (lineDirection.isRightTop || lineDirection.isLeftTop) &&
-        (nodeMoveDirection.isLeftBottom || nodeMoveDirection.isRightBottom)
-    // console.log('isAddHeight', isAddHeight, copyLine.height, deltaY)
-
-    line.width = Math.abs(copyLine.width + deltaX * (isAddWidth ? 1 : -1))
-    line.height = Math.abs(copyLine.height + deltaY * (isAddHeight ? 1 : -1))
-    // line.height = copyLine.height - deltaY
-    if (lineDirection.isRightTop || lineDirection.isLeftTop) {
-      line.position[1] -= deltaY * (isAddHeight ? 1 : -1)
-    }
+  })
+  node.toLines.forEach(line => {
+    line.end = [
+      node.start[0] + line.toNode.ratioX * width,
+      node.start[1] + line.toNode.ratioY * height
+    ]
   })
 }
 
 let currentNodeCopy: NodeRect
 export function setCurrentNode (id: number) {
-  state.currentNode = state.result.find(x => x.id === id)
+  state.currentNode = state.nodes.find(x => x.id === id)
   currentNodeCopy = JSON.parse(JSON.stringify(state.currentNode))
 }
 
 export function isMovable (id: number) {
-  const node = state.result.find(x => x.id === id)
+  const node = state.nodes.find(x => x.id === id)
   return node?.type !== SVG_TYPE.CURVE
+}
+
+export function getDirection (start: number[], end: number[]) {
+  const isLeftTop = start[0] > end[0] && start[1] > end[1]
+  const isLeftBottom = start[0] > end[0] && start[1] < end[1]
+  const isRightTop = start[0] < end[0] && start[1] > end[1]
+  const isRightBottom = start[0] < end[0] && start[1] < end[1]
+  return {
+    isLeftTop,
+    isRightBottom,
+    isLeftBottom,
+    isRightTop
+  }
+}
+
+export function getEdge (edge: Edge) {
+  const isTop = edge === 'top'
+  const isBottom = edge === 'bottom'
+  const isLeft = edge === 'left'
+  const isRight = edge === 'right'
+  return {
+    isTop,
+    isBottom,
+    isRight,
+    isLeft
+  }
 }

@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useDrag, IEventHandler } from '../../hooks/use-drag'
+import { useCanvas } from './canvas/use-canvas'
 
 const elRef = ref<HTMLElement | null>(null)
 const emits = defineEmits(['drop'])
 const { registerCallback, onMouseDown: handleMouseDown } = useDrag()
+const { isStartInCanvas, inCanvas } = useCanvas()
 
 const handler: IEventHandler = (data, e, wrapper) => {
   emits('drop', data, wrapper)
 }
 const onMouseDown = (e: MouseEvent) => {
+  isStartInCanvas.value = inCanvas(e)
   handleMouseDown(
     e,
     el => el === elRef.value,

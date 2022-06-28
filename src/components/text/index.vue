@@ -1,0 +1,124 @@
+<script lang="ts" setup>
+import { ref, onMounted, computed, getCurrentInstance, nextTick, watchEffect, watch, inject } from 'vue'
+import { state as editorState } from '../editor/state'
+
+const vm = getCurrentInstance()
+const refEl = ref()
+const textHeight = ref(0)
+const initialContent = ref('')
+const nodeId = inject('nodeId')
+const node = computed(() => editorState.nodes.find(x => x.id === nodeId))
+const parentHeight = ref(0)
+const style = computed(() => {
+  if (!node.value?.font) {
+    return null
+  }
+  const { horizontalAlign, fontSize, color, bold, italics, underline } = node.value?.font
+  const edit = node.value?.fontEditable
+  const result = {
+    fontSize: `${fontSize}px`,
+    pointerEvents: edit ? null : 'none',
+    userSelect: edit ? null : 'none',
+    textAlign: horizontalAlign,
+    color,
+    fontWeight: bold ? 'bold' : null,
+    fontStyle: italics ? 'italics' : null,
+    textDecoration: underline ? 'underline' : null
+  }
+  if (textHeight.value === 0) {
+    // 未渲染
+    return result
+  }
+  const delta = parentHeight.value - textHeight.value
+  const px = `${delta / 2}px`
+  return Object.assign(result, {
+    top: px,
+    bottom: px
+  })
+})
+
+onMounted(() => {
+  calcHeight()
+})
+
+const calcHeight = () => {
+  textHeight.value = refEl.value.getBoundingClientRect().height
+  // console.log('文本高度', refEl.value, textHeight.value)
+}
+
+const handleInput = (e: InputEvent) => {
+  const target = e.target as HTMLInputElement
+  const text = target.innerText
+  nextTick(() => {
+    textHeight.value = target.offsetHeight
+    /**
+     * 此处不做受控文本
+     */
+    if (node.value?.font) {
+      node.value.font.content = text
+    }
+  })
+}
+
+const handleBlur = () => {
+  if (node.value) {
+    node.value.fontEditable = false
+  }
+}
+
+watch(() => node, node => {
+  if (node) {
+    /**
+     * 此处不做受控文本
+     * 仅仅是节点变化时初始化下内容
+     */
+    initialContent.value = node.value?.font?.content ?? ''
+  }
+})
+
+watchEffect(() => {
+  if (node.value?.start && node.value?.end && node.value?.font?.fontSize) {
+    parentHeight.value = vm?.parent?.vnode.el?.getBoundingClientRect()?.height ?? 0
+    calcHeight()
+  }
+}, { flush: 'post' })
+
+watchEffect(() => {
+  if (node.value?.fontEditable) {
+    calcHeight()
+    refEl.value.focus()
+    // 光标移动到最后
+    const range = window.getSelection()!
+    range.selectAllChildren(refEl.value)
+    range.collapseToEnd()
+  }
+}, { flush: 'post' })
+</script>
+
+<template>
+  <div
+    class="xprocess__text"
+    :contenteditable="node?.fontEditable"
+    :style="style"
+    ref="refEl"
+    @input="handleInput"
+    @blur="handleBlur"
+    v-html="initialContent"
+  >
+  </div>
+</template>
+
+<style lang="less">
+.xprocess__text {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  line-height: 1.5;
+  border-radius: 2px;
+  height: fit-content;
+  &:focus {
+    outline: 2px #F4DDB0 solid;
+  }
+}
+</style>
+

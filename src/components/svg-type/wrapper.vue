@@ -19,5 +19,11 @@ export default function SvgWrapper (props: {
 }
 </script>
 
+<style lang="less">
+svg {
+  overflow: visible;
+}
+</style>
+
 
 

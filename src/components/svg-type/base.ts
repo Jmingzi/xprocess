@@ -1,46 +1,44 @@
 import { paramCase } from 'change-case'
 
 export type SvgBase = {
-  type: SvgType;
+  type: SvgType
   strokeWidth?: number;
   stroke?: string;
   fill?: string;
-  width: number;
-  height: number;
+  start: number[];
+  end: number[];
 }
 
-export type CurveProps = SvgBase & {
-  direction?: {
-    isLeftTop: boolean,
-    isRightTop: boolean,
-    isRightBottom: boolean,
-    isLeftBottom: boolean
-  };
+export type IPropsLine = SvgBase & {
+  lineType: 'line' | 'path'
   controlStart?: number[];
   controlEnd?: number[];
 }
 
-export type RectProps = SvgBase & {
-  round?: number;
+export type IPropsRect = SvgBase & {
+  round: number
+  width: number
+  height: number
 }
 
-export type ISvgType = CurveProps | RectProps;
+export type ISvgType = IPropsLine | IPropsRect;
 
-export type SvgType = 'rect-round' | 'curve'
+export type SvgType = 'rect' | 'line' | 'circle'
 
 export const STROKE_WIDTH = 2
 
 export const DEFAULT_PROPS = {
-  width: 100,
-  height: 50,
   strokeWidth: STROKE_WIDTH,
-  fill: 'transparent',
-  stroke: '#000',
+  fill: '#ffffff',
+  stroke: '#000000',
+  start: [0, 0],
+  end: [100, 50],
+  type: 'rect'
 }
 
 export const SVG_TYPE: { [k in string]: SvgType } = {
-  CURVE: 'curve',
-  RECT_ROUND: 'rect-round'
+  LINE: 'line',
+  RECT: 'rect'
 }
 
 export const changeCase = (props: { [k in string]: any }) => {
@@ -49,4 +47,14 @@ export const changeCase = (props: { [k in string]: any }) => {
     newProps[paramCase(key)] = props[key]
   })
   return newProps
+}
+
+export const clearCustomProps = (obj: { [k in string]: any }, excludePropsArr: string[]) => {
+  const newObj: { [k in string]: any } = {}
+  Object.keys(obj).forEach(key => {
+    if (!excludePropsArr.includes(key)) {
+      newObj[key] = obj[key]
+    }
+  })
+  return newObj
 }
