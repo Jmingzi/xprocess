@@ -4,6 +4,7 @@ import { h } from 'vue'
 import Wrapper from './wrapper.vue'
 import Rect from './rect.vue'
 import Line from './line.vue'
+import Circle from './circle.vue'
 
 export default function SvgType (props: ISvgType & { type: SvgType }) {
   const { strokeWidth, start, end } = props
@@ -20,6 +21,8 @@ export default function SvgType (props: ISvgType & { type: SvgType }) {
           return h(Rect, props)
         case SVG_TYPE.LINE:
           return h(Line, props)
+        case SVG_TYPE.CIRCLE:
+          return h(Circle, props)
       }
     }
   })

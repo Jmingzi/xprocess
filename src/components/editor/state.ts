@@ -1,12 +1,19 @@
 import { reactive } from 'vue'
 import { IEventHandlerData } from '../../hooks/use-drag'
-import { DEFAULT_PROPS, IPropsRect, IPropsLine, SVG_TYPE } from '../svg-type/base'
+import { DEFAULT_PROPS, IPropsRect, IPropsLine, SVG_TYPE, IPropsCircle, DEFAULT_SIZE } from '../svg-type/base'
 import { Edge } from '../operation/state'
 import { useCanvas } from '../container/canvas/use-canvas'
 
 const { rect: canvasRect } = useCanvas()
 
 export type NodeRect = Omit<IPropsRect, 'width' | 'height'> & {
+  id: number
+  fromLines: NodeLine[]
+  toLines: NodeLine[]
+  font?: IFont
+  fontEditable?: boolean
+}
+export type NodeCircle = Omit<IPropsCircle, 'width' | 'height'> & {
   id: number
   fromLines: NodeLine[]
   toLines: NodeLine[]
@@ -38,14 +45,13 @@ export type NodeLine = IPropsLine & {
   fontEditable?: boolean
 }
 
-export type XProcessNode = NodeRect
+export type XProcessNode = NodeRect | NodeCircle
 
 type LocalListItemRect = Omit<NodeRect, 'id' | 'fromLines' | 'toLines'>
-// type LocalListItemCurve = Omit<NodeLine, 'id' | 'position' | 'direction' | 'fromNode'>
-export type LocalListItem = LocalListItemRect
+type LocalListItemCircle = Omit<NodeCircle, 'id' | 'fromLines' | 'toLines'>
+export type LocalListItem = LocalListItemRect | LocalListItemCircle
 type State = {
   currentNode?: XProcessNode
-  // currentLine?: Ref<NodeLine | undefined>
   localComponentList: LocalListItem[]
   nodes: XProcessNode[]
   lines: NodeLine[]
@@ -53,13 +59,17 @@ type State = {
 
 export const state = reactive<State>({
   currentNode: undefined,
-  // currentLine: currentLine,
   localComponentList: [
     {
       ...DEFAULT_PROPS,
       type: 'rect',
       round: 5,
-      fill: '#ffffff'
+      end: DEFAULT_SIZE.rect
+    },
+    {
+      ...DEFAULT_PROPS,
+      type: 'circle',
+      end: DEFAULT_SIZE.circle
     }
   ],
   nodes: [],
@@ -101,7 +111,10 @@ export function onDrop (data: IEventHandlerData, node: LocalListItem) {
     ...item,
     ...localItem,
     start: getPointFromCanvas([data.endTopLeftX, data.endTopLeftY]),
-    end: getPointFromCanvas([data.endTopLeftX + 100, data.endTopLeftY + 50]),
+    end: getPointFromCanvas([
+      data.endTopLeftX + localItem.end[0] * 1.5,
+      data.endTopLeftY + localItem.end[1] * 1.5
+    ]),
     fromLines: [],
     toLines: []
   }

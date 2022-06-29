@@ -54,6 +54,7 @@ onMounted(() => {
     align-items: center;
     height: 35px;
     background-color: #f7f8f9;
+    border-bottom: 1px #aaa solid;
   }
   &__header-next {
     display: flex;

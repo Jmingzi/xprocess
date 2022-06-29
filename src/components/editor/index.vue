@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import SvgType from '../svg-type/index.vue'
-import { Drag as XDrag, Canvas as XCanvas, Drop as XDrop } from '../container'
-import { state, onDrop, onMoving } from './state'
+import { Canvas as XCanvas, Drop as XDrop } from '../container'
+import { state, onMoving } from './state'
 import { useLayout } from '../../hooks/use-layout'
 import LineActionPanel from '../operation/action-panel.vue'
 import { lineUpActionPanelData, handleCreateToNode } from '../operation/state'
 import TextPropsTools from '../props-tools/text-tool.vue'
 import SvgPropsTools from '../props-tools/svg-tool.vue'
+import Sidebar from './sidebar.vue'
 
 const { Layout } = useLayout()
 </script>
@@ -18,12 +19,7 @@ const { Layout } = useLayout()
       <SvgPropsTools />
     </template>
     <template #left>
-      <XDrag
-        v-for="item in state.localComponentList"
-        @drop="data => onDrop(data, item)"
-      >
-        <SvgType v-bind="item" />
-      </XDrag>
+      <Sidebar />
     </template>
     <template #content>
       <XCanvas>

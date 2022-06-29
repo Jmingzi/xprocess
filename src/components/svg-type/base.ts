@@ -21,24 +21,34 @@ export type IPropsRect = SvgBase & {
   height: number
 }
 
-export type ISvgType = IPropsLine | IPropsRect;
+export type IPropsCircle = SvgBase & {
+  width: number
+  height: number
+}
+
+export type ISvgType = IPropsLine | IPropsRect | IPropsCircle
 
 export type SvgType = 'rect' | 'line' | 'circle'
 
 export const STROKE_WIDTH = 2
+
+export const DEFAULT_SIZE = {
+  rect: [70, 40],
+  circle: [40, 40]
+}
 
 export const DEFAULT_PROPS = {
   strokeWidth: STROKE_WIDTH,
   fill: '#ffffff',
   stroke: '#000000',
   start: [0, 0],
-  end: [100, 50],
   type: 'rect'
 }
 
 export const SVG_TYPE: { [k in string]: SvgType } = {
   LINE: 'line',
-  RECT: 'rect'
+  RECT: 'rect',
+  CIRCLE: 'circle'
 }
 
 export const changeCase = (props: { [k in string]: any }) => {
@@ -52,7 +62,7 @@ export const changeCase = (props: { [k in string]: any }) => {
 export const clearCustomProps = (obj: { [k in string]: any }, excludePropsArr: string[]) => {
   const newObj: { [k in string]: any } = {}
   Object.keys(obj).forEach(key => {
-    if (!excludePropsArr.includes(key)) {
+    if (!['from-lines', 'to-lines'].concat(excludePropsArr).includes(key)) {
       newObj[key] = obj[key]
     }
   })
