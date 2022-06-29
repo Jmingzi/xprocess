@@ -9,7 +9,9 @@ const { registerCallback, onMouseDown: handleMouseDown } = useDrag()
 const { isStartInCanvas, inCanvas } = useCanvas()
 
 const handler: IEventHandler = (data, e, wrapper) => {
-  emits('drop', data, wrapper)
+  if (inCanvas(e)) {
+    emits('drop', data, wrapper)
+  }
 }
 const onMouseDown = (e: MouseEvent) => {
   isStartInCanvas.value = inCanvas(e)

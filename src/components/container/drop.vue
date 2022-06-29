@@ -3,7 +3,17 @@ import { ref, onMounted, provide, computed } from 'vue'
 import Operation from '../operation/index.vue'
 import { useCanvas } from './canvas/use-canvas'
 import { useDrag, IEventHandler } from '../../hooks/use-drag'
-import { state as editorState, setCurrentNode, isMovable, getDirection, DEFAULT_FONT } from '../editor/state'
+import { setCurrentLine, currentLine } from '../operation/state'
+import {
+  state as editorState,
+  setCurrentNode,
+  isMovable,
+  isNodeLine,
+  getDirection,
+  DEFAULT_FONT,
+  XProcessNode,
+  NodeLine
+} from '../editor/state'
 import { SvgType, SVG_TYPE } from '../svg-type/base'
 import XText from '../text/index.vue'
 
@@ -56,7 +66,11 @@ const onMouseDown = (e: MouseEvent) => {
   if (isMovable(props.id)) {
     handleMouseDown(e)
     setCurrentNode(props.id)
+    setCurrentLine()
     isStartInCanvas.value = inCanvas(e)
+  } else if (isNodeLine(props.id)) {
+    setCurrentLine(props.id)
+    setCurrentNode()
   }
 }
 
@@ -67,13 +81,17 @@ const handlerMove: IEventHandler = (data, e) => {
 }
 
 const onDoubleClick = () => {
-  if (!editorState.currentNode) {
-    return
+  const createFont = (node: XProcessNode | NodeLine) => {
+    // 创建空的文本内容
+    node.fontEditable = true
+    if (!node.font) {
+      node.font = { ...DEFAULT_FONT }
+    }
   }
-  // 创建空的文本内容
-  editorState.currentNode.fontEditable = true
-  if (!editorState.currentNode.font) {
-    editorState.currentNode.font = { ...DEFAULT_FONT }
+  if (isNodeLine(props.id) && currentLine.value) {
+    createFont(currentLine.value)
+  } else if (editorState.currentNode) {
+    createFont(editorState.currentNode)
   }
 }
 
@@ -90,6 +108,7 @@ onMounted(() => {
     :style="position"
     class="drop"
     @mousedown="onMouseDown"
+    @click.stop=""
     @dblclick="onDoubleClick"
   >
     <div

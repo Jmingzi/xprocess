@@ -25,9 +25,7 @@ onMounted(() => {
 </template>
 
 <style lang="less">
-.xprocess {
-  &-canvas {
-    position: relative;
-  }
+.xprocess-canvas {
+  position: relative;
 }
 </style>

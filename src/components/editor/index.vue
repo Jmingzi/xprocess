@@ -22,9 +22,7 @@ const { Layout } = useLayout()
         v-for="item in state.localComponentList"
         @drop="data => onDrop(data, item)"
       >
-        <SvgType
-          v-bind="item"
-        />
+        <SvgType v-bind="item" />
       </XDrag>
     </template>
     <template #content>

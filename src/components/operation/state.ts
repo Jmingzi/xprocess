@@ -7,7 +7,8 @@ import {
   state as editorState,
   getDirection,
   getEdge,
-  onDrop, state
+  onDrop,
+  setCurrentNode
 } from '../editor/state'
 import { DEFAULT_PROPS, SVG_TYPE } from '../svg-type/base'
 import { IEventHandlerData } from '../../hooks/use-drag'
@@ -22,22 +23,9 @@ export const lineUpActionPanelData = ref<{
   mouseData: IEventHandlerData
 } | null>()
 
-/**
- * 控制线条末端的 action
- */
-document.body.addEventListener('click', (e) => {
-  const line = currentLine.value
-  if (line && line.toNode.nodeId === -1) {
-    lineUpActionPanelData.value = null
-    // 撤销创建的线条
-    const index = editorState.currentNode?.fromLines.findIndex(x => x.id === line.id) ?? -1
-    if (index > -1) {
-      editorState.currentNode?.fromLines.splice(index, 1)
-    }
-    editorState.lines.splice(editorState.lines.findIndex(x => x.id === line.id), 1)
-    currentLine.value = undefined
-  }
-})
+export function setCurrentLine (id?: number) {
+  currentLine.value = editorState.lines.find(x => x.id === id)
+}
 
 export const handleOperationDotMouseDown = (
   e: MouseEvent,
@@ -243,7 +231,40 @@ export const handleOperationDotMouseMove = (evData: IEventHandlerData) => {
   }
 }
 
+/**
+ * 控制线条末端的 action
+ */
+let isAfterMoving = false
+document.body.addEventListener('click', (e: MouseEvent) => {
+  if ((e as MouseEvent & { path: HTMLElement[] }).path.every(el => !el?.classList?.contains('xprocess-canvas'))) {
+    // 只处理画布上的点击事件
+    return
+  }
+  if (isAfterMoving) {
+    isAfterMoving = false
+    return
+  }
+  console.log('canvas click')
+  const line = currentLine.value
+  // line.toNode.nodeId 默认是 0
+  if (line && line.toNode.nodeId === 0) {
+    lineUpActionPanelData.value = null
+    // 撤销创建的线条
+    const index = editorState.currentNode?.fromLines.findIndex(x => x.id === line.id) ?? -1
+    if (index > -1) {
+      editorState.currentNode?.fromLines.splice(index, 1)
+    }
+    editorState.lines.splice(editorState.lines.findIndex(x => x.id === line.id), 1)
+    currentLine.value = undefined
+  } else {
+    setCurrentNode()
+  }
+})
+
 export const handleOperationDotMouseUp = (data: IEventHandlerData) => {
+  // 标记是鼠标移动后
+  // 而不是单纯的点击事件
+  isAfterMoving = Math.abs(data.endX - data.startX) > 5 || Math.abs(data.endY - data.startY) > 5
   const line = currentLine.value!
   if (line.toNode.nodeId > 0) {
     // 目标节点已自动吸附
@@ -254,10 +275,6 @@ export const handleOperationDotMouseUp = (data: IEventHandlerData) => {
     y: data.endY,
     mouseData: data
   }
-  // 标记可删除
-  setTimeout(() => {
-    line.toNode.nodeId = -1
-  }, 500)
 }
 
 /**

@@ -1,13 +1,16 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed, getCurrentInstance, nextTick, watchEffect, watch, inject } from 'vue'
-import { state as editorState } from '../editor/state'
+import { state as editorState, isNodeLine } from '../editor/state'
 
 const vm = getCurrentInstance()
 const refEl = ref()
 const textHeight = ref(0)
 const initialContent = ref('')
-const nodeId = inject('nodeId')
-const node = computed(() => editorState.nodes.find(x => x.id === nodeId))
+const nodeId = inject<number>('nodeId', 0)
+const node = computed(() =>
+  isNodeLine(nodeId)
+    ? editorState.lines.find(x => x.id === nodeId)
+    : editorState.nodes.find(x => x.id === nodeId))
 const parentHeight = ref(0)
 const style = computed(() => {
   if (!node.value?.font) {
@@ -98,6 +101,9 @@ watchEffect(() => {
 <template>
   <div
     class="xprocess__text"
+    :class="{
+      line: isNodeLine(nodeId)
+    }"
     :contenteditable="node?.fontEditable"
     :style="style"
     ref="refEl"
@@ -118,6 +124,15 @@ watchEffect(() => {
   height: fit-content;
   &:focus {
     outline: 2px #F4DDB0 solid;
+  }
+  &.line {
+    width: fit-content;
+    min-width: 40px;
+    max-width: 80%;
+    background-color: #fff;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0 5px;
   }
 }
 </style>

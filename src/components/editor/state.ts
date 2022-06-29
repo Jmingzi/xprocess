@@ -1,7 +1,7 @@
-import { reactive } from 'vue'
+import { reactive, Ref} from 'vue'
 import { IEventHandlerData } from '../../hooks/use-drag'
 import { DEFAULT_PROPS, IPropsRect, IPropsLine, SVG_TYPE } from '../svg-type/base'
-import { Edge } from '../operation/state'
+import { Edge, currentLine } from '../operation/state'
 
 export type NodeRect = Omit<IPropsRect, 'width' | 'height'> & {
   id: number
@@ -31,6 +31,8 @@ export type NodeLine = IPropsLine & {
   id: number
   fromNode: NodeLineAttach
   toNode: NodeLineAttach
+  font?: IFont
+  fontEditable?: boolean
 }
 
 export type XProcessNode = NodeRect
@@ -40,6 +42,7 @@ type LocalListItemRect = Omit<NodeRect, 'id' | 'fromLines' | 'toLines'>
 export type LocalListItem = LocalListItemRect
 type State = {
   currentNode?: XProcessNode
+  // currentLine?: Ref<NodeLine | undefined>
   localComponentList: LocalListItem[]
   nodes: XProcessNode[]
   lines: NodeLine[]
@@ -47,6 +50,7 @@ type State = {
 
 export const state = reactive<State>({
   currentNode: undefined,
+  // currentLine: currentLine,
   localComponentList: [
     {
       ...DEFAULT_PROPS,
@@ -117,15 +121,24 @@ export function onMoving (data: IEventHandlerData, item: XProcessNode) {
   })
 }
 
-let currentNodeCopy: NodeRect
-export function setCurrentNode (id: number) {
+let currentNodeCopy: NodeRect | null
+export function setCurrentNode (id?: number) {
+  if (!id) {
+    state.currentNode = undefined
+    currentNodeCopy = null
+    return
+  }
   state.currentNode = state.nodes.find(x => x.id === id)
   currentNodeCopy = JSON.parse(JSON.stringify(state.currentNode))
 }
 
-export function isMovable (id: number) {
+export function isNodeLine (id: number) {
   const node = state.nodes.find(x => x.id === id)
-  return node?.type !== SVG_TYPE.CURVE
+  return node?.type === SVG_TYPE.CURVE
+}
+
+export function isMovable (id: number) {
+  return !isNodeLine(id)
 }
 
 export function getDirection (start: number[], end: number[]) {
