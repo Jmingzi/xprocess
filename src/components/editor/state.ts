@@ -1,25 +1,29 @@
 import { reactive } from 'vue'
 import { IEventHandlerData } from '../../hooks/use-drag'
-import { DEFAULT_PROPS, IPropsRect, IPropsLine, SVG_TYPE, IPropsCircle, DEFAULT_SIZE } from '../svg-type/base'
+import {
+  DEFAULT_PROPS,
+  IPropsRect,
+  IPropsLine,
+  SVG_TYPE,
+  IPropsCircle,
+  DEFAULT_SIZE,
+  IPropsPolygon
+} from '../svg-type/base'
 import { Edge } from '../operation/state'
 import { useCanvas } from '../container/canvas/use-canvas'
 
 const { rect: canvasRect } = useCanvas()
 
-export type NodeRect = Omit<IPropsRect, 'width' | 'height'> & {
+type IBase = {
   id: number
   fromLines: NodeLine[]
   toLines: NodeLine[]
   font?: IFont
   fontEditable?: boolean
 }
-export type NodeCircle = Omit<IPropsCircle, 'width' | 'height'> & {
-  id: number
-  fromLines: NodeLine[]
-  toLines: NodeLine[]
-  font?: IFont
-  fontEditable?: boolean
-}
+export type NodeRect = Omit<IPropsRect, 'width' | 'height'> & IBase
+export type NodeCircle = Omit<IPropsCircle, 'width' | 'height'> & IBase
+export type NodePolygon = Omit<IPropsPolygon, 'width' | 'height'> & IBase
 
 export type IFont = {
   content: string
@@ -45,11 +49,13 @@ export type NodeLine = IPropsLine & {
   fontEditable?: boolean
 }
 
-export type XProcessNode = NodeRect | NodeCircle
+export type XProcessNode = NodeRect | NodeCircle | NodePolygon
 
-type LocalListItemRect = Omit<NodeRect, 'id' | 'fromLines' | 'toLines'>
-type LocalListItemCircle = Omit<NodeCircle, 'id' | 'fromLines' | 'toLines'>
-export type LocalListItem = LocalListItemRect | LocalListItemCircle
+type ILocalBase<T> = Omit<T, 'id' | 'fromLines' | 'toLines'>
+type LocalListItemRect = ILocalBase<NodeRect>
+type LocalListItemCircle = ILocalBase<NodeCircle>
+type LocalListItemPolygon = ILocalBase<NodePolygon>
+export type LocalListItem = LocalListItemRect | LocalListItemCircle | LocalListItemPolygon
 type State = {
   currentNode?: XProcessNode
   localComponentList: LocalListItem[]
@@ -70,6 +76,11 @@ export const state = reactive<State>({
       ...DEFAULT_PROPS,
       type: 'circle',
       end: DEFAULT_SIZE.circle
+    },
+    {
+      ...DEFAULT_PROPS,
+      type: 'polygon',
+      end: DEFAULT_SIZE.polygon
     }
   ],
   nodes: [],

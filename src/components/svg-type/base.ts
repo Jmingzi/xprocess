@@ -8,33 +8,34 @@ export type SvgBase = {
   start: number[];
   end: number[];
 }
-
 export type IPropsLine = SvgBase & {
   lineType: 'line' | 'path'
   controlStart?: number[];
   controlEnd?: number[];
 }
-
 export type IPropsRect = SvgBase & {
   round: number
   width: number
   height: number
 }
-
 export type IPropsCircle = SvgBase & {
   width: number
   height: number
 }
+export type IPropsPolygon = SvgBase & {
+  points: string
+}
 
-export type ISvgType = IPropsLine | IPropsRect | IPropsCircle
+export type ISvgType = IPropsLine | IPropsRect | IPropsCircle | IPropsPolygon
 
-export type SvgType = 'rect' | 'line' | 'circle'
+export type SvgType = 'rect' | 'line' | 'circle' | 'polygon'
 
 export const STROKE_WIDTH = 2
 
 export const DEFAULT_SIZE = {
   rect: [70, 40],
-  circle: [40, 40]
+  circle: [40, 40],
+  polygon: [70, 50]
 }
 
 export const DEFAULT_PROPS = {
@@ -48,7 +49,8 @@ export const DEFAULT_PROPS = {
 export const SVG_TYPE: { [k in string]: SvgType } = {
   LINE: 'line',
   RECT: 'rect',
-  CIRCLE: 'circle'
+  CIRCLE: 'circle',
+  POLYGON: 'polygon'
 }
 
 export const changeCase = (props: { [k in string]: any }) => {

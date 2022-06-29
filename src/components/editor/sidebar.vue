@@ -35,6 +35,7 @@ import iconTriangleDownFill from '../props-tools/icon/triangle_down_fill.png'
     padding: 15px;
     & > div {
       margin-right: 20px;
+      margin-bottom: 20px;
     }
   }
 }
