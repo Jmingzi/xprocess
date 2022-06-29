@@ -1,7 +1,10 @@
-import { reactive, Ref} from 'vue'
+import { reactive } from 'vue'
 import { IEventHandlerData } from '../../hooks/use-drag'
 import { DEFAULT_PROPS, IPropsRect, IPropsLine, SVG_TYPE } from '../svg-type/base'
-import { Edge, currentLine } from '../operation/state'
+import { Edge } from '../operation/state'
+import { useCanvas } from '../container/canvas/use-canvas'
+
+const { rect: canvasRect } = useCanvas()
 
 export type NodeRect = Omit<IPropsRect, 'width' | 'height'> & {
   id: number
@@ -79,14 +82,26 @@ export function createItem () {
   }
 }
 
+export function getPointFromCanvasX (x: number) {
+  return x - canvasRect!.value!.left
+}
+
+export function getPointFromCanvasY (y: number) {
+  return y - canvasRect!.value!.top
+}
+
+export function getPointFromCanvas (point: number[]) {
+  return [getPointFromCanvasX(point[0]), getPointFromCanvasY(point[1])]
+}
+
 export function onDrop (data: IEventHandlerData, node: LocalListItem) {
   const item = createItem()
   const localItem = state.localComponentList.find(x => x.type === node.type) as LocalListItemRect
   const newItem: NodeRect = {
     ...item,
     ...localItem,
-    start: [data.endTopLeftX, data.endTopLeftY],
-    end: [data.endTopLeftX + 100, data.endTopLeftY + 50],
+    start: getPointFromCanvas([data.endTopLeftX, data.endTopLeftY]),
+    end: getPointFromCanvas([data.endTopLeftX + 100, data.endTopLeftY + 50]),
     fromLines: [],
     toLines: []
   }
@@ -103,8 +118,8 @@ export function onMoving (data: IEventHandlerData, item: XProcessNode) {
   const node = state.nodes.find(it => it.id === item.id) as NodeRect
   const width = Math.abs(node.end[0] - node.start[0])
   const height = Math.abs(node.end[1] - node.start[1])
-  node.start = [endTopLeftX, endTopLeftY]
-  node.end = [endTopLeftX + width, endTopLeftY + height]
+  node.start = getPointFromCanvas([endTopLeftX, endTopLeftY])
+  node.end = getPointFromCanvas([endTopLeftX + width, endTopLeftY + height])
   // 移动所有的线条
   node.fromLines.forEach(line => {
     // 修改线条的起点坐标

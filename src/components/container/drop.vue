@@ -17,7 +17,7 @@ import {
 import { SvgType, SVG_TYPE } from '../svg-type/base'
 import XText from '../text/index.vue'
 
-const { rect: canvasRect, inCanvas, isStartInCanvas } = useCanvas()
+const { inCanvas, isStartInCanvas } = useCanvas()
 const { onMouseDown: handleMouseDown, registerCallback } = useDrag()
 const elRef = ref<HTMLElement | null>(null)
 const emits = defineEmits(['move', 'drop'])
@@ -55,10 +55,12 @@ const position = computed(() => {
     }
   }
 
-  const { left, top } = canvasRect!.value!
+  // const { left, top } = canvasRect!.value!
   return {
-    left: `${x - left}px`,
-    top: `${y - top}px`
+    // left: `${x - left}px`,
+    // top: `${y - top}px`
+    left: `${x}px`,
+    top: `${y}px`,
   }
 })
 

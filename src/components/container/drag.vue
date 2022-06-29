@@ -11,6 +11,8 @@ const { isStartInCanvas, inCanvas } = useCanvas()
 const handler: IEventHandler = (data, e, wrapper) => {
   if (inCanvas(e)) {
     emits('drop', data, wrapper)
+  } else {
+    console.log('false')
   }
 }
 const onMouseDown = (e: MouseEvent) => {

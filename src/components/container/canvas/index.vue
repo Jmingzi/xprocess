@@ -5,11 +5,6 @@ const containerRef = ref<HTMLElement | null>(null)
 const containerRect = ref<DOMRect>()
 const emits = defineEmits(['mounted'])
 defineProps<{}>()
-// defineExpose<{
-//   canvasRect: Ref<DOMRect | undefined>
-// }>({
-//   canvasRect: containerRect
-// })
 
 onMounted(() => {
   containerRect.value = containerRef.value!.getBoundingClientRect()
@@ -19,13 +14,28 @@ onMounted(() => {
 
 <template>
   <slot name="moving" />
-  <div class="xprocess-canvas" :ref="v => containerRef = v">
-    <slot />
+  <div class="xprocess-content_wrap">
+    <div
+      class="xprocess-canvas"
+      :ref="v => containerRef = v"
+    >
+      <slot />
+    </div>
   </div>
 </template>
 
 <style lang="less">
+.xprocess-content_wrap {
+  width: 1050px;
+  height: 1500px;
+  background: url(./images/canvas_bg.jpeg);
+  padding: 1000px;
+  box-sizing: content-box;
+}
 .xprocess-canvas {
   position: relative;
+  width: 1050px;
+  height: 1500px;
+  background-color: #fff;
 }
 </style>

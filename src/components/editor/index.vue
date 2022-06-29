@@ -52,9 +52,6 @@ const { Layout } = useLayout()
 </template>
 
 <style lang="less">
-.xprocess-canvas {
-  width: 800px;
-  height: 400px;
-  background-color: #fff;
+.xprocess-content {
 }
 </style>

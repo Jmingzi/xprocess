@@ -8,7 +8,10 @@ import {
   getDirection,
   getEdge,
   onDrop,
-  setCurrentNode
+  setCurrentNode,
+  getPointFromCanvas,
+  getPointFromCanvasX,
+  getPointFromCanvasY
 } from '../editor/state'
 import { DEFAULT_PROPS, SVG_TYPE } from '../svg-type/base'
 import { IEventHandlerData } from '../../hooks/use-drag'
@@ -37,8 +40,8 @@ export const handleOperationDotMouseDown = (
   const node = editorState.nodes.find(x => x.id === nodeId) as NodeRect
   const { isTop, isBottom, isLeft, isRight } = getEdge(edgeString)
   // 创建线条
-  let x = e.clientX
-  let y = e.clientY
+  let x = getPointFromCanvasX(e.clientX)
+  let y = getPointFromCanvasY(e.clientY)
   // 距离图形左上角点的距离比例
   let ratioX = 1
   let ratioY = 1
@@ -139,7 +142,7 @@ export const handleOperationDotMouseMove = (evData: IEventHandlerData) => {
     let ratioX: number = 0
     let ratioY: number = 0
     const nearPoint: number[] = []
-    const point = [endX, endY]
+    const point = getPointFromCanvas([endX, endY])
     const thresholdDistance = 20
     const isNear = (point: number[], target: number[]) => {
       const x = delta(point[0], target[0])
