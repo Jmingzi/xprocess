@@ -6,7 +6,7 @@ import text_impression_line from './icon/text_impression_line.png'
 </script>
 
 <template>
-  <Item select>
+  <Item select isFill>
     <template v-slot:default="{ node, handleChange }">
       <XColor :value="node?.fill ?? '#ffffff'" @change="e => handleChange(e, 'fill')">
         <img :src="text_impression_line" alt="">

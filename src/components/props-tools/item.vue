@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import iconTriangleDownFill from './icon/triangle_down_fill.png'
-import { state as editorState } from '../editor/state'
+import { state as editorState, isNodeLine } from '../editor/state'
 import { currentLine } from '../operation/state'
 import { computed, provide } from 'vue'
 
@@ -8,6 +8,7 @@ defineProps<{
   active?: boolean
   select?: boolean
   input?: boolean
+  isFill?: boolean
 }>()
 
 const font = computed(() => editorState.currentNode?.font || currentLine.value?.font)
@@ -33,7 +34,7 @@ const handleChange = (e: InputEvent, field: any, isFontStyle: Boolean) => {
     :class="{
       input,
       select,
-      unactivated: !node
+      unactivated: !node || (isFill && isNodeLine(node.id))
     }"
   >
     <slot :font="font" :node="node" :handleChange="handleChange" />
