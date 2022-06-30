@@ -11,7 +11,9 @@ import {
   setCurrentNode,
   getPointFromCanvas,
   getPointFromCanvasX,
-  getPointFromCanvasY
+  getPointFromCanvasY,
+  deleteNode,
+  deleteLine
 } from '../editor/state'
 import { DEFAULT_PROPS, SVG_TYPE } from '../svg-type/base'
 import { IEventHandlerData } from '../../hooks/use-drag'
@@ -238,8 +240,9 @@ export const handleOperationDotMouseMove = (evData: IEventHandlerData) => {
  * 控制线条末端的 action
  */
 let isAfterMoving = false
+const isCanvasClick = (e: MouseEvent) => (e as MouseEvent & { path: HTMLElement[] }).path.some(el => el?.classList?.contains('xprocess-canvas'))
 document.body.addEventListener('click', (e: MouseEvent) => {
-  if ((e as MouseEvent & { path: HTMLElement[] }).path.every(el => !el?.classList?.contains('xprocess-canvas'))) {
+  if (!isCanvasClick(e)) {
     // 只处理画布上的点击事件
     return
   }
@@ -247,7 +250,7 @@ document.body.addEventListener('click', (e: MouseEvent) => {
     isAfterMoving = false
     return
   }
-  console.log('canvas click')
+  // console.log('canvas click')
   const line = currentLine.value
   // line.toNode.nodeId 默认是 0
   if (line && line.toNode.nodeId === 0) {
@@ -261,6 +264,18 @@ document.body.addEventListener('click', (e: MouseEvent) => {
     currentLine.value = undefined
   } else {
     setCurrentNode()
+  }
+})
+
+document.body.addEventListener('keyup', (e: KeyboardEvent) => {
+  // console.log(e.keyCode)
+  const isDelete = e.keyCode === 8
+  if (isDelete) {
+    if (editorState.currentNode) {
+      deleteNode(editorState.currentNode)
+    } else if (currentLine.value) {
+      deleteLine(currentLine.value)
+    }
   }
 })
 

@@ -9,7 +9,7 @@ import {
   DEFAULT_SIZE,
   IPropsPolygon, IPropsText
 } from '../svg-type/base'
-import { Edge } from '../operation/state'
+import { Edge, setCurrentLine } from '../operation/state'
 import { useCanvas } from '../container/canvas/use-canvas'
 
 const { rect: canvasRect } = useCanvas()
@@ -222,4 +222,39 @@ export function getEdge (edge: Edge) {
     isRight,
     isLeft
   }
+}
+
+function removeNode (id: number) {
+  state.nodes.splice(state.nodes.findIndex(x => x.id === id), 1)
+}
+
+function removeNodeLines (id: number, lineId: number, field: 'fromLines' | 'toLines') {
+  const node = state.nodes.find(x => x.id === id)
+  if (node) {
+    node[field].splice(node[field].findIndex(x => x.id === lineId), 1)
+  }
+}
+
+function removeLine (id: number) {
+  state.lines.splice(state.lines.findIndex(x => x.id === id), 1)
+}
+
+export function deleteNode (node: XProcessNode) {
+  // 删除相关线条
+  const lineIds: number[] = [
+    ...node.fromLines.map(x => x.id),
+    ...node.toLines.map(x => x.id)
+  ]
+  lineIds.forEach(removeLine)
+  // 删除节点
+  removeNode(node.id)
+  setCurrentNode()
+}
+
+export function deleteLine (line: NodeLine) {
+  removeLine(line.id)
+  // 删除节点中的依赖
+  removeNodeLines(line.fromNode.nodeId, line.id, 'fromLines')
+  removeNodeLines(line.toNode.nodeId, line.id, 'toLines')
+  setCurrentLine()
 }

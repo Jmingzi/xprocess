@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive, provide } from 'vue'
-import ReferenceLine from './reference-line.vue'
+import Grid from './grid.vue'
 
 const containerRef = ref<HTMLElement | null>(null)
 const containerRect = ref<DOMRect>()
@@ -31,7 +31,7 @@ onMounted(() => {
       class="xprocess-canvas"
       :ref="v => containerRef = v"
     >
-      <ReferenceLine />
+      <Grid />
       <slot />
     </div>
   </div>

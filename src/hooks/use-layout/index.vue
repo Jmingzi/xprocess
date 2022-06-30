@@ -22,7 +22,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="xprocess__header"></div>
+  <div class="xprocess__header">
+    <div class="xprocess__header-title">
+      <img src="//fe.shinemo.com/logo.png" align="center" width="35">
+      <span>XProcess</span>
+    </div>
+  </div>
   <div class="xprocess__header-tools">
     <slot name="tools" />
   </div>
@@ -46,8 +51,23 @@ onMounted(() => {
   @header-tools-height: 35px;
   @sidebar-width: 200px;
   &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     height: 60px;
-    border: 1px #eee solid;
+    background-color: #262a30;
+    padding: 0 30px;
+    &-title {
+      display: flex;
+      align-items: center;
+      color: #fff;
+      font-weight: 200;
+      font-size: 30px;
+      //font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+      span {
+        margin-left: 15px;
+      }
+    }
   }
   &__header-tools {
     display: flex;
