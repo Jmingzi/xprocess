@@ -39,22 +39,34 @@ onMounted(() => {
     :style="style"
     @click.stop=""
   >
-    <SvgType
-      v-for="item in editorState.localComponentList"
-      v-bind="item"
-      @click="emit('click', item)"
-    />
+    <div v-for="item in editorState.localComponentList">
+      <SvgType
+        v-bind="item"
+        @click="emit('click', item)"
+      />
+    </div>
   </div>
 </template>
 
 <style lang="less">
 .xprocess__over-panel {
   position: absolute;
-  //right: 0;
-  //bottom: 0;
-  //transform: translate(100%, 100%);
-  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 400px;
+  padding: 15px;
+  transform: scale(0.5);
+  transform-origin: left top;
   background-color: #fff;
-  border: 1px #eee solid;
+  border: 2px #aaa solid;
+  border-radius: 5px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, .15);
+  & > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 83px;
+    height: 80px;
+  }
 }
 </style>

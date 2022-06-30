@@ -89,7 +89,7 @@ export const state = reactive<State>({
 
 export const DEFAULT_FONT: IFont = {
   content: '',
-  fontSize: 13,
+  fontSize: 12,
   italics: false,
   bold: false,
   underline: false,
@@ -123,8 +123,8 @@ export function onDrop (data: IEventHandlerData, node: LocalListItem) {
     ...localItem,
     start: getPointFromCanvas([data.endTopLeftX, data.endTopLeftY]),
     end: getPointFromCanvas([
-      data.endTopLeftX + localItem.end[0] * 1.5,
-      data.endTopLeftY + localItem.end[1] * 1.5
+      data.endTopLeftX + localItem.end[0],
+      data.endTopLeftY + localItem.end[1]
     ]),
     fromLines: [],
     toLines: []

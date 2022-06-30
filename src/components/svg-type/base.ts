@@ -33,9 +33,9 @@ export type SvgType = 'rect' | 'line' | 'circle' | 'polygon'
 export const STROKE_WIDTH = 2
 
 export const DEFAULT_SIZE = {
-  rect: [70, 40],
-  circle: [40, 40],
-  polygon: [70, 50]
+  rect: [80, 50],
+  circle: [60, 60],
+  polygon: [80, 60]
 }
 
 export const DEFAULT_PROPS = {

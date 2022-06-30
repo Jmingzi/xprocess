@@ -117,8 +117,8 @@ watchEffect(() => {
 <style lang="less">
 .xprocess__text {
   position: absolute;
-  left: 15px;
-  right: 15px;
+  left: 10px;
+  right: 10px;
   line-height: 1.5;
   border-radius: 2px;
   height: fit-content;
