@@ -77,7 +77,7 @@ watch(() => node, node => {
      */
     initialContent.value = node.value?.font?.content ?? ''
   }
-})
+}, { immediate: true })
 
 watchEffect(() => {
   if (node.value?.start && node.value?.end && node.value?.font?.fontSize) {

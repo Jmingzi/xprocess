@@ -7,7 +7,7 @@ import {
   SVG_TYPE,
   IPropsCircle,
   DEFAULT_SIZE,
-  IPropsPolygon
+  IPropsPolygon, IPropsText
 } from '../svg-type/base'
 import { Edge } from '../operation/state'
 import { useCanvas } from '../container/canvas/use-canvas'
@@ -24,6 +24,7 @@ type IBase = {
 export type NodeRect = Omit<IPropsRect, 'width' | 'height'> & IBase
 export type NodeCircle = Omit<IPropsCircle, 'width' | 'height'> & IBase
 export type NodePolygon = Omit<IPropsPolygon, 'width' | 'height'> & IBase
+export type NodeText = Omit<IPropsText, 'width' | 'height'> & IBase
 
 export type IFont = {
   content: string
@@ -55,7 +56,19 @@ type ILocalBase<T> = Omit<T, 'id' | 'fromLines' | 'toLines'>
 type LocalListItemRect = ILocalBase<NodeRect>
 type LocalListItemCircle = ILocalBase<NodeCircle>
 type LocalListItemPolygon = ILocalBase<NodePolygon>
-export type LocalListItem = LocalListItemRect | LocalListItemCircle | LocalListItemPolygon
+type LocalListItemText = ILocalBase<NodeText>
+export type LocalListItem = LocalListItemRect | LocalListItemCircle | LocalListItemPolygon | LocalListItemText
+
+export const DEFAULT_FONT: IFont = {
+  content: '',
+  fontSize: 12,
+  italics: false,
+  bold: false,
+  underline: false,
+  color: '#333333',
+  horizontalAlign: 'center'
+}
+
 type State = {
   currentNode?: XProcessNode
   localComponentList: LocalListItem[]
@@ -81,21 +94,23 @@ export const state = reactive<State>({
       ...DEFAULT_PROPS,
       type: 'polygon',
       end: DEFAULT_SIZE.polygon
+    },
+    {
+      ...DEFAULT_PROPS,
+      type: 'text',
+      end: DEFAULT_SIZE.text,
+      strokeWidth: 0,
+      status: 0,
+      fontEditable: true,
+      font: {
+        ...DEFAULT_FONT,
+        content: '文本'
+      }
     }
   ],
   nodes: [],
   lines: []
 })
-
-export const DEFAULT_FONT: IFont = {
-  content: '',
-  fontSize: 12,
-  italics: false,
-  bold: false,
-  underline: false,
-  color: '#333333',
-  horizontalAlign: 'center'
-}
 
 export function createItem () {
   return {
@@ -118,7 +133,7 @@ export function getPointFromCanvas (point: number[]) {
 export function onDrop (data: IEventHandlerData, node: LocalListItem) {
   const item = createItem()
   const localItem = state.localComponentList.find(x => x.type === node.type) as LocalListItemRect
-  const newItem: NodeRect = {
+  const newItem: XProcessNode = {
     ...item,
     ...localItem,
     start: getPointFromCanvas([data.endTopLeftX, data.endTopLeftY]),
@@ -128,6 +143,9 @@ export function onDrop (data: IEventHandlerData, node: LocalListItem) {
     ]),
     fromLines: [],
     toLines: []
+  }
+  if (node.type === SVG_TYPE.TEXT) {
+    (newItem as NodeText).status = 1
   }
   state.nodes.push(newItem)
   setCurrentNode(newItem.id)

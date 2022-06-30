@@ -6,6 +6,7 @@ import Rect from './rect.vue'
 import Line from './line.vue'
 import Circle from './circle.vue'
 import Polygon from './polygon.vue'
+import Text from './text.vue'
 
 export default function SvgType (props: ISvgType & { type: SvgType }) {
   const { strokeWidth, start, end } = props
@@ -26,6 +27,8 @@ export default function SvgType (props: ISvgType & { type: SvgType }) {
           return h(Circle, props)
         case SVG_TYPE.POLYGON:
           return h(Polygon, props)
+        case SVG_TYPE.TEXT:
+          return h(Text, props)
       }
     }
   })

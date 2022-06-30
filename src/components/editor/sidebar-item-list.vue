@@ -28,7 +28,7 @@ import { state, onDrop } from './state'
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 83px;
+      width: 90px;
       height: 80px;
     }
     & > div:not(:nth-of-type(2n)) {
