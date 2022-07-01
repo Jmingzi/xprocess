@@ -14,7 +14,8 @@ import {
   getPointFromCanvasY,
   deleteNode,
   deleteLine,
-  DEFAULT_FONT
+  DEFAULT_FONT,
+  copyAndCreateNode
 } from '../editor/state'
 import { DEFAULT_PROPS, SVG_TYPE } from '../svg-type/base'
 import { IEventHandlerData } from '../../hooks/use-drag'
@@ -76,9 +77,7 @@ export const handleOperationDotMouseDown = (
       edge: edgeString,
       ratioX: 0,
       ratioY: 0
-    },
-    font: { ...DEFAULT_FONT },
-    zIndex: editorState.lines.length + editorState.nodes.length
+    }
   }
   // 为节点添加线条依赖
   node.fromLines.push(currentLine.value)
@@ -270,14 +269,25 @@ document.body.addEventListener('click', (e: MouseEvent) => {
   }
 })
 
-document.body.addEventListener('keyup', (e: KeyboardEvent) => {
-  // console.log(e.keyCode)
+document.body.addEventListener('keydown', (e: KeyboardEvent) => {
+  // console.log(e)
   const isDelete = e.keyCode === 8
+  const isKeyD = e.keyCode === 68
+  const metaKey = e.metaKey
   if (isDelete) {
     if (editorState.currentNode) {
       deleteNode(editorState.currentNode)
+      e.preventDefault()
     } else if (currentLine.value) {
       deleteLine(currentLine.value)
+      e.preventDefault()
+    }
+  }
+  // ctrl + D 复用当前图形
+  if (metaKey && isKeyD) {
+    if (editorState.currentNode) {
+      copyAndCreateNode(editorState.currentNode)
+      e.preventDefault()
     }
   }
 })
@@ -400,7 +410,7 @@ export const handleOperationSizeMouseMove = (evData: IEventHandlerData) => {
   currentNode.toLines.forEach(line => {
     line.end = [
       currentNode.start[0] + line.toNode.ratioX * nodeWidth,
-      currentNode.start[1] + line.toNode.ratioY * nodeWidth
+      currentNode.start[1] + line.toNode.ratioY * nodeHeight
     ]
   })
 }

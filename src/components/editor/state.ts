@@ -127,7 +127,9 @@ export const state = reactive<State>({
 
 export function createItem () {
   return {
-    id: Date.now()
+    id: Date.now(),
+    font: { ...DEFAULT_FONT },
+    zIndex: state.nodes.length + state.lines.length
   }
 }
 
@@ -155,9 +157,7 @@ export function onDrop (data: IEventHandlerData, node: LocalListItem) {
       data.endTopLeftY + localItem.end[1]
     ]),
     fromLines: [],
-    toLines: [],
-    font: { ...DEFAULT_FONT },
-    zIndex: state.nodes.length + state.lines.length
+    toLines: []
   }
   if (node.type === SVG_TYPE.TEXT) {
     const t = (newItem as NodeText)
@@ -357,4 +357,19 @@ export function deleteLine (line: NodeLine) {
   removeNodeLines(line.fromNode.nodeId, line.id, 'fromLines')
   removeNodeLines(line.toNode.nodeId, line.id, 'toLines')
   setCurrentLine()
+}
+
+export function copyAndCreateNode (node: XProcessNode) {
+  const newItem = {
+    ...node,
+    ...createItem(),
+    font: node.font,
+    fontEditable: false,
+    fromLines: [],
+    toLines: [],
+    start: node.start.map(x => x + 30),
+    end: node.end.map(x => x + 30)
+  }
+  state.nodes.push(newItem)
+  setCurrentNode(newItem.id)
 }

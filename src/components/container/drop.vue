@@ -16,6 +16,7 @@ import {
 } from '../editor/state'
 import { SvgType, SVG_TYPE } from '../svg-type/base'
 import XText from '../text/index.vue'
+import ResizeInfo from '../resize-info/index.vue'
 
 const { inCanvas, isStartInCanvas } = useCanvas()
 const { onMouseDown: handleMouseDown, registerCallback } = useDrag()
@@ -28,16 +29,16 @@ const props = defineProps<{
   end: number[]
   zIndex: number
   // 以下为无用 props，仅仅是接收后 dom 属性好看美观
-  fromLines: any[]
-  toLines: any
-  font: any
-  fromNode: any
-  toNode: any
-  lineType: string
-  stroke: string
-  strokeWidth: number
-  fill: string
-  round: number
+  fromLines?: any[]
+  toLines?: any
+  font?: any
+  fromNode?: any
+  toNode?: any
+  lineType?: string
+  stroke?: string
+  strokeWidth?: number
+  fill?: string
+  round?: number
 }>()
 
 provide('type', props.type)
@@ -137,6 +138,7 @@ onMounted(() => {
     </div>
     <XText />
     <Operation />
+    <ResizeInfo v-if="!isNodeLine(id) && id === editorState.currentNode?.id" />
   </div>
 </template>
 
