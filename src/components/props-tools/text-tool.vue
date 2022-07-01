@@ -22,7 +22,7 @@ const fontAlign = [
 </script>
 
 <template>
-  <Item input>
+  <Item input title="字体大小">
     <template v-slot:default="{ font, handleChange }">
       <input
         class="tools-input"
@@ -47,7 +47,7 @@ const fontAlign = [
     </template>
   </Item>
 
-  <Item select>
+  <Item select title="字体颜色">
     <template v-slot:default="{ font, handleChange }">
       <XColor
         :value="font?.color ?? '#333333'"

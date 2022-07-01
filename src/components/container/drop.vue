@@ -26,13 +26,14 @@ const props = defineProps<{
   type: SvgType
   start: number[]
   end: number[]
+  zIndex: number
 }>()
 
 provide('type', props.type)
 provide('nodeId', props.id)
 
 const position = computed(() => {
-  const { start, end, type } = props
+  const { start, end, type, zIndex } = props
   // x, y 是图形左上角的点
   let x: number = start[0]
   let y: number = start[1]
@@ -58,6 +59,7 @@ const position = computed(() => {
   return {
     left: `${x}px`,
     top: `${y}px`,
+    zIndex
   }
 })
 

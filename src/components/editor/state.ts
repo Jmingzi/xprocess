@@ -20,6 +20,7 @@ type IBase = {
   toLines: NodeLine[]
   font?: IFont
   fontEditable?: boolean
+  zIndex: number
 }
 export type NodeRect = Omit<IPropsRect, 'width' | 'height'> & IBase
 export type NodeCircle = Omit<IPropsCircle, 'width' | 'height'> & IBase
@@ -48,11 +49,12 @@ export type NodeLine = IPropsLine & {
   toNode: NodeLineAttach
   font?: IFont
   fontEditable?: boolean
+  zIndex: number
 }
 
 export type XProcessNode = NodeRect | NodeCircle | NodePolygon
 
-type ILocalBase<T> = Omit<T, 'id' | 'fromLines' | 'toLines'>
+type ILocalBase<T> = Omit<T, 'id' | 'fromLines' | 'toLines' | 'zIndex'>
 type LocalListItemRect = ILocalBase<NodeRect>
 type LocalListItemCircle = ILocalBase<NodeCircle>
 type LocalListItemPolygon = ILocalBase<NodePolygon>
@@ -154,7 +156,8 @@ export function onDrop (data: IEventHandlerData, node: LocalListItem) {
     ]),
     fromLines: [],
     toLines: [],
-    font: { ...DEFAULT_FONT }
+    font: { ...DEFAULT_FONT },
+    zIndex: state.nodes.length + state.lines.length
   }
   if (node.type === SVG_TYPE.TEXT) {
     const t = (newItem as NodeText)
@@ -176,6 +179,8 @@ export function onMoving (data: IEventHandlerData, item: XProcessNode) {
   const height = Math.abs(node.end[1] - node.start[1])
   node.start = getPointFromCanvas([endTopLeftX, endTopLeftY])
   node.end = getPointFromCanvas([endTopLeftX + width, endTopLeftY + height])
+  // 先生成参考线，并自动吸附
+  getReferenceLine(node)
   // 移动所有的线条
   node.fromLines.forEach(line => {
     // 修改线条的起点坐标
@@ -190,7 +195,6 @@ export function onMoving (data: IEventHandlerData, item: XProcessNode) {
       node.start[1] + line.toNode.ratioY * height
     ]
   })
-  getReferenceLine(node)
 }
 
 /**

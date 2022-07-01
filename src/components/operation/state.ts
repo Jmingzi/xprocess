@@ -77,7 +77,8 @@ export const handleOperationDotMouseDown = (
       ratioX: 0,
       ratioY: 0
     },
-    font: { ...DEFAULT_FONT }
+    font: { ...DEFAULT_FONT },
+    zIndex: editorState.lines.length + editorState.nodes.length
   }
   // 为节点添加线条依赖
   node.fromLines.push(currentLine.value)

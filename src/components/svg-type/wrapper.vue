@@ -22,6 +22,7 @@ export default function SvgWrapper (props: {
 <style lang="less">
 svg {
   overflow: visible;
+  cursor: move;
 }
 </style>
 
