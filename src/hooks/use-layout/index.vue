@@ -75,6 +75,7 @@ onMounted(() => {
     height: 35px;
     background-color: #f7f8f9;
     border-bottom: 1px #aaa solid;
+    padding: 0 30px;
   }
   &__header-next {
     display: flex;
@@ -83,7 +84,7 @@ onMounted(() => {
   &__sidebar {
     flex-shrink: 0;
     width: @sidebar-width;
-    border: 1px #eee solid;
+    border-right: 1px #aaa solid;
   }
   &__content {
     flex-grow: 0;

@@ -153,7 +153,8 @@ export function onDrop (data: IEventHandlerData, node: LocalListItem) {
       data.endTopLeftY + localItem.end[1]
     ]),
     fromLines: [],
-    toLines: []
+    toLines: [],
+    font: { ...DEFAULT_FONT }
   }
   if (node.type === SVG_TYPE.TEXT) {
     const t = (newItem as NodeText)

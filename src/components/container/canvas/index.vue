@@ -45,6 +45,7 @@ onMounted(() => {
   background: url(./images/canvas_bg.jpeg) fixed;
   padding: 1000px;
   box-sizing: content-box;
+  user-select: none;
 }
 .xprocess-canvas {
   position: relative;

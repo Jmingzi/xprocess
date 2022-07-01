@@ -27,9 +27,6 @@ defineEmits(['change'])
   flex-direction: column;
   //width: 100%;
   height: 100%;
-  img {
-    width: 20px;
-  }
   input {
     position: absolute;
     display: block;
@@ -43,8 +40,9 @@ defineEmits(['change'])
   }
 
   &__bar {
-    width: 20px;
+    width: 15px;
     height: 2px;
+    margin-top: 2px;
   }
 }
 </style>

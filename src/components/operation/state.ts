@@ -13,7 +13,8 @@ import {
   getPointFromCanvasX,
   getPointFromCanvasY,
   deleteNode,
-  deleteLine
+  deleteLine,
+  DEFAULT_FONT
 } from '../editor/state'
 import { DEFAULT_PROPS, SVG_TYPE } from '../svg-type/base'
 import { IEventHandlerData } from '../../hooks/use-drag'
@@ -75,7 +76,8 @@ export const handleOperationDotMouseDown = (
       edge: edgeString,
       ratioX: 0,
       ratioY: 0
-    }
+    },
+    font: { ...DEFAULT_FONT }
   }
   // 为节点添加线条依赖
   node.fromLines.push(currentLine.value)

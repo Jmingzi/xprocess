@@ -9,6 +9,7 @@ defineProps<{
   select?: boolean
   input?: boolean
   isFill?: boolean
+  field?: string
 }>()
 
 const font = computed(() => editorState.currentNode?.font || currentLine.value?.font)
@@ -37,7 +38,12 @@ const handleChange = (e: InputEvent, field: any, isFontStyle: Boolean) => {
       unactivated: !node || (isFill && isNodeLine(node.id))
     }"
   >
-    <slot :font="font" :node="node" :handleChange="handleChange" />
+    <slot
+      :font="font"
+      :node="node"
+      :handleChange="handleChange"
+      :field="field"
+    />
     <img
       v-if="select"
       class="xprocess__tool-item--select"
@@ -51,17 +57,37 @@ const handleChange = (e: InputEvent, field: any, isFontStyle: Boolean) => {
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
   height: 25px;
   width: 30px;
   @border-color: #aaaaaa;
-  padding: 0 5px;
+  // padding: 0 5px;
+  // padding-right: 10px;
   border: 1px transparent solid;
+  border-radius: 2px;
+  overflow: hidden;
   &:not(&.unactivated):hover {
     border-color: @border-color;
+  }
+  &-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+    overflow: hidden;
+    &.active {
+      border-color: @border-color;
+      box-shadow: 0 0 5px rgba(0, 0, 0, .2) inset;
+    }
   }
   &.unactivated {
     opacity: 0.6;
     pointer-events: none;
+  }
+  img {
+    width: 15px;
   }
   input {
     width: 100%;
@@ -85,7 +111,7 @@ const handleChange = (e: InputEvent, field: any, isFontStyle: Boolean) => {
   }
   &--select {
     position: absolute;
-    width: 8px;
+    width: 6px!important;
     right: 3px;
     top: 50%;
     transform: translateY(-50%);
