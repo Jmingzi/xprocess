@@ -2,7 +2,12 @@ import { reactive, toRaw, toRefs } from 'vue'
 
 export type IEvents = 'mousedown' | 'mousemove' | 'mouseup'
 export type IEventHandlerData = typeof state
-export type IEventHandler = (data: IEventHandlerData, e: MouseEvent, wrapperEl: HTMLElement | null) => void
+export type IEventHandler = (
+    data: IEventHandlerData,
+    e: MouseEvent,
+    wrapperEl: HTMLElement | null,
+    state?: { endX: number, endY: number, endTopLeftX: number, endTopLeftY: number, startOffsetTopLeftX: number, startOffsetTopLeftY: number }
+) => void
 type IEventItem = {
   handler: IEventHandler,
   draggedWrapperEl: HTMLElement
@@ -105,7 +110,7 @@ function runEvent (
   if (startTarget === null) return
   busEvents[type].forEach(item => {
     if (findEl(startTarget!, el => el === item.draggedWrapperEl)) {
-      item.handler(toRaw(state), e, wrapperEl)
+      item.handler(toRaw(state), e, wrapperEl, state)
     }
   })
 }

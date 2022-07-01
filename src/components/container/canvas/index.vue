@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive, provide } from 'vue'
 import Grid from './grid.vue'
+import Reference from './reference-line.vue'
 
 const containerRef = ref<HTMLElement | null>(null)
 const containerRect = ref<DOMRect>()
@@ -32,6 +33,7 @@ onMounted(() => {
       :ref="v => containerRef = v"
     >
       <Grid />
+      <Reference />
       <slot />
     </div>
   </div>

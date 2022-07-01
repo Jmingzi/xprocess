@@ -13,6 +13,7 @@ import iconTriangleDownFill from '../props-tools/icon/triangle_down_fill.png'
   <div class="xprocess-sidebar__list">
     <XDrag
       v-for="item in state.localComponentList"
+      :type="item.type"
       @drop="data => onDrop(data, item)"
     >
       <SvgType v-bind="item" />

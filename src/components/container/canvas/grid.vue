@@ -8,24 +8,24 @@ const row = ref(new Array(Math.floor(page!.height / unit)))
 </script>
 
 <template>
-  <div class="reference-line">
+  <div class="grid">
     <span
       v-for="(_, i) in col"
       :style="{ left: (i + 1) * unit + 'px' }"
-      class="reference-line__col"
+      class="grid__col"
       :class="{ five: (i + 1) % (unit / 4) === 0 }"
     />
     <span
       v-for="(_, i) in row"
       :style="{ top: (i + 1) * unit + 'px' }"
-      class="reference-line__row"
+      class="grid__row"
       :class="{ five: (i + 1) % (unit / 4) === 0 }"
     />
   </div>
 </template>
 
 <style lang="less">
-.reference-line {
+.grid {
   position: absolute;
   left: 0;
   top: 0;

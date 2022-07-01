@@ -73,11 +73,21 @@ type State = {
   currentNode?: XProcessNode
   localComponentList: LocalListItem[]
   nodes: XProcessNode[]
-  lines: NodeLine[]
+  lines: NodeLine[],
+  referenceLines: Array<{
+    nodeId: number
+    type: 'col' | 'row'
+    left: number
+    top: number
+    width?: number
+    height?: number
+    distance?: number
+  }>
 }
 
 export const state = reactive<State>({
   currentNode: undefined,
+  referenceLines: [],
   localComponentList: [
     {
       ...DEFAULT_PROPS,
@@ -101,6 +111,7 @@ export const state = reactive<State>({
       end: DEFAULT_SIZE.text,
       strokeWidth: 0,
       status: 0,
+      fill: 'transparent',
       fontEditable: true,
       font: {
         ...DEFAULT_FONT,
@@ -145,7 +156,9 @@ export function onDrop (data: IEventHandlerData, node: LocalListItem) {
     toLines: []
   }
   if (node.type === SVG_TYPE.TEXT) {
-    (newItem as NodeText).status = 1
+    const t = (newItem as NodeText)
+    // 隐藏字体图标
+    t.status = 1
   }
   state.nodes.push(newItem)
   setCurrentNode(newItem.id)
@@ -175,6 +188,88 @@ export function onMoving (data: IEventHandlerData, item: XProcessNode) {
       node.start[0] + line.toNode.ratioX * width,
       node.start[1] + line.toNode.ratioY * height
     ]
+  })
+  getReferenceLine(node)
+}
+
+/**
+ * 1. 计算当前节点的参考线
+ * 2. 自动吸附参考线
+ * 思路：在节点中匹配当前节点的 6 个边界：x, x1, x2, y, y1, y2
+ */
+export function getReferenceLine (node: XProcessNode) {
+  const broadPx = 5
+  state.referenceLines = []
+  const _getNodePoint = (node: XProcessNode) => {
+    const { start, end } = node
+    const width = Math.abs(end[0] - start[0])
+    const height = Math.abs(end[1] - start[1])
+    return {
+      rowsY: [start[1] + height / 2, start[1], end[1]],
+      colsX: [start[0] + width / 2, start[0], end[0]],
+      width,
+      height
+    }
+  }
+  const { rowsY, colsX, width, height } = _getNodePoint(node)
+  state.nodes.filter(x => x.id !== node.id).map(item => {
+    const itemPoint = _getNodePoint(item)
+    itemPoint.colsX.forEach(x => {
+      const colsXIndex = colsX.findIndex(colX => x <= colX + broadPx && x >= colX - broadPx)
+      if (colsXIndex > -1) {
+        // 同一节点去重，不应该出现多条对齐线
+        if (!state.referenceLines.some(x => x.nodeId === item.id && x.type === 'col')) {
+          // 自动吸附
+          if (colsXIndex === 0) {
+            // 中位线
+            node.start[0] = x - width / 2
+            node.end[0] = x + width / 2
+          } else if (colsXIndex === 1) {
+            // 头线
+            node.start[0] = x
+            node.end[0] = x + width
+          } else {
+            // 底线
+            node.start[0] = x - width
+            node.end[0] = x
+          }
+          state.referenceLines.push({
+            nodeId: item.id,
+            type: 'col',
+            top: 0,
+            left: x
+          })
+        }
+      }
+    })
+    itemPoint.rowsY.forEach(y => {
+      const rowsYIndex = rowsY.findIndex(rowY => y <= rowY + broadPx && y >= rowY - broadPx)
+      if (rowsYIndex > -1) {
+        // 同一节点去重，不应该出现多条对齐线
+        if (!state.referenceLines.some(x => x.nodeId === item.id && x.type === 'row')) {
+          state.referenceLines.push({
+            nodeId: item.id,
+            type: 'row',
+            top: y,
+            left: 0
+          })
+          // 自动吸附
+          if (rowsYIndex === 0) {
+            // 中位线
+            node.start[1] = y - height / 2
+            node.end[1] = y + height / 2
+          } else if (rowsYIndex === 1) {
+            // 头线
+            node.start[1] = y
+            node.end[1] = y + height
+          } else {
+            // 底线
+            node.start[1] = y - height
+            node.end[1] = y
+          }
+        }
+      }
+    })
   })
 }
 

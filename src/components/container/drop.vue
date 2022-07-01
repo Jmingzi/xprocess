@@ -55,10 +55,7 @@ const position = computed(() => {
     }
   }
 
-  // const { left, top } = canvasRect!.value!
   return {
-    // left: `${x - left}px`,
-    // top: `${y - top}px`
     left: `${x}px`,
     top: `${y}px`,
   }
@@ -100,6 +97,12 @@ const onDoubleClick = () => {
 onMounted(() => {
   registerCallback('mousemove', {
     handler: handlerMove,
+    draggedWrapperEl: elRef.value!
+  })
+  registerCallback('mouseup', {
+    handler: () => {
+      editorState.referenceLines = []
+    },
     draggedWrapperEl: elRef.value!
   })
 })

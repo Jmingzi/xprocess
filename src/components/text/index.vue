@@ -106,6 +106,7 @@ watchEffect(() => {
     }"
     :contenteditable="node?.fontEditable"
     :style="style"
+    @keyup.stop=""
     ref="refEl"
     @input="handleInput"
     @blur="handleBlur"
@@ -127,7 +128,7 @@ watchEffect(() => {
   }
   &.line {
     width: fit-content;
-    min-width: 40px;
+    min-width: 20px;
     max-width: 80%;
     background-color: #fff;
     left: 50%;
