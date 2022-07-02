@@ -22,6 +22,8 @@ const fontAlign = [
 </script>
 
 <template>
+  <div class="tools-input__division" />
+
   <Item input title="字体大小">
     <template v-slot:default="{ font, handleChange }">
       <input
@@ -32,8 +34,6 @@ const fontAlign = [
       >
     </template>
   </Item>
-
-  <div class="tools-input__division" />
 
   <Item v-for="item in fontStyle">
     <template v-slot:default="{ font, handleChange }">
@@ -77,7 +77,6 @@ const fontAlign = [
 <style lang="less">
 input.tools-input::-webkit-inner-spin-button {
   opacity: 1;
-  pointer-events: auto;
 }
 .tools-input__division {
   width: 1px;

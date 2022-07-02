@@ -29,7 +29,12 @@ onMounted(() => {
     </div>
   </div>
   <div class="xprocess__header-tools">
-    <slot name="tools" />
+    <div>
+      <slot name="tools" />
+    </div>
+    <div>
+      <slot name="tools-right" />
+    </div>
   </div>
   <div class="xprocess__header-next">
     <div class="xprocess__sidebar">
@@ -72,10 +77,16 @@ onMounted(() => {
   &__header-tools {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     height: 35px;
     background-color: #f7f8f9;
     border-bottom: 1px #aaa solid;
-    padding: 0 30px;
+    padding: 0 10px;
+    & > div {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
   }
   &__header-next {
     display: flex;

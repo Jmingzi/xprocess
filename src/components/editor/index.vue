@@ -8,6 +8,8 @@ import { lineUpActionPanelData, handleCreateToNode } from '../operation/state'
 import TextPropsTools from '../props-tools/text-tool.vue'
 import SvgPropsTools from '../props-tools/svg-tool.vue'
 import Sidebar from './sidebar.vue'
+import Filename from '../props-tools/filename.vue'
+import FileOperate from '../props-tools/file-operate.vue'
 
 const { Layout } = useLayout()
 </script>
@@ -15,8 +17,12 @@ const { Layout } = useLayout()
 <template>
   <Layout>
     <template #tools>
+      <Filename />
       <TextPropsTools />
       <SvgPropsTools />
+    </template>
+    <template #tools-right>
+      <FileOperate />
     </template>
     <template #left>
       <Sidebar />
