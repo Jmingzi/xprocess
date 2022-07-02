@@ -6,6 +6,10 @@ import Rect from './rect.vue'
 import Line from './line.vue'
 import Circle from './circle.vue'
 import Polygon from './polygon.vue'
+import PolygonArrowRight from './polygon-arrow-right.vue'
+import PolygonArrowLeft from './polygon-arrow-left.vue'
+import PolygonArrowTop from './polygon-arrow-top.vue'
+import PolygonArrowBottom from './polygon-arrow-bottom.vue'
 import Text from './text.vue'
 
 export default function SvgType (props: ISvgType & { type: SvgType }) {
@@ -29,6 +33,14 @@ export default function SvgType (props: ISvgType & { type: SvgType }) {
           return h(Polygon, props)
         case SVG_TYPE.TEXT:
           return h(Text, props)
+        case SVG_TYPE.POLYGON_ARROW_RIGHT:
+          return h(PolygonArrowRight, props)
+        case SVG_TYPE.POLYGON_ARROW_LEFT:
+          return h(PolygonArrowLeft, props)
+        case SVG_TYPE.POLYGON_ARROW_TOP:
+          return h(PolygonArrowTop, props)
+        case SVG_TYPE.POLYGON_ARROW_BOTTOM:
+          return h(PolygonArrowBottom, props)
       }
     }
   })

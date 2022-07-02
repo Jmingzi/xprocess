@@ -43,6 +43,7 @@ import iconTriangleDownFill from '../props-tools/icon/triangle_down_fill.png'
       justify-content: center;
       width: 90px;
       height: 80px;
+      margin-top: 20px;
     }
     & > div:not(:nth-of-type(2n)) {
       //margin: 0 20px 20px 0

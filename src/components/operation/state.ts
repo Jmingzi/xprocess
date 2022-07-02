@@ -14,7 +14,7 @@ import {
   getPointFromCanvasY,
   deleteNode,
   deleteLine,
-  DEFAULT_FONT,
+  // DEFAULT_FONT,
   copyAndCreateNode, moveNodeLines
 } from '../editor/state'
 import { DEFAULT_PROPS, SVG_TYPE } from '../svg-type/base'

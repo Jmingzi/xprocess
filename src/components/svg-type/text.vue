@@ -22,7 +22,7 @@ export default function Text (props: IPropsText) {
     status === 0 ? h('image', {
       'xlink:href': icon,
       width: width * 0.7,
-      x: 20
+      x: 12
     }) : null
   ]
 }

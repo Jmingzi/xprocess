@@ -123,6 +123,26 @@ export const state = reactive<State>({
         ...DEFAULT_FONT,
         content: '文本'
       }
+    },
+    {
+      ...DEFAULT_PROPS,
+      type: 'polygon-arrow-left',
+      end: DEFAULT_SIZE.polygon
+    },
+    {
+      ...DEFAULT_PROPS,
+      type: 'polygon-arrow-right',
+      end: DEFAULT_SIZE.polygon
+    },
+    {
+      ...DEFAULT_PROPS,
+      type: 'polygon-arrow-top',
+      end: DEFAULT_SIZE.polygon.slice().reverse()
+    },
+    {
+      ...DEFAULT_PROPS,
+      type: 'polygon-arrow-bottom',
+      end: DEFAULT_SIZE.polygon.slice().reverse()
     }
   ],
   nodes: [],
