@@ -4,12 +4,12 @@ import { Canvas as XCanvas, Drop as XDrop } from '../container'
 import { state, onMoving } from './state'
 import { useLayout } from '../../hooks/use-layout'
 import LineActionPanel from '../operation/action-panel.vue'
-import { lineUpActionPanelData, handleCreateToNode } from '../operation/state'
 import TextPropsTools from '../props-tools/text-tool.vue'
 import SvgPropsTools from '../props-tools/svg-tool.vue'
 import Sidebar from './sidebar.vue'
 import Filename from '../props-tools/filename.vue'
 import FileOperate from '../props-tools/file-operate.vue'
+import MultiSelect from '../operation/multi-select.vue'
 
 const { Layout } = useLayout()
 </script>
@@ -43,11 +43,8 @@ const { Layout } = useLayout()
         >
           <SvgType v-bind="item" type="line" />
         </XDrop>
-        <LineActionPanel
-          v-if="!!lineUpActionPanelData"
-          :position="lineUpActionPanelData"
-          @click="handleCreateToNode"
-        />
+        <LineActionPanel />
+        <MultiSelect />
       </XCanvas>
     </template>
   </Layout>

@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import { IEventHandlerData } from '../../hooks/use-drag'
 import {
   DEFAULT_PROPS,
@@ -71,25 +71,29 @@ export const DEFAULT_FONT: IFont = {
   horizontalAlign: 'center'
 }
 
+type ReferenceLine = {
+  nodeId: number
+  type: 'col' | 'row'
+  left: number
+  top: number
+  width?: number
+  height?: number
+  distance?: number
+}
+
 type State = {
   currentNode?: XProcessNode
   localComponentList: LocalListItem[]
   nodes: XProcessNode[]
   lines: NodeLine[],
-  referenceLines: Array<{
-    nodeId: number
-    type: 'col' | 'row'
-    left: number
-    top: number
-    width?: number
-    height?: number
-    distance?: number
-  }>
+  referenceLines: ReferenceLine[],
+  selectedNodes: XProcessNode[]
 }
 
 export const state = reactive<State>({
   currentNode: undefined,
   referenceLines: [],
+  selectedNodes: [],
   localComponentList: [
     {
       ...DEFAULT_PROPS,
@@ -182,6 +186,25 @@ export function onMoving (data: IEventHandlerData, item: XProcessNode) {
   // 先生成参考线，并自动吸附
   getReferenceLine(node)
   // 移动所有的线条
+  moveNodeLines(node)
+  // node.fromLines.forEach(line => {
+  //   // 修改线条的起点坐标
+  //   line.start = [
+  //     node.start[0] + line.fromNode.ratioX * width,
+  //     node.start[1] + line.fromNode.ratioY * height
+  //   ]
+  // })
+  // node.toLines.forEach(line => {
+  //   line.end = [
+  //     node.start[0] + line.toNode.ratioX * width,
+  //     node.start[1] + line.toNode.ratioY * height
+  //   ]
+  // })
+}
+
+export function moveNodeLines (node: XProcessNode) {
+  const width = Math.abs(node.end[0] - node.start[0])
+  const height = Math.abs(node.end[1] - node.start[1])
   node.fromLines.forEach(line => {
     // 修改线条的起点坐标
     line.start = [
@@ -372,4 +395,32 @@ export function copyAndCreateNode (node: XProcessNode) {
   }
   state.nodes.push(newItem)
   setCurrentNode(newItem.id)
+}
+
+export const isMultiSelect = computed(() => state.selectedNodes.length > 1)
+export function selectNode (id: number, metaKey: boolean) {
+  const node = state.nodes.find(x => x.id === id)!
+  if (metaKey) {
+    if (state.currentNode && state.selectedNodes.every(x => x.id !== state.currentNode!.id)) {
+      state.selectedNodes.push(state.currentNode)
+    }
+    state.selectedNodes.push(node)
+  } else {
+    state.selectedNodes = [node]
+  }
+}
+
+export function moveSelectNodes (copySelectedNodes: XProcessNode[], delta: number[]) {
+  const alterNodePoint = (originNodePoint: number[], copyNodePoint: number[]) => {
+    originNodePoint[0] = copyNodePoint[0] + delta[0]
+    originNodePoint[1] = copyNodePoint[1] + delta[1]
+  }
+  copySelectedNodes.forEach(copyNode => {
+    const originNode = state.selectedNodes.find(x => x.id === copyNode.id)
+    if (originNode) {
+      alterNodePoint(originNode.start, copyNode.start)
+      alterNodePoint(originNode.end, copyNode.end)
+      moveNodeLines(originNode)
+    }
+  })
 }

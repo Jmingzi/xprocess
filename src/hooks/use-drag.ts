@@ -28,6 +28,8 @@ const state = reactive({
   startY: 0,
   endX: 0,
   endY: 0,
+  deltaX: 0,
+  deltaY: 0,
   startOffsetTopLeftX: 0,
   startOffsetTopLeftY: 0,
   endTopLeftX: 0,
@@ -77,6 +79,8 @@ function onMouseMove (e: MouseEvent) {
   state.endTopLeftY = e.clientY - state.startOffsetTopLeftY
   state.endX = e.clientX
   state.endY = e.clientY
+  state.deltaX = e.clientX - state.startX
+  state.deltaY = e.clientY - state.startY
   state.direction = {
     isLeftTop: state.endY - state.startY <= 0 && state.endX - state.startX < 0,
     isRightTop: state.endY - state.startY <= 0 && state.endX - state.startX > 0,

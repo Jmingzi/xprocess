@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { watchEffect, ref, inject, computed } from 'vue'
-import { state as editorState } from '../editor/state'
+import { state as editorState, isMultiSelect } from '../editor/state'
 import { SvgType, SVG_TYPE } from '../svg-type/base'
 import { useDrag } from '../../hooks/use-drag'
 import {
@@ -24,7 +24,10 @@ const refDotEl = ref<HTMLElement | null>()
 const refSizeEls = ref<Array<HTMLElement>>([])
 const refSizeEl = ref<HTMLElement | null>()
 const hasOperation = computed(() => type !== SVG_TYPE.LINE)
-const isActive = computed(() => editorState?.currentNode?.id === nodeId)
+const isActive = computed(() =>
+  editorState?.currentNode?.id === nodeId ||
+  editorState.selectedNodes.some(x => x.id === nodeId)
+)
 
 const onOperationDotMouseDown = (e: MouseEvent, i: number, edgeString: Edge) => {
   handleOperationDotMouseDown(e, nodeId!, edgeString, e => {
@@ -65,7 +68,7 @@ watchEffect(() => {
   <div
     class="xprocess__drop-wrap"
     :class="{
-      active: isActive,
+      active: isActive && !isMultiSelect,
       [type]: true
     }"
   >
@@ -82,7 +85,7 @@ watchEffect(() => {
     </template>
     <template v-for="(dir, i) in sizeDot">
       <div
-        v-if="hasOperation && isActive"
+        v-if="hasOperation && isActive && !isMultiSelect"
         class="xprocess__drop-wrap-size"
         :class="dir"
         ref="refSizeEls"

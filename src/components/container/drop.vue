@@ -10,6 +10,7 @@ import {
   isMovable,
   isNodeLine,
   getDirection,
+  selectNode,
   DEFAULT_FONT,
   XProcessNode,
   NodeLine
@@ -77,7 +78,9 @@ const position = computed(() => {
 
 const onMouseDown = (e: MouseEvent) => {
   if (isMovable(props.id)) {
+    const hasMetaKey = e.metaKey
     handleMouseDown(e)
+    selectNode(props.id, hasMetaKey)
     setCurrentNode(props.id)
     setCurrentLine()
     isStartInCanvas.value = inCanvas(e)
@@ -138,7 +141,7 @@ onMounted(() => {
     </div>
     <XText />
     <Operation />
-    <ResizeInfo v-if="!isNodeLine(id) && id === editorState.currentNode?.id" />
+    <ResizeInfo />
   </div>
 </template>
 

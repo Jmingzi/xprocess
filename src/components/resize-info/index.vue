@@ -1,13 +1,17 @@
 <script lang="ts" setup>
-import { state as editorState } from '../editor/state'
-import { computed } from 'vue'
+import { state as editorState, isNodeLine, isMultiSelect } from '../editor/state'
+import { computed, inject } from 'vue'
 
+const nodeId = inject('nodeId')
 const width = computed(() => editorState.currentNode ? Math.abs(editorState.currentNode.start[0] - editorState.currentNode.end[0]) : 0)
 const height = computed(() => editorState.currentNode ? Math.abs(editorState.currentNode.start[1] - editorState.currentNode.end[1]) : 0)
 </script>
 
 <template>
-  <div class="xprocess-resize-info">
+  <div
+    v-if="!isNodeLine(nodeId) && nodeId === editorState.currentNode?.id && !isMultiSelect"
+    class="xprocess-resize-info"
+  >
     宽: {{ width }} 高: {{ height }}
   </div>
 </template>

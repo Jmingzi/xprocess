@@ -2,48 +2,49 @@
 import { state as editorState, getDirection } from '../editor/state'
 import SvgType from '../svg-type/index.vue'
 import { useCanvas } from '../container/canvas/use-canvas'
-import { IEventHandlerData } from '../../hooks/use-drag'
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watchEffect, nextTick } from 'vue'
+import { lineUpActionPanelData, handleCreateToNode } from './state'
 
-const props = defineProps<{
-  position: {
-    x: number,
-    y: number,
-    mouseData: IEventHandlerData
-  }
-}>()
-const emit = defineEmits(['click'])
 const refEl = ref<HTMLElement>()
 const elRect = ref()
 
 const { rect: canvasRect } = useCanvas()
 const style = computed(() => {
-  const { startX, startY, endX, endY } = props.position.mouseData
+  if (!lineUpActionPanelData.value) {
+    return
+  }
+  const { mouseData, x, y } = lineUpActionPanelData.value
+  const { startX, startY, endX, endY } = mouseData
   const { isLeftTop, isLeftBottom, isRightBottom, isRightTop } = getDirection([startX, startY], [endX, endY])
   const deltaX = isLeftTop || isLeftBottom ? elRect.value?.width ?? 0 : 0
   return {
-    left: `${props.position.x - canvasRect!.value!.left - deltaX}px`,
-    top: `${props.position.y - canvasRect!.value!.top}px`
+    left: `${x - canvasRect!.value!.left - deltaX}px`,
+    top: `${y - canvasRect!.value!.top}px`
   }
 })
 
-onMounted(() => {
-  elRect.value = refEl.value!.getBoundingClientRect()
+watchEffect(() => {
+  if (refEl.value) {
+    nextTick(() => {
+      elRect.value = refEl.value!.getBoundingClientRect()
+    })
+  }
 })
 </script>
 
 <template>
   <div
+    v-if="!!lineUpActionPanelData"
     ref="refEl"
     class="xprocess__over-panel"
     :style="style"
     @click.stop=""
   >
-    <div v-for="item in editorState.localComponentList">
-      <SvgType
-        v-bind="item"
-        @click="emit('click', item)"
-      />
+    <div
+      v-for="item in editorState.localComponentList"
+      @click="handleCreateToNode(item)"
+    >
+      <SvgType v-bind="item" />
     </div>
   </div>
 </template>

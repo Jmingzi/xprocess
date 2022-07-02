@@ -15,7 +15,7 @@ import {
   deleteNode,
   deleteLine,
   DEFAULT_FONT,
-  copyAndCreateNode
+  copyAndCreateNode, moveNodeLines
 } from '../editor/state'
 import { DEFAULT_PROPS, SVG_TYPE } from '../svg-type/base'
 import { IEventHandlerData } from '../../hooks/use-drag'
@@ -253,6 +253,8 @@ document.body.addEventListener('click', (e: MouseEvent) => {
     return
   }
   // console.log('canvas click')
+  // 置空多选
+  // editorState.selectedNodes = []
   const line = currentLine.value
   // line.toNode.nodeId 默认是 0
   if (line && line.toNode.nodeId === 0) {
@@ -314,11 +316,11 @@ export const handleOperationDotMouseUp = (data: IEventHandlerData) => {
  */
 export const handleCreateToNode = (item: LocalListItem) => {
   const line = currentLine.value
-  if (line) {
+  if (line && lineUpActionPanelData.value) {
     const localItemDefaultWidth = item.end[0] - item.start[0]
     const localItemDefaultHeight = item.end[1] - item.start[1]
     const fromEdge = line.fromNode.edge
-    const { x, y } = lineUpActionPanelData.value!
+    const { x, y } = lineUpActionPanelData.value
     let toEdge: Edge = 'left'
     let ratioX: number = 0
     let ratioY: number = 0
@@ -398,19 +400,20 @@ export const handleOperationSizeMouseMove = (evData: IEventHandlerData) => {
     ]
   }
 
-  const nodeWidth = Math.abs(currentNode.end[0] - currentNode.start[0])
-  const nodeHeight = Math.abs(currentNode.end[1] - currentNode.start[1])
+  moveNodeLines(currentNode)
+  // const nodeWidth = Math.abs(currentNode.end[0] - currentNode.start[0])
+  // const nodeHeight = Math.abs(currentNode.end[1] - currentNode.start[1])
   // 移动线条
-  currentNode.fromLines.forEach(line => {
-    line.start = [
-      currentNode.start[0] + line.fromNode.ratioX * nodeWidth,
-      currentNode.start[1] + line.fromNode.ratioY * nodeHeight
-    ]
-  })
-  currentNode.toLines.forEach(line => {
-    line.end = [
-      currentNode.start[0] + line.toNode.ratioX * nodeWidth,
-      currentNode.start[1] + line.toNode.ratioY * nodeHeight
-    ]
-  })
+  // currentNode.fromLines.forEach(line => {
+  //   line.start = [
+  //     currentNode.start[0] + line.fromNode.ratioX * nodeWidth,
+  //     currentNode.start[1] + line.fromNode.ratioY * nodeHeight
+  //   ]
+  // })
+  // currentNode.toLines.forEach(line => {
+  //   line.end = [
+  //     currentNode.start[0] + line.toNode.ratioX * nodeWidth,
+  //     currentNode.start[1] + line.toNode.ratioY * nodeHeight
+  //   ]
+  // })
 }
