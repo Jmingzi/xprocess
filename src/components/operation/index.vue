@@ -26,7 +26,7 @@ const refSizeEl = ref<HTMLElement | null>()
 const hasOperation = computed(() => type !== SVG_TYPE.LINE)
 const isActive = computed(() =>
   editorState?.currentNode?.id === nodeId ||
-  editorState.selectedNodes.some(x => x.id === nodeId)
+  (isMultiSelect.value && editorState.selectedNodes.some(x => x.id === nodeId))
 )
 
 const onOperationDotMouseDown = (e: MouseEvent, i: number, edgeString: Edge) => {

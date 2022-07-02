@@ -241,20 +241,29 @@ export const handleOperationDotMouseMove = (evData: IEventHandlerData) => {
 /**
  * 控制线条末端的 action
  */
-let isAfterMoving = false
+export const isPreventClickListener = ref(false)
+export function preventCanvasClick (ok: boolean = true) {
+  isPreventClickListener.value = ok
+}
+export function preventCanvasClickToggle () {
+  preventCanvasClick()
+  setTimeout(() => {
+    preventCanvasClick(false)
+  }, 300)
+}
 const isCanvasClick = (e: MouseEvent) => (e as MouseEvent & { path: HTMLElement[] }).path.some(el => el?.classList?.contains('xprocess-canvas'))
 document.body.addEventListener('click', (e: MouseEvent) => {
   if (!isCanvasClick(e)) {
     // 只处理画布上的点击事件
     return
   }
-  if (isAfterMoving) {
-    isAfterMoving = false
+  if (isPreventClickListener.value) {
+    preventCanvasClick(false)
     return
   }
   // console.log('canvas click')
   // 置空多选
-  // editorState.selectedNodes = []
+  editorState.selectedNodes = []
   const line = currentLine.value
   // line.toNode.nodeId 默认是 0
   if (line && line.toNode.nodeId === 0) {
@@ -297,7 +306,7 @@ document.body.addEventListener('keydown', (e: KeyboardEvent) => {
 export const handleOperationDotMouseUp = (data: IEventHandlerData) => {
   // 标记是鼠标移动后
   // 而不是单纯的点击事件
-  isAfterMoving = Math.abs(data.endX - data.startX) > 5 || Math.abs(data.endY - data.startY) > 5
+  preventCanvasClick(Math.abs(data.endX - data.startX) > 5 || Math.abs(data.endY - data.startY) > 5)
   const line = currentLine.value!
   if (line.toNode.nodeId > 0) {
     // 目标节点已自动吸附

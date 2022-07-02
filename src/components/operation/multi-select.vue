@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { state as editorState, isMultiSelect, XProcessNode, moveSelectNodes } from '../editor/state'
+import {
+  state as editorState,
+  isMultiSelect,
+  XProcessNode,
+  handleMultiNodesMove,
+  handleMultiNodesUp
+} from '../editor/state'
 import { computed, ref, watchEffect, nextTick } from 'vue'
 import { useDrag } from '../../hooks/use-drag'
 
@@ -49,7 +55,13 @@ watchEffect(() => {
     nextTick(() => {
       registerCallback('mousemove', {
         handler: (data) => {
-          moveSelectNodes(copySelectedNodes, [data.deltaX, data.deltaY])
+          handleMultiNodesMove(copySelectedNodes, [data.deltaX, data.deltaY])
+        },
+        draggedWrapperEl: refEl.value
+      })
+      registerCallback('mouseup', {
+        handler: (data) => {
+          handleMultiNodesUp()
         },
         draggedWrapperEl: refEl.value
       })

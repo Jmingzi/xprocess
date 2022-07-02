@@ -9,7 +9,7 @@ import {
   DEFAULT_SIZE,
   IPropsPolygon, IPropsText
 } from '../svg-type/base'
-import { Edge, setCurrentLine } from '../operation/state'
+import { Edge, setCurrentLine, preventCanvasClickToggle } from '../operation/state'
 import { useCanvas } from '../container/canvas/use-canvas'
 
 const { rect: canvasRect } = useCanvas()
@@ -188,6 +188,8 @@ export function onDrop (data: IEventHandlerData, node: LocalListItem) {
     // 隐藏字体图标
     t.status = 1
   }
+  // 置空多选
+  state.selectedNodes = []
   state.nodes.push(newItem)
   setCurrentNode(newItem.id)
   return newItem
@@ -207,19 +209,6 @@ export function onMoving (data: IEventHandlerData, item: XProcessNode) {
   getReferenceLine(node)
   // 移动所有的线条
   moveNodeLines(node)
-  // node.fromLines.forEach(line => {
-  //   // 修改线条的起点坐标
-  //   line.start = [
-  //     node.start[0] + line.fromNode.ratioX * width,
-  //     node.start[1] + line.fromNode.ratioY * height
-  //   ]
-  // })
-  // node.toLines.forEach(line => {
-  //   line.end = [
-  //     node.start[0] + line.toNode.ratioX * width,
-  //     node.start[1] + line.toNode.ratioY * height
-  //   ]
-  // })
 }
 
 export function moveNodeLines (node: XProcessNode) {
@@ -417,20 +406,32 @@ export function copyAndCreateNode (node: XProcessNode) {
   setCurrentNode(newItem.id)
 }
 
-export const isMultiSelect = computed(() => state.selectedNodes.length > 1)
+export const isMultiSelect = computed(() =>
+  state.currentNode &&
+  state.selectedNodes.length > 1 &&
+  state.selectedNodes.some(x => x.id === state.currentNode!.id)
+)
 export function selectNode (id: number, metaKey: boolean) {
   const node = state.nodes.find(x => x.id === id)!
   if (metaKey) {
-    if (state.currentNode && state.selectedNodes.every(x => x.id !== state.currentNode!.id)) {
-      state.selectedNodes.push(state.currentNode)
+    const existIndex = state.selectedNodes.findIndex(x => x.id === id)
+    if (existIndex > -1) {
+      state.selectedNodes.splice(existIndex, 1)
+    } else {
+      if (state.currentNode && state.selectedNodes.every(x => x.id !== state.currentNode!.id)) {
+        state.selectedNodes.push(state.currentNode)
+      }
+      state.selectedNodes.push(node)
     }
-    state.selectedNodes.push(node)
   } else {
     state.selectedNodes = [node]
   }
+  // 在点击多选时，也会触发 click 事件
+  // 需要阻止
+  preventCanvasClickToggle()
 }
 
-export function moveSelectNodes (copySelectedNodes: XProcessNode[], delta: number[]) {
+export function handleMultiNodesMove (copySelectedNodes: XProcessNode[], delta: number[]) {
   const alterNodePoint = (originNodePoint: number[], copyNodePoint: number[]) => {
     originNodePoint[0] = copyNodePoint[0] + delta[0]
     originNodePoint[1] = copyNodePoint[1] + delta[1]
@@ -443,4 +444,8 @@ export function moveSelectNodes (copySelectedNodes: XProcessNode[], delta: numbe
       moveNodeLines(originNode)
     }
   })
+}
+
+export function handleMultiNodesUp () {
+  preventCanvasClickToggle()
 }
