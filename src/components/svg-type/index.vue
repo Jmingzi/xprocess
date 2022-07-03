@@ -13,13 +13,14 @@ import PolygonArrowBottom from './polygon-arrow-bottom.vue'
 import Text from './text.vue'
 
 export default function SvgType (props: ISvgType & { type: SvgType }) {
-  const { strokeWidth, start, end } = props
+  const { strokeWidth, start, end, type } = props
   const width = Math.abs(start[0] - end[0])
   const height = Math.abs(start[1] - end[1])
   return h(Wrapper, {
     width,
     height,
-    strokeWidth
+    strokeWidth,
+    type
   }, {
     default: () => {
       switch (props.type) {

@@ -7,7 +7,8 @@ import {
   SVG_TYPE,
   IPropsCircle,
   DEFAULT_SIZE,
-  IPropsPolygon, IPropsText
+  IPropsPolygon,
+  IPropsText
 } from '../svg-type/base'
 import { Edge, setCurrentLine, preventCanvasClickToggle } from '../operation/state'
 import { useCanvas } from '../container/canvas/use-canvas'
@@ -37,16 +38,8 @@ export type IFont = {
   horizontalAlign: 'left' | 'center' | 'right'
 }
 
-type NodeLineAttach = {
-  nodeId: number,
-  edge: 'top' | 'right' | 'bottom' | 'left'
-  ratioX: number
-  ratioY: number
-}
 export type NodeLine = IPropsLine & {
   id: number
-  fromNode: NodeLineAttach
-  toNode: NodeLineAttach
   font?: IFont
   fontEditable?: boolean
   zIndex: number

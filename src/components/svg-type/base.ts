@@ -1,17 +1,26 @@
 import { paramCase } from 'change-case'
+import {Edge} from "../operation/state";
 
 export type SvgBase = {
   type: SvgType
-  strokeWidth?: number;
-  stroke?: string;
-  fill?: string;
-  start: number[];
-  end: number[];
+  strokeWidth?: number
+  stroke?: string
+  fill?: string
+  start: number[]
+  end: number[]
+}
+export type NodeLineAttach = {
+  nodeId: number,
+  edge: Edge
+  ratioX: number
+  ratioY: number
 }
 export type IPropsLine = SvgBase & {
-  lineType: 'line' | 'path'
-  controlStart?: number[];
-  controlEnd?: number[];
+  lineType: 'line' | 'path' | 'polyline'
+  fromNode: NodeLineAttach
+  toNode: NodeLineAttach
+  // controlStart?: number[]
+  // controlEnd?: number[]
 }
 export type IPropsRect = SvgBase & {
   round: number

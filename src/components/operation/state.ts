@@ -71,7 +71,7 @@ export const handleOperationDotMouseDown = (
     type: SVG_TYPE.CURVE,
     start: [x, y],
     end: [x, y],
-    lineType: 'line',
+    lineType: 'polyline',
     fromNode: {
       nodeId,
       edge: edgeString,
@@ -130,7 +130,9 @@ export const handleOperationDotMouseMove = (evData: IEventHandlerData) => {
       /^\d+$/.test(x.id) &&
       x.id !== String(line.id) &&
       x.id !== String(line.fromNode.nodeId) &&
-      x.tagName.toLowerCase() !== 'line'
+      // x.tagName.toLowerCase() !== 'line'
+      // 线条有这个属性，需要排出
+      !x.getAttribute('line-type')
     )
   if (els.length) {
     // 计算处于节点的哪个象限，决定属于哪条边界
@@ -345,33 +347,61 @@ export const handleCreateToNode = (item: LocalListItem) => {
     const localItemDefaultWidth = item.end[0] - item.start[0]
     const localItemDefaultHeight = item.end[1] - item.start[1]
     const fromEdge = line.fromNode.edge
-    const { x, y } = lineUpActionPanelData.value
+    const { x, y, mouseData } = lineUpActionPanelData.value
+    const { direction: mouseDirection } = mouseData
     let toEdge: Edge = 'left'
     let ratioX: number = 0
     let ratioY: number = 0
-    const nodeStart = []
+    const nodeStart: number[] = []
     const { isRight, isBottom, isLeft, isTop } = getEdge(fromEdge)
-    if (isRight) {
+    const lineWidth = Math.abs(line.start[0] - line.end[0])
+    const lineHeight = Math.abs(line.start[1] - line.end[1])
+    const toLeft = () => {
       toEdge = 'left'
       nodeStart.push(x, y - localItemDefaultHeight / 2)
       ratioX = 0
       ratioY = 0.5
-    } else if (isBottom) {
+    }
+    const toTop = () => {
       toEdge = 'top'
       nodeStart.push(x - localItemDefaultWidth / 2, y)
       ratioX = 0.5
       ratioY = 0
-    } else if (isLeft) {
+    }
+    const toRight = () => {
       toEdge = 'right'
       nodeStart.push(x - localItemDefaultWidth, y - localItemDefaultHeight / 2)
       ratioX = 1
       ratioY = 0.5
-    } else if (isTop) {
+    }
+    const toBottom = () => {
       toEdge = 'bottom'
       nodeStart.push(x - localItemDefaultWidth / 2, y - localItemDefaultHeight)
       ratioX = 0.5
       ratioY = 1
     }
+    if (isRight || isLeft) {
+      // 水平方向
+      if (lineWidth > lineHeight) {
+        // 宽大于高
+        isRight ? toLeft() : toRight()
+      } else if (mouseDirection.isLeftBottom || mouseDirection.isRightBottom) {
+        // 向下
+        toTop()
+      } else {
+        toBottom()
+      }
+    } else if (isBottom || isTop) {
+      // 垂直方向
+      if (lineWidth < lineHeight) {
+        isBottom ? toTop() : toBottom()
+      } else if (mouseDirection.isRightBottom || mouseDirection.isRightTop) {
+        toLeft()
+      } else {
+        toRight()
+      }
+    }
+
     const toNode = onDrop({ endTopLeftX: nodeStart[0], endTopLeftY: nodeStart[1] } as IEventHandlerData, item)
     toNode.toLines.push(line)
     line.toNode = {
