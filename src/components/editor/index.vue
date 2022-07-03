@@ -29,6 +29,8 @@ const { Layout } = useLayout()
     </template>
     <template #content>
       <XCanvas>
+        <LineActionPanel />
+        <MultiSelect />
         <XDrop
           v-for="item in state.nodes"
           v-bind="item"
@@ -43,8 +45,6 @@ const { Layout } = useLayout()
         >
           <SvgType v-bind="item" type="line" />
         </XDrop>
-        <LineActionPanel />
-        <MultiSelect />
       </XCanvas>
     </template>
   </Layout>

@@ -238,6 +238,18 @@ export const handleOperationDotMouseMove = (evData: IEventHandlerData) => {
   }
 }
 
+function removeCreatedLine () {
+  const line = currentLine.value
+  lineUpActionPanelData.value = null
+  // 撤销创建的线条
+  const index = editorState.currentNode?.fromLines.findIndex(x => x.id === line?.id) ?? -1
+  if (index > -1) {
+    editorState.currentNode?.fromLines.splice(index, 1)
+  }
+  editorState.lines.splice(editorState.lines.findIndex(x => x.id === line?.id), 1)
+  currentLine.value = undefined
+}
+
 /**
  * 控制线条末端的 action
  */
@@ -261,20 +273,13 @@ document.body.addEventListener('click', (e: MouseEvent) => {
     preventCanvasClick(false)
     return
   }
-  // console.log('canvas click')
+  console.log('canvas click')
   // 置空多选
   editorState.selectedNodes = []
   const line = currentLine.value
   // line.toNode.nodeId 默认是 0
   if (line && line.toNode.nodeId === 0) {
-    lineUpActionPanelData.value = null
-    // 撤销创建的线条
-    const index = editorState.currentNode?.fromLines.findIndex(x => x.id === line.id) ?? -1
-    if (index > -1) {
-      editorState.currentNode?.fromLines.splice(index, 1)
-    }
-    editorState.lines.splice(editorState.lines.findIndex(x => x.id === line.id), 1)
-    currentLine.value = undefined
+    removeCreatedLine()
   } else {
     setCurrentNode()
   }
@@ -304,6 +309,11 @@ document.body.addEventListener('keydown', (e: KeyboardEvent) => {
 })
 
 export const handleOperationDotMouseUp = (data: IEventHandlerData) => {
+  // 移动距离大于 10 才触发
+  if (Math.abs(data.deltaX) < 10 && Math.abs(data.deltaY) < 10) {
+    removeCreatedLine()
+    return
+  }
   // 标记是鼠标移动后
   // 而不是单纯的点击事件
   preventCanvasClick(Math.abs(data.endX - data.startX) > 5 || Math.abs(data.endY - data.startY) > 5)
@@ -410,19 +420,4 @@ export const handleOperationSizeMouseMove = (evData: IEventHandlerData) => {
   }
 
   moveNodeLines(currentNode)
-  // const nodeWidth = Math.abs(currentNode.end[0] - currentNode.start[0])
-  // const nodeHeight = Math.abs(currentNode.end[1] - currentNode.start[1])
-  // 移动线条
-  // currentNode.fromLines.forEach(line => {
-  //   line.start = [
-  //     currentNode.start[0] + line.fromNode.ratioX * nodeWidth,
-  //     currentNode.start[1] + line.fromNode.ratioY * nodeHeight
-  //   ]
-  // })
-  // currentNode.toLines.forEach(line => {
-  //   line.end = [
-  //     currentNode.start[0] + line.toNode.ratioX * nodeWidth,
-  //     currentNode.start[1] + line.toNode.ratioY * nodeHeight
-  //   ]
-  // })
 }

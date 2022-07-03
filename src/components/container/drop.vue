@@ -80,8 +80,8 @@ const onMouseDown = (e: MouseEvent) => {
   if (isMovable(props.id)) {
     const hasMetaKey = e.metaKey
     handleMouseDown(e)
-    selectNode(props.id, hasMetaKey)
-    setCurrentNode(props.id)
+    const nextCurrentNodeId = selectNode(props.id, hasMetaKey)
+    setCurrentNode(nextCurrentNodeId)
     setCurrentLine()
     isStartInCanvas.value = inCanvas(e)
   } else if (isNodeLine(props.id)) {

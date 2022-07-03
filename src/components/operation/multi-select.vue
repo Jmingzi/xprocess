@@ -83,7 +83,7 @@ watchEffect(() => {
 <style lang="less">
 .multi-select {
   position: absolute;
-  z-index: 9999;
+  z-index: 0;
   border: 1px #3b8ff6 solid;
   cursor: move;
 }

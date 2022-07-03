@@ -413,10 +413,14 @@ export const isMultiSelect = computed(() =>
 )
 export function selectNode (id: number, metaKey: boolean) {
   const node = state.nodes.find(x => x.id === id)!
+  // 取消多选时，需要重新设置当前节点
+  let nextCurrentNodeId = id
   if (metaKey) {
     const existIndex = state.selectedNodes.findIndex(x => x.id === id)
     if (existIndex > -1) {
+      // 取消多选
       state.selectedNodes.splice(existIndex, 1)
+      nextCurrentNodeId = state.selectedNodes[0].id
     } else {
       if (state.currentNode && state.selectedNodes.every(x => x.id !== state.currentNode!.id)) {
         state.selectedNodes.push(state.currentNode)
@@ -429,6 +433,7 @@ export function selectNode (id: number, metaKey: boolean) {
   // 在点击多选时，也会触发 click 事件
   // 需要阻止
   preventCanvasClickToggle()
+  return nextCurrentNodeId
 }
 
 export function handleMultiNodesMove (copySelectedNodes: XProcessNode[], delta: number[]) {

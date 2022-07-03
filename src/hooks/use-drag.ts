@@ -96,6 +96,10 @@ function onMouseUp (e: MouseEvent) {
   state.dragging = false
   state.moving = false
   runEvent('mouseup', e, null)
+  state.deltaX = 0
+  state.deltaY = 0
+  state.endTopLeftX = 0
+  state.endTopLeftY = 0
 }
 
 export function useDrag () {
