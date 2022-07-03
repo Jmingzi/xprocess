@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, reactive, provide } from 'vue'
+import logo from './logo.png'
 
 const el = ref()
 const state = reactive({
@@ -24,8 +25,8 @@ onMounted(() => {
 <template>
   <div class="xprocess__header">
     <div class="xprocess__header-title">
-      <img src="//fe.shinemo.com/logo.png" align="center" width="35">
-      <span>XProcess</span>
+      <img :src="logo" align="center" width="35">
+      <span>xprocess</span>
     </div>
   </div>
   <div class="xprocess__header-tools">
