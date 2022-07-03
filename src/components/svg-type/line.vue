@@ -58,12 +58,12 @@ export default function Line (props: IPropsLine) {
       markerUnits: 'strokeWidth',
       markerWidth: 10,
       markerHeight: 10,
-      refX: 8,
+      refX: 9,
       refY: 6,
       orient: 'auto'
     }, [
       h('path', {
-        d: 'M3,3 L3,10 L8,6 L3,3',
+        d: 'M0,3 L0,9 L10,6 L0,3',
         style: `fill: ${props.stroke}`
       })
     ]),
