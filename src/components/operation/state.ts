@@ -10,8 +10,8 @@ import {
   onDrop,
   setCurrentNode,
   getPointFromCanvas,
-  getPointFromCanvasX,
-  getPointFromCanvasY,
+  // getPointFromCanvasX,
+  // getPointFromCanvasY,
   deleteNode,
   deleteLine,
   // DEFAULT_FONT,
@@ -41,23 +41,29 @@ export const handleOperationDotMouseDown = (
   callback: (e: MouseEvent) => void
 ) => {
   callback(e)
-  const node = editorState.nodes.find(x => x.id === nodeId) as NodeRect
+  const node = editorState.nodes.find(x => x.id === nodeId)!
   const { isTop, isBottom, isLeft, isRight } = getEdge(edgeString)
+  const width = Math.abs(node.start[0] - node.end[0])
+  const height = Math.abs(node.start[1] - node.end[1])
   // 创建线条
-  let x = getPointFromCanvasX(e.clientX)
-  let y = getPointFromCanvasY(e.clientY)
-  // 距离图形左上角点的距离比例
+  let x = 0
+  let y = 0
+  // 距离图形左上角点的宽高比例
   let ratioX = 1
   let ratioY = 1
   // 自动吸附节点边界
   if (isTop || isBottom) {
+    x = node.start[0] + width / 2
     y = isTop ? node.start[1] : node.end[1]
-    ratioX = (x - node.start[0]) / (node.end[0] - node.start[0])
+    // ratioX = (x - node.start[0]) / width
+    ratioX = 0.5
     ratioY = isTop ? 0 : 1
   } else {
     x = isLeft ? node.start[0] : node.end[0]
+    y = node.start[1] + height / 2
     ratioX = isLeft ? 0 : 1
-    ratioY = (y - node.start[1]) / (node.end[1] - node.start[1])
+    // ratioY = (y - node.start[1]) / height
+    ratioY = 0.5
   }
   currentLine.value = {
     ...createItem(),
@@ -273,7 +279,7 @@ document.body.addEventListener('click', (e: MouseEvent) => {
     preventCanvasClick(false)
     return
   }
-  console.log('canvas click')
+  // console.log('canvas click')
   // 置空多选
   editorState.selectedNodes = []
   const line = currentLine.value

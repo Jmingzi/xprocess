@@ -19,7 +19,8 @@ const style = computed(() => {
   const deltaX = isLeftTop || isLeftBottom ? elRect.value?.width ?? 0 : 0
   return {
     left: `${x - canvasRect!.value!.left - deltaX}px`,
-    top: `${y - canvasRect!.value!.top}px`
+    top: `${y - canvasRect!.value!.top}px`,
+    zIndex: editorState.nodes.length + editorState.lines.length + 1
   }
 })
 
