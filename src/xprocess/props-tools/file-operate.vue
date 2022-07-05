@@ -3,7 +3,10 @@ import iconSave from './icon-system/save.png'
 import iconShare from './icon-system/share.png'
 // import iconLock from './icon-system/lock.png'
 // import iconUnlock from './icon-system/unlock.png'
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
+import { IConfig } from '../'
+import { getStateRaw } from '../editor/state'
+const config = inject<IConfig>('config')
 
 const lock = ref(false)
 const onLock = () => {
@@ -11,6 +14,12 @@ const onLock = () => {
 }
 const onUnlock = () => {
   lock.value = false
+}
+const onShare = () => {
+  config && config.api.share(getStateRaw())
+}
+const onSave = () => {
+  config && config.api.save(getStateRaw())
 }
 </script>
 
@@ -35,11 +44,11 @@ const onUnlock = () => {
 <!--      <img :src="iconUnlock">-->
 <!--      <span>分享公开</span>-->
 <!--    </div>-->
-    <div class="file-operate__item" title="分享文件">
+    <div class="file-operate__item" title="分享文件" @click="onShare">
       <img :src="iconShare">
       <span>分享</span>
     </div>
-    <div class="file-operate__item" title="保存文件">
+    <div class="file-operate__item" title="保存文件" @click="onSave">
       <img :src="iconSave">
       <span>保存</span>
     </div>

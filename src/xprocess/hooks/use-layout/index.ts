@@ -4,9 +4,14 @@ import { h, SetupContext } from 'vue'
 export function useLayout () {
   return {
     Layout: {
+      props: {
+        mode: String
+      },
       setup (props: unknown, context: SetupContext) {
+        // console.log(props)
         return () => {
-          return h(Index, null, context.slots)
+          // @ts-ignore
+          return h(Index, props, context.slots)
         }
       }
     }

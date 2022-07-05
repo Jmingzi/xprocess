@@ -7,7 +7,7 @@ import {
   handleMultiNodesUp
 } from '../editor/state'
 import { computed, ref, watchEffect, nextTick } from 'vue'
-import { useDrag } from '../../hooks/use-drag'
+import { useDrag } from '../hooks/use-drag'
 
 const { onMouseDown, registerCallback } = useDrag()
 const refEl = ref()

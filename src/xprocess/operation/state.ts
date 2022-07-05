@@ -18,7 +18,7 @@ import {
   copyAndCreateNode, moveNodeLines
 } from '../editor/state'
 import { DEFAULT_PROPS, SVG_TYPE } from '../svg-type/base'
-import { IEventHandlerData } from '../../hooks/use-drag'
+import { IEventHandlerData } from '../hooks/use-drag'
 
 export type Edge = 'top' | 'right' | 'bottom' | 'left'
 export type DirectionString = 'leftTop' | 'rightTop' | 'rightBottom' | 'leftBottom'

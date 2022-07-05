@@ -2,7 +2,7 @@
 import { watchEffect, ref, inject, computed } from 'vue'
 import { state as editorState, isMultiSelect } from '../editor/state'
 import { SvgType, SVG_TYPE } from '../svg-type/base'
-import { useDrag } from '../../hooks/use-drag'
+import { useDrag } from '../hooks/use-drag'
 import {
   handleOperationDotMouseDown,
   handleOperationDotMouseMove,

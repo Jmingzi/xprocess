@@ -1,7 +1,3 @@
-<script setup>
-import Editor from './components/editor/index.vue'
-</script>
-
 <template>
-  <editor />
+  <router-view></router-view>
 </template>

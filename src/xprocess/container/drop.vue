@@ -2,7 +2,7 @@
 import { ref, onMounted, provide, computed } from 'vue'
 import Operation from '../operation/index.vue'
 import { useCanvas } from './canvas/use-canvas'
-import { useDrag, IEventHandler } from '../../hooks/use-drag'
+import { useDrag, IEventHandler } from '../hooks/use-drag'
 import { setCurrentLine, currentLine } from '../operation/state'
 import {
   state as editorState,

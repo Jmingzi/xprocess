@@ -1,7 +1,7 @@
 import { h, reactive, SetupContext, toRefs, watchEffect, inject } from 'vue'
 import Canvas from './index.vue'
 import Moving from './moving-item.vue'
-import { useDrag } from '../../../hooks/use-drag'
+import { useDrag } from '../../hooks/use-drag'
 
 type IRect = {
   width: number

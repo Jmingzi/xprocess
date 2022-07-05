@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useDrag, IEventHandler } from '../../hooks/use-drag'
+import { useDrag, IEventHandler } from '../hooks/use-drag'
 import { useCanvas } from './canvas/use-canvas'
 import { getPointFromCanvas, getReferenceLine, state as editorState, NodeRect } from '../editor/state'
 import { SvgType } from '../svg-type/base'

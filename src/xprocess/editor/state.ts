@@ -1,5 +1,5 @@
-import { computed, reactive } from 'vue'
-import { IEventHandlerData } from '../../hooks/use-drag'
+import { computed, reactive, toRaw } from 'vue'
+import { IEventHandlerData } from '../hooks/use-drag'
 import {
   DEFAULT_PROPS,
   IPropsRect,
@@ -74,7 +74,8 @@ type ReferenceLine = {
   distance?: number
 }
 
-type State = {
+export type State = {
+  filename: string
   currentNode?: XProcessNode
   localComponentList: LocalListItem[]
   nodes: XProcessNode[]
@@ -84,6 +85,7 @@ type State = {
 }
 
 export const state = reactive<State>({
+  filename: '',
   currentNode: undefined,
   referenceLines: [],
   selectedNodes: [],
@@ -141,6 +143,19 @@ export const state = reactive<State>({
   nodes: [],
   lines: []
 })
+
+export function initState (data: Pick<State, 'nodes' | 'lines' | 'filename'>) {
+  state.referenceLines = []
+  state.selectedNodes = []
+  state.currentNode = undefined
+  state.nodes = data.nodes
+  state.lines = data.lines
+  state.filename = data.filename
+}
+
+export function getStateRaw () {
+  return toRaw(state)
+}
 
 export function createItem () {
   return {

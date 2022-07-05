@@ -2,7 +2,7 @@
 import SvgType from '../svg-type/index.vue'
 import { Canvas as XCanvas, Drop as XDrop } from '../container'
 import { state, onMoving } from './state'
-import { useLayout } from '../../hooks/use-layout'
+import { useLayout } from '../hooks/use-layout'
 import LineActionPanel from '../operation/action-panel.vue'
 import TextPropsTools from '../props-tools/text-tool.vue'
 import SvgPropsTools from '../props-tools/svg-tool.vue'
@@ -15,7 +15,7 @@ const { Layout } = useLayout()
 </script>
 
 <template>
-  <Layout>
+  <Layout mode="editor">
     <template #tools>
       <Filename />
       <TextPropsTools />

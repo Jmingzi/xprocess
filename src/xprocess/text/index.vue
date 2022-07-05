@@ -107,6 +107,7 @@ watchEffect(() => {
     :contenteditable="node?.fontEditable"
     :style="style"
     @keyup.stop=""
+    @keydown.stop=""
     ref="refEl"
     @input="handleInput"
     @blur="handleBlur"

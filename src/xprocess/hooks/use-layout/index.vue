@@ -1,6 +1,14 @@
 <script setup lang="ts">
-import { onMounted, ref, reactive, provide } from 'vue'
+import { onMounted, ref, reactive, provide, withDefaults, computed } from 'vue'
 import logo from './logo.png'
+
+const props = withDefaults(defineProps<{
+  mode?: 'normal' | 'editor'
+}>(), {
+  mode: 'normal'
+})
+const isNormal = props.mode === 'normal'
+const isEditor = props.mode === 'editor'
 
 const el = ref()
 const state = reactive({
@@ -12,13 +20,14 @@ const handleScroll = () => {
   state.scrollTop = box.scrollTop
   state.scrollLeft = box.scrollLeft
 }
-
 provide('layout', state)
 
 onMounted(() => {
-  const box = el.value!
-  box.scrollTop = state.scrollTop
-  box.scrollLeft = state.scrollLeft
+  const box = el.value
+  if (box) {
+    box.scrollTop = state.scrollTop
+    box.scrollLeft = state.scrollLeft
+  }
 })
 </script>
 
@@ -29,7 +38,7 @@ onMounted(() => {
       <span>xprocess</span>
     </div>
   </div>
-  <div class="xprocess__header-tools">
+  <div v-if="isEditor" class="xprocess__header-tools">
     <div>
       <slot name="tools" />
     </div>
@@ -37,7 +46,7 @@ onMounted(() => {
       <slot name="tools-right" />
     </div>
   </div>
-  <div class="xprocess__header-next">
+  <div v-if="isEditor" class="xprocess__header-next">
     <div class="xprocess__sidebar">
       <slot name="left" />
     </div>
@@ -48,6 +57,9 @@ onMounted(() => {
     >
       <slot name="content" />
     </div>
+  </div>
+  <div v-if="isNormal" class="xprocess__normal-content">
+    <slot name="content" />
   </div>
 </template>
 
@@ -74,6 +86,12 @@ onMounted(() => {
         margin-left: 15px;
       }
     }
+  }
+  &__normal-content {
+    width: 1000px;
+    height: calc(100vh - @header-height);
+    margin: 0 auto;
+    //background-color: red;
   }
   &__header-tools {
     display: flex;
