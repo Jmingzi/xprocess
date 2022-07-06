@@ -43,11 +43,13 @@ const onAlter = (e: InputEvent) => {
   margin-right: 10px;
   height: 100%;
   cursor: pointer;
+  color: @main-color;
   input {
     text-align: right;
     border: none;
     font: inherit;
     background-color: transparent;
+    color: @main-color;
     &[readonly] {
       cursor: pointer;
     }
