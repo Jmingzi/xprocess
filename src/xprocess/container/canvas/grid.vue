@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { inject, ref } from 'vue'
+import { inject, computed, Ref } from 'vue'
 
 const unit = 20
-const page = inject<{ width: number, height: number }>('page')
-const col = ref(new Array(Math.floor(page!.width / unit)))
-const row = ref(new Array(Math.floor(page!.height / unit)))
+const page = inject<Ref<{ width: number, height: number }>>('page')
+const col = computed(() => new Array(Math.floor(page!.value.width / unit)))
+const row = computed(() => new Array(Math.floor(page!.value.height / unit)))
 </script>
 
 <template>

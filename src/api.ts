@@ -4,6 +4,14 @@ import { State } from './xprocess/editor/state'
 export type ApiResult<T = any> = { success: boolean, data: T }
 
 export async function save (editorStateRaw: State, fileId?: string) {
+  if (!editorStateRaw.nodes.length) {
+    alert('请添加节点')
+    return
+  }
+  if (!editorStateRaw.filename.trim()) {
+    alert('请输入文件名')
+    return
+  }
   const res = await axios.post<ApiResult<{ id: number }>>('/xprocess/save', {
     id: fileId ? +fileId : undefined,
     nodes: editorStateRaw.nodes,

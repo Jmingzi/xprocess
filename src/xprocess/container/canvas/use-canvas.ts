@@ -2,6 +2,7 @@ import { h, reactive, SetupContext, toRefs, watchEffect, inject } from 'vue'
 import Canvas from './index.vue'
 import Moving from './moving-item.vue'
 import { useDrag } from '../../hooks/use-drag'
+import { CANVAS_CLASS } from '../../constant'
 
 type IRect = {
   width: number
@@ -23,7 +24,11 @@ const state = reactive<CanvasState>({
   isStartInCanvas: false
 })
 
-function inCanvas (e: MouseEvent) {
+function inCanvasDOM (e: MouseEvent) {
+  return (e as MouseEvent & { path: HTMLElement[] }).path.some(el => el?.classList?.contains(CANVAS_CLASS))
+}
+
+function inCanvasRect (e: MouseEvent) {
   if (!state.rect) return false
   const { left, top, width, height } = state.rect
   return e.clientX >= left && e.clientX <= left + width && e.clientY >= top && e.clientY <= top + height
@@ -31,7 +36,8 @@ function inCanvas (e: MouseEvent) {
 
 export function useCanvas () {
   return {
-    inCanvas,
+    inCanvasRect,
+    inCanvasDOM,
     Canvas: {
       setup (props: any, ctx: SetupContext) {
         const { slots } = ctx

@@ -34,9 +34,9 @@ const handleChange = (e: InputEvent, field: any, isFontStyle: Boolean) => {
     class="xprocess__tool-item"
     :class="{
       input,
-      select,
-      unactivated: !node || (isFill && isNodeLine(node.id))
+      select
     }"
+    v-if="!(isFill && isNodeLine(node.id))"
   >
     <slot
       :font="font"
@@ -53,6 +53,7 @@ const handleChange = (e: InputEvent, field: any, isFontStyle: Boolean) => {
 </template>
 
 <style lang="less">
+@import '../var';
 .xprocess__tool-item {
   position: relative;
   display: flex;
@@ -60,14 +61,11 @@ const handleChange = (e: InputEvent, field: any, isFontStyle: Boolean) => {
   justify-content: center;
   height: 25px;
   width: 30px;
-  @border-color: #aaaaaa;
-  // padding: 0 5px;
-  // padding-right: 10px;
-  border: 1px transparent solid;
   border-radius: 2px;
   overflow: hidden;
+  cursor: pointer;
   &:not(&.unactivated):hover {
-    border-color: @border-color;
+    background-color: @hover-bg;
   }
   &-inner {
     display: flex;
@@ -78,19 +76,19 @@ const handleChange = (e: InputEvent, field: any, isFontStyle: Boolean) => {
     border-radius: 2px;
     overflow: hidden;
     &.active {
-      border-color: @border-color;
+      //border-color: @border-color;
       box-shadow: 0 0 5px rgba(0, 0, 0, .2) inset;
     }
   }
-  &.unactivated {
-    opacity: 0.6;
-    pointer-events: none;
-  }
+  //&.unactivated {
+  //  opacity: 0.6;
+  //  pointer-events: none;
+  //}
   img {
     width: 15px;
   }
   input {
-    width: 100%;
+    width: 80%;
     height: 80%;
     border: none;
     background-color: transparent;
@@ -100,7 +98,7 @@ const handleChange = (e: InputEvent, field: any, isFontStyle: Boolean) => {
     }
   }
   &.input {
-    width: 40px;
+    width: 50px;
     padding: 0;
   }
   &.select {

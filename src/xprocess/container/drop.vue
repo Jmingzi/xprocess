@@ -13,13 +13,15 @@ import {
   selectNode,
   DEFAULT_FONT,
   XProcessNode,
-  NodeLine
+  NodeLine,
+  canvasNodeMoving
 } from '../editor/state'
 import { SvgType, SVG_TYPE } from '../svg-type/base'
 import XText from '../text/index.vue'
 import ResizeInfo from '../resize-info/index.vue'
+import PropsTool from '../props-tools/index.vue'
 
-const { inCanvas, isStartInCanvas } = useCanvas()
+const { inCanvasRect, isStartInCanvas } = useCanvas()
 const { onMouseDown: handleMouseDown, registerCallback } = useDrag()
 const elRef = ref<HTMLElement | null>(null)
 const emits = defineEmits(['move', 'drop'])
@@ -83,7 +85,7 @@ const onMouseDown = (e: MouseEvent) => {
     const nextCurrentNodeId = selectNode(props.id, hasMetaKey)
     setCurrentNode(nextCurrentNodeId)
     setCurrentLine()
-    isStartInCanvas.value = inCanvas(e)
+    isStartInCanvas.value = true
   } else if (isNodeLine(props.id)) {
     setCurrentLine(props.id)
     setCurrentNode()
@@ -91,7 +93,8 @@ const onMouseDown = (e: MouseEvent) => {
 }
 
 const handlerMove: IEventHandler = (data, e) => {
-  if (inCanvas(e)) {
+  if (inCanvasRect(e)) {
+    canvasNodeMoving.value = true
     emits('move', data, e)
   }
 }
@@ -118,6 +121,7 @@ onMounted(() => {
   })
   registerCallback('mouseup', {
     handler: () => {
+      canvasNodeMoving.value = false
       editorState.referenceLines = []
     },
     draggedWrapperEl: elRef.value!
@@ -142,6 +146,7 @@ onMounted(() => {
     <XText />
     <Operation />
     <ResizeInfo />
+    <PropsTool />
   </div>
 </template>
 

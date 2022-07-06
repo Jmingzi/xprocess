@@ -4,10 +4,7 @@ import { Canvas as XCanvas, Drop as XDrop } from '../container'
 import { state, onMoving } from './state'
 import { useLayout } from '../hooks/use-layout'
 import LineActionPanel from '../operation/action-panel.vue'
-import TextPropsTools from '../props-tools/text-tool.vue'
-import SvgPropsTools from '../props-tools/svg-tool.vue'
 import Sidebar from './sidebar.vue'
-import Filename from '../props-tools/filename.vue'
 import FileOperate from '../props-tools/file-operate.vue'
 import MultiSelect from '../operation/multi-select.vue'
 
@@ -15,14 +12,13 @@ const { Layout } = useLayout()
 </script>
 
 <template>
-  <Layout mode="editor">
-    <template #tools>
-      <Filename />
-      <TextPropsTools />
-      <SvgPropsTools />
-    </template>
-    <template #tools-right>
-      <FileOperate />
+  <Layout>
+    <template #header>
+      <FileOperate>
+        <template v-slot:list-panel>
+          <slot name="list-panel" />
+        </template>
+      </FileOperate>
     </template>
     <template #left>
       <Sidebar />

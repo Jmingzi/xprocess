@@ -11,8 +11,8 @@ export default function PolygonArrowRight (props: IPropsPolygon) {
   const y = strokeWidth / 2
   // const halfX = width / 2 + x
   const halfY = height / 2 + y
-  const arrowBodyWidth = 0.7 * width
-  const arrowHeight = 0.3 * height
+  const arrowBodyWidth = 0.5 * width
+  const arrowHeight = 0.5 * height
   const x1 = `${x} ${(height - arrowHeight) / 2}`
   const x2 = `${arrowBodyWidth} ${(height - arrowHeight) / 2}`
   const x3 = `${arrowBodyWidth} ${y}`

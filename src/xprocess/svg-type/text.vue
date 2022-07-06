@@ -21,8 +21,8 @@ export default function Text (props: IPropsText) {
     h('rect', clearCustomProps(changeCase(p), ['start', 'end', 'status', 'type'])),
     status === 0 ? h('image', {
       'xlink:href': icon,
-      width: width * 0.7,
-      x: 12
+      width: width * 0.8,
+      x: width * 0.2 / 2
     }) : null
   ]
 }

@@ -1,13 +1,17 @@
 <script lang="ts" setup>
 import iconSave from './icon-system/save.png'
 import iconShare from './icon-system/share.png'
+import iconAdd from './icon-system/add.png'
 // import iconLock from './icon-system/lock.png'
 // import iconUnlock from './icon-system/unlock.png'
-import { ref, inject } from 'vue'
+import Filename from './filename.vue'
+import iconZhankai from './icon-system/zhankai.png'
+import { ref, inject, watchEffect, Ref } from 'vue'
 import { IConfig } from '../'
 import { getStateRaw } from '../editor/state'
-const config = inject<IConfig>('config')
+const config = inject<Ref<IConfig>>('config')
 
+const showListPanel = ref(!config?.value.paramsId)
 const lock = ref(false)
 const onLock = () => {
   lock.value = true
@@ -16,14 +20,50 @@ const onUnlock = () => {
   lock.value = false
 }
 const onShare = () => {
-  config && config.api.share(getStateRaw())
+  config?.value.api.share(getStateRaw())
 }
 const onSave = () => {
-  config && config.api.save(getStateRaw())
+  config?.value.api.save(getStateRaw())
 }
+const onAdd = () => {
+  showListPanel.value = false
+  config?.value.api.addNew()
+}
+watchEffect(() => {
+  if (showListPanel.value) {
+    config?.value.api.list()
+  }
+})
+
+document.body.addEventListener('click', () => {
+  showListPanel.value = false
+})
 </script>
 
 <template>
+  <div
+    v-if="showListPanel"
+    class="file-list-panel"
+    @click.stop=""
+  >
+    <slot name="list-panel" />
+  </div>
+  <Filename />
+  <div class="file-operate">
+    <div
+      class="file-operate__item"
+      title="展开文件列表"
+      @click.stop="showListPanel = !showListPanel"
+    >
+      <img
+        class="file-list-panel-icon"
+        :class="{
+          active: showListPanel
+        }"
+        :src="iconZhankai"
+      >
+    </div>
+  </div>
   <div class="file-operate">
 <!--    <span>已保存 14:22</span>-->
 <!--    <div-->
@@ -46,38 +86,71 @@ const onSave = () => {
 <!--    </div>-->
     <div class="file-operate__item" title="分享文件" @click="onShare">
       <img :src="iconShare">
-      <span>分享</span>
     </div>
     <div class="file-operate__item" title="保存文件" @click="onSave">
       <img :src="iconSave">
-      <span>保存</span>
+    </div>
+    <div
+      v-if="config?.paramsId"
+      class="file-operate__item"
+      title="新建流程"
+      @click="onAdd"
+    >
+      <img :src="iconAdd">
     </div>
   </div>
 </template>
 
 <style lang="less">
+@import '../var';
 .file-operate {
+  position: relative;
   display: flex;
   align-items: center;
   font-size: 12px;
+  box-shadow: @shadow-tools;
+  background-color: #fff;
+  //margin-right: 20px;
+  padding: 4px;
+  z-index: @z-index-max;
+  pointer-events: all;
+  border-radius: 4px;
+  &:not(&:last-of-type) {
+    margin-right: 10px;
+  }
+
   &__item {
     display: flex;
     align-items: center;
     justify-content: center;
-    // width: 25px;
-    height: 22px;
-    border: 1px #aaaaaa solid;
+    //border: 1px #aaaaaa solid;
     border-radius: 2px;
     cursor: pointer;
-    padding: 0 5px;
-    margin-left: 10px;
+    padding: 6px;
     &:hover {
-      //border-color: #aaaaaa;
-      box-shadow: 0 0 5px rgba(0, 0, 0, .2) inset;
+      background-color: @hover-bg;
     }
     img {
-      width: 15px;
-      margin-right: 3px;
+      width: 17px;
+    }
+  }
+}
+.file-list-panel {
+  position: absolute;
+  height: 500px;
+  width: 400px;
+  background-color: #ffffff;
+  box-shadow: @shadow-tools;
+  border: 1px @border-color solid;
+  border-radius: 4px;
+  bottom: -10px;
+  transform: translateY(100%);
+  right: 0;
+  pointer-events: all;
+  &-icon {
+    transition: transform 0.3s;
+    &.active {
+      transform: rotate(-180deg);
     }
   }
 }

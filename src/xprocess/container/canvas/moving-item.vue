@@ -23,10 +23,11 @@ const movingStyle = computed(() => {
 </template>
 
 <style lang="less">
+@import '../../var.less';
 .xprocess {
   &__moving-item {
     position: absolute;
-    z-index: 1000;
+    z-index: @z-index-max;
   }
 }
 </style>

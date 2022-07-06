@@ -1,43 +1,46 @@
 import Editor from './editor/index.vue'
 import { State, initState } from './editor/state'
-import { h, provide, toRaw } from 'vue'
+import { h, provide, SetupContext, Ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 export type IConfig = {
+  paramsId?: string
   api: {
-    save: (data: State, fileId?: string) => Promise<string | undefined>,
+    save: (data: State, fileId?: string) => Promise<number | undefined>
     share: (data: State, fileId?: string) => Promise<void>
+    list: () => Promise<void>
+    addNew: () => void
   }
 }
 
 export type IProcessState = State
 
-export function useProcess (config: IConfig) {
+export function useProcess (config: Ref<IConfig>) {
   return {
     initState,
     Process: {
-      setup () {
+      setup (props: any, context: SetupContext) {
         const route = useRoute()
         const router = useRouter()
         const id = route.params.id as string
 
-        const save = config.api.save
-        config.api.save = async (data: State): Promise<string | undefined> => {
-          const dataId = await save(data, id)
-          if (dataId || id) {
-            await router.replace(`/editor/${dataId ?? id}`)
+        const save = config.value.api.save
+        config.value.api.save = async (data: State): Promise<number | undefined> => {
+          const dataId = (await save(data, id)) ?? (id ? Number(id) : undefined)
+          if (dataId) {
+            await router.replace(`/editor/${dataId}`)
           }
-          return dataId || id
+          return dataId
         }
 
-        const share = config.api.share
-        config.api.share = async (data: State) => {
+        const share = config.value.api.share
+        config.value.api.share = async (data: State) => {
           await share(data, id)
           // await router.replace(`/editor?id=${id}`)
         }
 
         provide('config', config)
-        return () => h(Editor)
+        return () => h(Editor, null, context.slots)
       }
     }
   }

@@ -52,13 +52,17 @@ export type SvgType = 'rect'
   | 'polygon-arrow-top'
   | 'polygon-arrow-bottom'
 
-export const STROKE_WIDTH = 2
+export const STROKE_WIDTH = 1
 
 export const DEFAULT_SIZE = {
-  rect: [80, 50],
-  circle: [60, 60],
-  polygon: [80, 60],
-  text: [80, 50]
+  // rect: [80, 50],
+  // circle: [60, 60],
+  // polygon: [80, 60],
+  // text: [80, 50]
+  rect: [30, 20],
+  circle: [25, 25],
+  polygon: [30, 25],
+  text: [30, 25]
 }
 
 export const DEFAULT_PROPS = {

@@ -96,6 +96,7 @@ watchEffect(() => {
 </template>
 
 <style lang="less">
+@import '../var';
 .xprocess__drop-wrap {
   position: absolute;
   left: 0;
@@ -104,16 +105,16 @@ watchEffect(() => {
   bottom: 0;
   pointer-events: none;
   border: 1px transparent solid;
-  z-index: 10000;
+  z-index: @z-index-max;
   &.active {
-    border-color: #3b8ff6;
+    border-color: @main-color;
   }
   &-dot {
     pointer-events: all;
     position: absolute;
     width: 8px;
     height: 8px;
-    border: 1px #3b8ff6 solid;
+    border: 1px @main-color solid;
     border-radius: 50%;
     background-color: #fff;
     cursor: crosshair;
@@ -144,7 +145,7 @@ watchEffect(() => {
     position: absolute;
     width: 8px;
     height: 8px;
-    border: 1px #3b8ff6 solid;
+    border: 1px @main-color solid;
     //border-radius: 50%;
     background-color: #fff;
     &.leftTop {

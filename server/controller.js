@@ -49,7 +49,8 @@ module.exports = {
     } else {
       // 新增
       const id = Date.now()
-      db.push(`${file}/${id}`, Object.assign(req.body, { id }))
+      file += `/${id}`
+      db.push(file, Object.assign(req.body, { id }))
     }
     return db.getData(file)
   }

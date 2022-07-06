@@ -1,4 +1,4 @@
-import { computed, reactive, toRaw } from 'vue'
+import { computed, reactive, toRaw, ref } from 'vue'
 import { IEventHandlerData } from '../hooks/use-drag'
 import {
   DEFAULT_PROPS,
@@ -8,10 +8,16 @@ import {
   IPropsCircle,
   DEFAULT_SIZE,
   IPropsPolygon,
-  IPropsText
+  IPropsText,
+  STROKE_WIDTH
 } from '../svg-type/base'
 import { Edge, setCurrentLine, preventCanvasClickToggle } from '../operation/state'
 import { useCanvas } from '../container/canvas/use-canvas'
+import {
+  ENLARGE_TIMES_FROM_LOCAL_SIZE,
+  ENLARGE_TIMES_FROM_LOCAL_STROKE,
+  DEFAULT_FILENAME
+} from '../constant'
 
 const { rect: canvasRect } = useCanvas()
 
@@ -85,7 +91,7 @@ export type State = {
 }
 
 export const state = reactive<State>({
-  filename: '',
+  filename: DEFAULT_FILENAME,
   currentNode: undefined,
   referenceLines: [],
   selectedNodes: [],
@@ -185,11 +191,12 @@ export function onDrop (data: IEventHandlerData, node: LocalListItem) {
     ...localItem,
     start: getPointFromCanvas([data.endTopLeftX, data.endTopLeftY]),
     end: getPointFromCanvas([
-      data.endTopLeftX + localItem.end[0],
-      data.endTopLeftY + localItem.end[1]
+      data.endTopLeftX + localItem.end[0] * ENLARGE_TIMES_FROM_LOCAL_SIZE,
+      data.endTopLeftY + localItem.end[1] * ENLARGE_TIMES_FROM_LOCAL_SIZE
     ]),
     fromLines: [],
-    toLines: []
+    toLines: [],
+    strokeWidth: (localItem.strokeWidth ?? 0) * ENLARGE_TIMES_FROM_LOCAL_STROKE
   }
   if (node.type === SVG_TYPE.TEXT) {
     const t = (newItem as NodeText)
@@ -206,6 +213,7 @@ export function onDrop (data: IEventHandlerData, node: LocalListItem) {
 /**
  * 在画布上拖拽节点
  */
+export const canvasNodeMoving = ref(false)
 export function onMoving (data: IEventHandlerData, item: XProcessNode) {
   const { endTopLeftX, endTopLeftY } = data
   const node = state.nodes.find(it => it.id === item.id) as NodeRect

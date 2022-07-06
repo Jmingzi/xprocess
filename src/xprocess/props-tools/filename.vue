@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import back from './icon-system/back.png'
 import { ref, nextTick } from 'vue'
 import { state as editorState } from '../editor/state'
+import { DEFAULT_FILENAME } from '../constant'
 
 const isPreview = ref(true)
 const refEl = ref()
@@ -12,50 +12,45 @@ const onPreview = async () => {
 }
 const onAlter = (e: InputEvent) => {
   isPreview.value = true
-  editorState.filename = (e.target! as HTMLInputElement).value
+  editorState.filename = (e.target! as HTMLInputElement).value.trim()
+  if (!editorState.filename) {
+    editorState.filename = DEFAULT_FILENAME
+  }
 }
 </script>
 
 <template>
-  <img
-    class="xprocess__back"
-    title="返回列表"
-    :src="back"
-    width="20"
-    @click="$router.back()"
-  >
-  <div class="filename">
-    <div
-      v-if="isPreview"
-      class="filename__preview"
-      @click="onPreview"
-    >
-      {{ editorState.filename }}
-    </div>
+  <div class="filename" @click="onPreview">
     <input
-      v-else
+      :readonly="isPreview"
       ref="refEl"
       type="text"
+      maxlength="20"
       v-model="editorState.filename"
       @blur="onAlter"
     >
+    <span>.xprocess</span>
   </div>
 </template>
 
 <style lang="less">
-.xprocess__back {
-  cursor: pointer;
-}
+@import '../var';
 .filename {
-  margin-left: 10px;
   font-size: 14px;
-  width: 154px;
-  &__preview {
-    padding: 3px 10px;
-    cursor: pointer;
-    &:hover {
-      background-color: #dedede;
-      border-radius: 2px;
+  pointer-events: all;
+  margin-right: 10px;
+  height: 100%;
+  cursor: pointer;
+  input {
+    text-align: right;
+    border: none;
+    font: inherit;
+    background-color: transparent;
+    &[readonly] {
+      cursor: pointer;
+    }
+    &:focus {
+      outline: none;
     }
   }
 }

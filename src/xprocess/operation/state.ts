@@ -19,6 +19,7 @@ import {
 } from '../editor/state'
 import { DEFAULT_PROPS, SVG_TYPE } from '../svg-type/base'
 import { IEventHandlerData } from '../hooks/use-drag'
+import { CANVAS_CLASS, ENLARGE_TIMES_FROM_LOCAL_SIZE } from '../constant'
 
 export type Edge = 'top' | 'right' | 'bottom' | 'left'
 export type DirectionString = 'leftTop' | 'rightTop' | 'rightBottom' | 'leftBottom'
@@ -271,7 +272,7 @@ export function preventCanvasClickToggle () {
     preventCanvasClick(false)
   }, 300)
 }
-const isCanvasClick = (e: MouseEvent) => (e as MouseEvent & { path: HTMLElement[] }).path.some(el => el?.classList?.contains('xprocess-canvas'))
+const isCanvasClick = (e: MouseEvent) => (e as MouseEvent & { path: HTMLElement[] }).path.some(el => el?.classList?.contains(CANVAS_CLASS))
 document.body.addEventListener('click', (e: MouseEvent) => {
   if (!isCanvasClick(e)) {
     // 只处理画布上的点击事件
@@ -290,6 +291,7 @@ document.body.addEventListener('click', (e: MouseEvent) => {
     removeCreatedLine()
   } else {
     setCurrentNode()
+    setCurrentLine()
   }
 })
 
@@ -344,8 +346,8 @@ export const handleOperationDotMouseUp = (data: IEventHandlerData) => {
 export const handleCreateToNode = (item: LocalListItem) => {
   const line = currentLine.value
   if (line && lineUpActionPanelData.value) {
-    const localItemDefaultWidth = item.end[0] - item.start[0]
-    const localItemDefaultHeight = item.end[1] - item.start[1]
+    const localItemDefaultWidth = (item.end[0] - item.start[0]) * ENLARGE_TIMES_FROM_LOCAL_SIZE
+    const localItemDefaultHeight = (item.end[1] - item.start[1]) * ENLARGE_TIMES_FROM_LOCAL_SIZE
     const fromEdge = line.fromNode.edge
     const { x, y, mouseData } = lineUpActionPanelData.value
     const { direction: mouseDirection } = mouseData
@@ -402,7 +404,10 @@ export const handleCreateToNode = (item: LocalListItem) => {
       }
     }
 
-    const toNode = onDrop({ endTopLeftX: nodeStart[0], endTopLeftY: nodeStart[1] } as IEventHandlerData, item)
+    const toNode = onDrop({
+      endTopLeftX: nodeStart[0],
+      endTopLeftY: nodeStart[1]
+    } as IEventHandlerData, item)
     toNode.toLines.push(line)
     line.toNode = {
       nodeId: toNode.id,

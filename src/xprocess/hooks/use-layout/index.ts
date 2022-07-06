@@ -5,7 +5,6 @@ export function useLayout () {
   return {
     Layout: {
       props: {
-        mode: String
       },
       setup (props: unknown, context: SetupContext) {
         // console.log(props)

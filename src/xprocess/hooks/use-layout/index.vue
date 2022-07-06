@@ -1,19 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref, reactive, provide, withDefaults, computed } from 'vue'
+import { onMounted, ref, reactive, provide } from 'vue'
 import logo from './logo.png'
-
-const props = withDefaults(defineProps<{
-  mode?: 'normal' | 'editor'
-}>(), {
-  mode: 'normal'
-})
-const isNormal = props.mode === 'normal'
-const isEditor = props.mode === 'editor'
+import { CANVAS_PADDING, CANVAS_MARGIN_LEFT, CANVAS_MARGIN_TOP } from '../../constant'
 
 const el = ref()
 const state = reactive({
-  scrollLeft: 1000 - 20,
-  scrollTop: 1000 - 20
+  scrollLeft: CANVAS_PADDING - CANVAS_MARGIN_LEFT,
+  scrollTop: CANVAS_PADDING - CANVAS_MARGIN_TOP
 })
 const handleScroll = () => {
   const box = el.value!
@@ -35,91 +28,70 @@ onMounted(() => {
   <div class="xprocess__header">
     <div class="xprocess__header-title">
       <img :src="logo" align="center" width="35">
-      <span>xprocess</span>
+      <span>XProcess</span>
+    </div>
+    <div class="file-operate-panel">
+      <slot name="header" />
     </div>
   </div>
-  <div v-if="isEditor" class="xprocess__header-tools">
-    <div>
-      <slot name="tools" />
-    </div>
-    <div>
-      <slot name="tools-right" />
-    </div>
+  <div class="xprocess__sidebar">
+    <slot name="left" />
   </div>
-  <div v-if="isEditor" class="xprocess__header-next">
-    <div class="xprocess__sidebar">
-      <slot name="left" />
-    </div>
-    <div
-      ref="el"
-      class="xprocess__content"
-      @scroll="handleScroll"
-    >
-      <slot name="content" />
-    </div>
-  </div>
-  <div v-if="isNormal" class="xprocess__normal-content">
+  <div
+    ref="el"
+    class="xprocess__content"
+    @scroll="handleScroll"
+  >
     <slot name="content" />
   </div>
 </template>
 
 <style lang="less">
+@import '../../var.less';
 .xprocess {
-  @header-height: 60px;
-  @header-tools-height: 35px;
-  @sidebar-width: 200px;
   &__header {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 60px;
-    background-color: #262a30;
-    padding: 0 30px;
+    height: @header-height;
+    padding: 0 20px;
+    z-index: @z-index-max;
+    pointer-events: none;
     &-title {
       display: flex;
       align-items: center;
-      color: #fff;
       font-weight: 200;
       font-size: 30px;
+      pointer-events: all;
       //font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
       span {
         margin-left: 15px;
       }
     }
-  }
-  &__normal-content {
-    width: 1000px;
-    height: calc(100vh - @header-height);
-    margin: 0 auto;
-    //background-color: red;
-  }
-  &__header-tools {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 35px;
-    background-color: #f7f8f9;
-    border-bottom: 1px #aaa solid;
-    padding: 0 10px;
-    & > div {
+    .file-operate-panel {
+      position: relative;
       display: flex;
       align-items: center;
-      height: 100%;
     }
   }
-  &__header-next {
-    display: flex;
-    height: calc(100vh - @header-height - @header-tools-height);
-  }
   &__sidebar {
-    flex-shrink: 0;
-    width: @sidebar-width;
-    border-right: 1px #aaa solid;
+    position: fixed;
+    left: 20px;
+    box-shadow: @shadow-tools;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 10px;
+    border-radius: 4px;
+    z-index: @z-index-max;
+    background-color: #fff;
+    border: 1px @border-color solid;
   }
   &__content {
-    flex-grow: 0;
-    width: calc(100% - @sidebar-width);
-    height: 100%;
+    height: 100vh;
     overflow: auto;
   }
 }

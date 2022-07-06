@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, h, createApp } from 'vue'
 import { useDrag, IEventHandler } from '../hooks/use-drag'
 import { useCanvas } from './canvas/use-canvas'
 import { getPointFromCanvas, getReferenceLine, state as editorState, NodeRect } from '../editor/state'
 import { SvgType } from '../svg-type/base'
+import { ENLARGE_TIMES_FROM_LOCAL_SIZE } from '../constant'
+import SvgTypeComponent from '../svg-type/index.vue'
 
 const elRef = ref<HTMLElement | null>(null)
 const emits = defineEmits(['drop'])
 const props = defineProps<{ type: SvgType }>()
 const { registerCallback, onMouseDown: handleMouseDown } = useDrag()
-const { isStartInCanvas, inCanvas, rect: canvasRect } = useCanvas()
+const { isStartInCanvas, inCanvasDOM, inCanvasRect, rect: canvasRect } = useCanvas()
 
 const handler: IEventHandler = (data, e, wrapper) => {
-  if (inCanvas(e)) {
+  if (inCanvasRect(e)) {
     emits('drop', data, wrapper)
     editorState.referenceLines = []
   } else {
@@ -20,11 +22,29 @@ const handler: IEventHandler = (data, e, wrapper) => {
   }
 }
 const onMouseDown = (e: MouseEvent) => {
-  isStartInCanvas.value = inCanvas(e)
+  isStartInCanvas.value = inCanvasDOM(e)
   handleMouseDown(
     e,
     el => el === elRef.value,
-    el => el.querySelector('svg')!.outerHTML
+    el => {
+      // 将本地缩小的尺寸放大到等比
+      const svg = el.querySelector('svg')!
+      const local = editorState.localComponentList.find(x => svg.classList.contains(x.type))!
+      const ins = createApp({
+        // @ts-ignore
+        render: () => h(SvgTypeComponent, {
+          ...local,
+          end: [
+            local.end[0] * ENLARGE_TIMES_FROM_LOCAL_SIZE,
+            local.end[1] * ENLARGE_TIMES_FROM_LOCAL_SIZE,
+          ]
+        })
+      })
+      const div = document.createElement('div')
+      ins.mount(div)
+      // return el.querySelector('svg')!.outerHTML
+      return div.innerHTML
+    }
   )
 }
 onMounted(() => {
@@ -34,11 +54,12 @@ onMounted(() => {
   })
   registerCallback('mousemove', {
     handler: (data, e, wrapper, moveState) => {
-      if (inCanvas(e)) {
+      if (inCanvasRect(e)) {
         // 计算参考线
         const local = editorState.localComponentList.find(x => x.type === props.type)!
         const start = getPointFromCanvas([data.endTopLeftX, data.endTopLeftY])
         const node = { start, end: [start[0] + local.end[0], start[1] + local.end[1]], id: 0 }
+        // 参考线的吸附会直接修改引用值
         getReferenceLine(node as NodeRect)
         // 将参考线的吸附修改映射到 state
         if (moveState && canvasRect && canvasRect.value) {
@@ -67,5 +88,6 @@ onMounted(() => {
 <style lang="less">
 .xprocess__drag {
   display: flex;
+  justify-content: center;
 }
 </style>
