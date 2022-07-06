@@ -22,8 +22,12 @@ const onUnlock = () => {
 const onShare = () => {
   config?.value.api.share(getStateRaw())
 }
-const onSave = () => {
-  config?.value.api.save(getStateRaw())
+const onSave = async () => {
+  const isEdit = !!config?.value.paramsId
+  await config?.value.api.save(getStateRaw())
+  if (!isEdit) {
+    showListPanel.value = true
+  }
 }
 const onAdd = () => {
   showListPanel.value = false

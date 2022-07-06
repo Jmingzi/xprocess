@@ -28,6 +28,8 @@ const onAlter = (e: InputEvent) => {
       maxlength="20"
       v-model="editorState.filename"
       @blur="onAlter"
+      @keyup.stop=""
+      @keydown.stop=""
     >
     <span>.xprocess</span>
   </div>

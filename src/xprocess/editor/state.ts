@@ -90,7 +90,7 @@ export type State = {
 }
 
 export const state = reactive<State>({
-  filename: DEFAULT_FILENAME,
+  filename: '',
   currentNode: undefined,
   referenceLines: [],
   selectedNodes: [],

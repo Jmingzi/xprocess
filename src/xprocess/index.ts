@@ -25,10 +25,10 @@ export function useProcess (config: Ref<IConfig>) {
       setup (props: any, context: SetupContext) {
         const route = useRoute()
         const router = useRouter()
-        const id = route.params.id as string
 
         const save = config.value.api.save
         config.value.api.save = async (data: State): Promise<number | undefined> => {
+          const id = route.params.id as string
           const dataId = (await save(data, id)) ?? (id ? Number(id) : undefined)
           if (dataId) {
             await router.replace(`/editor/${dataId}`)
@@ -38,6 +38,7 @@ export function useProcess (config: Ref<IConfig>) {
 
         const share = config.value.api.share
         config.value.api.share = async (data: State) => {
+          const id = route.params.id as string
           await share(data, id)
           // await router.replace(`/editor?id=${id}`)
         }
