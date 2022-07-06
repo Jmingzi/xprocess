@@ -41,13 +41,15 @@ document.body.addEventListener('click', () => {
 </script>
 
 <template>
-  <div
-    v-if="showListPanel"
-    class="file-list-panel"
-    @click.stop=""
-  >
-    <slot name="list-panel" />
-  </div>
+  <transition name="list">
+    <div
+      v-if="showListPanel"
+      class="file-list-panel"
+      @click.stop=""
+    >
+      <slot name="list-panel" />
+    </div>
+  </transition>
   <Filename />
   <div class="file-operate">
     <div
@@ -153,5 +155,16 @@ document.body.addEventListener('click', () => {
       transform: rotate(-180deg);
     }
   }
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(-50%);
 }
 </style>

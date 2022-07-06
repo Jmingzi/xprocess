@@ -112,12 +112,14 @@ export default function Line (props: IPropsLine) {
     }
 
     const points = `${x} ${y}, ${x1 + x2} ${endX} ${endY}`
-    lineVnode = h('polyline', {
-      ...changeCase(clearCustomProps(props, ['start', 'end', 'type'])),
+    const p = {
+      ...clearCustomProps(props, ['start', 'end', 'type']),
       fill: 'transparent',
       points,
-      'marker-end': 'url(#triangle)'
-    })
+      markerEnd: 'url(#triangle)',
+      strokeLinejoin: 'round'
+    }
+    lineVnode = h('polyline', changeCase(p))
   }
 
   if (isPath) {

@@ -5,6 +5,8 @@ import lineColor from './icon/line-color.png'
 import bgColor from './icon/bg-color.png'
 import iconTop from './icon/top.png'
 import iconBottom from './icon/bottom.png'
+import iconLineDash from './icon/dash-line.png'
+import iconLineSolid from './icon/solid-line.png'
 import { XProcessNode, NodeLine, state as editorState } from '../editor/state'
 
 const onZIndex = (isTop: boolean, node: XProcessNode) => {
@@ -49,6 +51,14 @@ const onZIndex = (isTop: boolean, node: XProcessNode) => {
       <XColor :value="node?.stroke ?? '#333333'" @change="e => handleChange(e, 'stroke')">
         <img :src="lineColor" alt="">
       </XColor>
+    </template>
+  </Item>
+
+  <Item title="连线类型">
+    <template v-slot:default="{ node, handleChange }">
+      <div class="xprocess__tool-item-inner" @click="handleChange({ target: { value: node?.strokeDasharray !== 4 ? 4 : 0 } }, 'strokeDasharray')">
+        <img :src="node?.strokeDasharray !== 4 ? iconLineSolid : iconLineDash" alt="">
+      </div>
     </template>
   </Item>
 

@@ -1,5 +1,6 @@
 import { paramCase } from 'change-case'
-import {Edge} from "../operation/state";
+import { Edge } from '../operation/state'
+import { CANVAS_STROKE_WIDTH } from '../constant'
 
 export type SvgBase = {
   type: SvgType
@@ -8,6 +9,7 @@ export type SvgBase = {
   fill?: string
   start: number[]
   end: number[]
+  strokeDasharray?: number
 }
 export type NodeLineAttach = {
   nodeId: number,
@@ -19,8 +21,6 @@ export type IPropsLine = SvgBase & {
   lineType: 'line' | 'path' | 'polyline'
   fromNode: NodeLineAttach
   toNode: NodeLineAttach
-  // controlStart?: number[]
-  // controlEnd?: number[]
 }
 export type IPropsRect = SvgBase & {
   round: number
@@ -52,7 +52,7 @@ export type SvgType = 'rect'
   | 'polygon-arrow-top'
   | 'polygon-arrow-bottom'
 
-export const STROKE_WIDTH = 1
+export const STROKE_WIDTH = CANVAS_STROKE_WIDTH
 
 export const DEFAULT_SIZE = {
   // rect: [80, 50],

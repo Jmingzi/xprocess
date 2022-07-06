@@ -8,8 +8,7 @@ import {
   IPropsCircle,
   DEFAULT_SIZE,
   IPropsPolygon,
-  IPropsText,
-  STROKE_WIDTH
+  IPropsText
 } from '../svg-type/base'
 import { Edge, setCurrentLine, preventCanvasClickToggle } from '../operation/state'
 import { useCanvas } from '../container/canvas/use-canvas'

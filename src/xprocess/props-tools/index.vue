@@ -42,21 +42,25 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div
-    v-if="show"
-    ref="refEl"
-    class="props-tool"
-    :style="style"
-  >
-    <Item title="文本样式" @click.native="showTextPanel = !showTextPanel">
-      <img :src="iconText2" >
-    </Item>
-    <div class="tools-input__division" />
-    <SvgTool />
-    <div v-show="showTextPanel" class="props-tool__text-panel">
-      <TextTool />
+  <transition name="tools">
+    <div
+      v-if="show"
+      ref="refEl"
+      class="props-tool"
+      :style="style"
+    >
+      <Item title="文本样式" @click.native="showTextPanel = !showTextPanel">
+        <img :src="iconText2" >
+      </Item>
+      <div class="tools-input__division" />
+      <SvgTool />
+      <transition name="text">
+        <div v-show="showTextPanel" class="props-tool__text-panel">
+          <TextTool />
+        </div>
+      </transition>
     </div>
-  </div>
+  </transition>
 </template>
 
 <style lang="less">
@@ -87,5 +91,26 @@ watchEffect(() => {
     box-shadow: @shadow-tools;
     padding: 5px;
   }
+}
+
+.tools-enter-active,
+.tools-leave-active {
+  transition: all 0.3s ease;
+}
+
+.tools-enter-from,
+.tools-leave-to {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+.text-enter-active,
+.text-leave-active {
+  transition: all 0.3s ease;
+}
+
+.text-enter-from,
+.text-leave-to {
+  opacity: 0;
 }
 </style>

@@ -39,9 +39,18 @@ const config = ref({
     addNew: onAdd
   }
 })
-const { Process, initState } = useProcess(config)
+const { Process, initState, canvasHasData } = useProcess(config)
 
 const onEdit = (item: Item) => {
+  if (String(item.id) === route.params.id) {
+    return
+  }
+  if (canvasHasData.value) {
+    const value = confirm('该操作会覆盖现有画布的元素且不可恢复，确定这样做吗？')
+    if (!value){
+      return
+    }
+  }
   initState(item)
   router.push(`/editor/${item.id}`)
 }
@@ -77,7 +86,13 @@ watch(() => route.params.id, (id) => {
         </div>
         <div class="my-list__content">
           <ul>
-            <li v-for="item in state.list" @click="onEdit(item)">
+            <li
+              v-for="item in state.list"
+              @click="onEdit(item)"
+              :class="{
+                active: +route.params.id === item.id
+              }"
+            >
               <span>{{ item.filename }}</span>
               <span class="my-list__operate">
                 <img title="编辑" :src="iconEdit">
@@ -129,6 +144,9 @@ watch(() => route.params.id, (id) => {
       &:hover {
         background-color: @hover-bg;
         cursor: pointer;
+      }
+      &.active {
+        background-color: rgba(@main-color, 0.1);
       }
     }
     img {

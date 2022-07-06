@@ -1,6 +1,6 @@
 import Editor from './editor/index.vue'
-import { State, initState } from './editor/state'
-import { h, provide, SetupContext, Ref } from 'vue'
+import { State, initState, state } from './editor/state'
+import { h, provide, SetupContext, Ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 export type IConfig = {
@@ -15,9 +15,12 @@ export type IConfig = {
 
 export type IProcessState = State
 
+const canvasHasData = computed(() => state.nodes.length > 0)
+
 export function useProcess (config: Ref<IConfig>) {
   return {
     initState,
+    canvasHasData,
     Process: {
       setup (props: any, context: SetupContext) {
         const route = useRoute()
