@@ -5,16 +5,19 @@ import { ref } from 'vue'
 defineProps<{
   modelValue: string
 }>()
+const key = 'xprocess_color_local'
 const emit = defineEmits(['update:modelValue'])
-const latest = ref<string[]>([])
+const local = localStorage.getItem(key)
+const latest = ref<string[]>(local ? local.split('_') : [])
 const onSelect = (color: string) => {
   const index = latest.value.findIndex(x => x === color)
-  if (index) {
+  if (index > -1) {
     latest.value.splice(index, 1)
   }
   latest.value.unshift(color)
   latest.value.splice(10, latest.value.length - 10)
   emit('update:modelValue', color)
+  localStorage.setItem(key, latest.value.join('_'))
 }
 const show = ref(false)
 const left = ref(0)
