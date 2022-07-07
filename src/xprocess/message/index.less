@@ -1,0 +1,24 @@
+@import '../var';
+
+.message {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  z-index: @z-index-max;
+  left: 50%;
+  transform: translateX(-50%);
+  width: fit-content;
+  background: #fff;
+  box-shadow: @shadow-tools;
+  border: 1px @border-color solid;
+  padding: 10px 20px;
+  top: -100%;
+  border-radius: 4px;
+  transition: top .5s ease-in;
+  img {
+    margin-right: 10px;
+  }
+  &__text {
+    font-size: 13px;
+  }
+}

@@ -30,12 +30,14 @@ const { Layout } = useLayout()
         <XDrop
           v-for="item in state.nodes"
           v-bind="item"
+          :key="item.id"
           @move="data => onMoving(data, item)"
         >
           <SvgType v-bind="item" />
         </XDrop>
         <XDrop
           v-for="item in state.lines"
+          :key="item.id"
           v-bind="item"
           type="line"
         >

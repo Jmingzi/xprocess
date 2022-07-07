@@ -69,13 +69,13 @@ const handleBlur = () => {
   }
 }
 
-watch(() => node, node => {
+watch(() => node.value, node => {
   if (node) {
     /**
      * 此处不做受控文本
      * 仅仅是节点变化时初始化下内容
      */
-    initialContent.value = node.value?.font?.content ?? ''
+    initialContent.value = node?.font?.content ?? ''
   }
 }, { immediate: true })
 

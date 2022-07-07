@@ -41,10 +41,10 @@ const onEdit = (item: Item) => {
     return
   }
   if (canvasHasData.value) {
-    const value = confirm('该操作会覆盖现有画布的元素且不可恢复，确定这样做吗？')
-    if (!value){
-      return
-    }
+    // const value = confirm('该操作会覆盖现有画布的元素且不可恢复，确定这样做吗？')
+    // if (!value){
+    //   return
+    // }
   }
   initState(item)
   router.push(`/editor/${item.id}`)
