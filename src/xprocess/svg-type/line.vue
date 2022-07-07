@@ -22,6 +22,14 @@ export default function Line (props: IPropsLine) {
   let width = Math.abs(start[0] - end[0])
   let height = Math.abs(start[1] - end[1])
 
+  // 折叠宽度和高度
+  if (width < 5) {
+    width = 0
+  }
+  if (height < 5) {
+    height = 0
+  }
+
   // 默认起点
   let x = strokeWidth / 2
   let y = strokeWidth / 2
@@ -100,10 +108,10 @@ export default function Line (props: IPropsLine) {
         // } else
         if (fromEdge.isBottom) {
           x1 = `${x} ${y + height / 2},`
-          x2 = `${endX} ${y + height / 2}`
+          x2 = `${endX} ${y + height / 2},`
         } else {
           x1 = `${x} ${y - height / 2},`
-          x2 = `${endX} ${y - height / 2}`
+          x2 = `${endX} ${y - height / 2},`
         }
       } else {
         x1 = `${x} ${endY},`
