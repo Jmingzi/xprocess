@@ -22,11 +22,6 @@ const getList = async () => {
 }
 
 const onAdd = () => {
-  initState({
-    filename: '未命名文件',
-    nodes: [],
-    lines: []
-  })
   router.replace('/editor')
 }
 
@@ -71,6 +66,13 @@ const getProcessDetail = async (id: string) => {
 watch(() => route.params.id, (id) => {
   if (id) {
     getProcessDetail(id as string)
+  } else {
+    // 初始化创建
+    initState({
+      filename: '未命名文件',
+      nodes: [],
+      lines: []
+    })
   }
   config.value.paramsId = id as string
 }, { immediate: true })

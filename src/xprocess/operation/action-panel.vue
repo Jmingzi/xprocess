@@ -51,24 +51,29 @@ watchEffect(() => {
 </template>
 
 <style lang="less">
+@import '../var';
 .xprocess__over-panel {
   position: absolute;
   display: flex;
   flex-wrap: wrap;
-  width: 400px;
-  padding: 15px;
-  transform: scale(0.5);
-  transform-origin: left top;
+  padding: 5px;
   background-color: #fff;
-  border: 2px #aaa solid;
-  border-radius: 5px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, .15);
+  border: 1px @border-color solid;
+  border-radius: 4px;
+  box-shadow: @shadow-tools;
+  width: 160px;
   & > div {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100px;
-    height: 80px;
+    padding: 5px;
+    &:hover {
+      background-color: @hover-bg;
+      border-radius: 4px;
+    }
+    svg {
+      cursor: pointer!important;
+    }
   }
 }
 </style>
