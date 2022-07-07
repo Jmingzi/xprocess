@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { withDefaults } from 'vue'
+import ColorPick from '../color-pick/index.vue'
 
 withDefaults(defineProps<{
   value: string
@@ -11,11 +12,12 @@ defineEmits(['change'])
 </script>
 
 <template>
-  <div class="xcolor">
-    <input type="color" :value="value" @change="e => $emit('change', e, e.target.value)">
-    <slot />
-    <div class="xcolor__bar" :style="{ backgroundColor: value }" />
-  </div>
+  <ColorPick :model-value="value" @update:modelValue="v => $emit('change', { target: { value: v } }, v)">
+    <div class="xcolor">
+      <slot />
+      <div class="xcolor__bar" :style="{ backgroundColor: value }" />
+    </div>
+  </ColorPick>
 </template>
 
 <style lang="less">
