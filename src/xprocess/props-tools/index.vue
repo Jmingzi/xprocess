@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { state as editorState, canvasNodeMoving } from '../editor/state'
 import { currentLine } from '../operation/state'
-import { computed, watchEffect, ref, nextTick, inject } from 'vue'
+import { computed, watchEffect, ref, nextTick } from 'vue'
 import TextTool from './text-tool.vue'
 import SvgTool from './svg-tool.vue'
 import Item from './item.vue'
 import iconText2 from './icon/text2.png'
 
 const showTextPanel = ref(false)
-const nodeId = inject<number>('nodeId')
 const data = computed(() => editorState.currentNode || currentLine.value)
-const show = computed(() => data.value?.id === nodeId && !canvasNodeMoving.value)
+const show = ref(false)
 const style = computed(() => {
   if (!data.value || !elRect.value) {
     return
@@ -19,9 +18,11 @@ const style = computed(() => {
   const nodeWidth = Math.abs(node.start[0] - node.end[0])
   // const nodeHeight = Math.abs(node.start[1] - node.end[1])
   const halfX = (elRect.value.width - nodeWidth) / 2
+  // 线条的起点不一定是左上角
+  const start = Math.min(node.start[0], node.end[0])
   return {
-    left: `${-halfX}px`,
-    top: `${-elRect.value.height - 30}px`
+    left: `${start - halfX}px`,
+    top: `${-80 + node.start[1]}px`
   }
 })
 
@@ -39,6 +40,17 @@ watchEffect(() => {
     showTextPanel.value = false
   }
 })
+watchEffect(() => {
+  // console.log('canvasNodeMoving.value', canvasNodeMoving.value)
+  if (data.value?.id && !canvasNodeMoving.value) {
+    show.value = false
+    setTimeout(() => {
+      show.value = true
+    })
+  } else {
+    show.value = false
+  }
+})
 </script>
 
 <template>
@@ -48,6 +60,7 @@ watchEffect(() => {
       ref="refEl"
       class="props-tool"
       :style="style"
+      @click.stop=""
     >
       <Item title="文本样式" @click.native="showTextPanel = !showTextPanel">
         <img :src="iconText2" >

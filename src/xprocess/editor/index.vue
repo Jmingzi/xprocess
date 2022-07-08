@@ -7,6 +7,8 @@ import LineActionPanel from '../operation/action-panel.vue'
 import Sidebar from './sidebar.vue'
 import FileOperate from '../props-tools/file-operate.vue'
 import MultiSelect from '../operation/multi-select.vue'
+import PropsTool from '../props-tools/index.vue'
+import ResizeInfo from '../resize-info/index.vue'
 
 const { Layout } = useLayout()
 </script>
@@ -27,6 +29,8 @@ const { Layout } = useLayout()
       <XCanvas>
         <LineActionPanel />
         <MultiSelect />
+        <PropsTool />
+        <ResizeInfo />
         <XDrop
           v-for="item in state.nodes"
           v-bind="item"

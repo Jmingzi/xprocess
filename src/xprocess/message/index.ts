@@ -28,7 +28,7 @@ const Component = defineComponent({
     setTimeout(() => {
       top.value = `${(props.index - 1) * 50 + 20}px`
       opacity.value = 1
-    })
+    }, 100)
     setTimeout(() => {
       top.value = `${parseInt(top.value) - 50}px`
       queen.pop()

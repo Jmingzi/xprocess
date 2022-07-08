@@ -18,8 +18,6 @@ import {
 } from '../editor/state'
 import { SvgType, SVG_TYPE } from '../svg-type/base'
 import XText from '../text/index.vue'
-import ResizeInfo from '../resize-info/index.vue'
-import PropsTool from '../props-tools/index.vue'
 
 const { inCanvasRect, isStartInCanvas } = useCanvas()
 const { onMouseDown: handleMouseDown, registerCallback } = useDrag()
@@ -145,8 +143,6 @@ onMounted(() => {
     </div>
     <XText />
     <Operation />
-    <ResizeInfo />
-    <PropsTool />
   </div>
 </template>
 

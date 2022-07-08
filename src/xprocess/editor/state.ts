@@ -153,7 +153,11 @@ export function initState (data: Pick<State, 'nodes' | 'lines' | 'filename'>) {
   state.referenceLines = []
   state.selectedNodes = []
   state.currentNode = undefined
-  state.nodes = data.nodes
+  state.nodes = data.nodes.map(node => {
+    node.fromLines = node.fromLines.map(x => data.lines.find(y => x.id === y.id)!)
+    node.toLines = node.toLines.map(x => data.lines.find(y => x.id === y.id)!)
+    return node
+  })
   state.lines = data.lines
   state.filename = data.filename
 }
@@ -408,7 +412,7 @@ export function deleteLine (line: NodeLine) {
 
 export function copyAndCreateNode (node: XProcessNode) {
   const newItem = {
-    ...node,
+    ...JSON.parse(JSON.stringify(node)),
     ...createItem(),
     font: node.font,
     fontEditable: false,

@@ -234,7 +234,12 @@ export const handleOperationDotMouseMove = (evData: IEventHandlerData) => {
 
     // 挂载 toNode
     if (nearPoint.length) {
-      toNode.toLines.push(line)
+      const index = toNode.toLines.findIndex(x => x.id === line.id)
+      if (index > -1) {
+        toNode.toLines.splice(index, 1, line)
+      } else {
+        toNode.toLines.push(line)
+      }
       line.toNode = {
         nodeId: toNode.id,
         edge: toEdge,
