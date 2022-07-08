@@ -52,6 +52,10 @@ const onEdit = (item: Item) => {
 }
 
 const onDelete = async (item: Item) => {
+  const v = confirm('删除后不可恢复，确定要删除吗？')
+  if (!v) {
+    return
+  }
   await deleteById(item.id)
   await getList()
   if (route.params.id && Number(route.params.id) === item.id) {
@@ -90,7 +94,7 @@ const formatTime = (id: number) => {
       <div class="my-list">
         <div class="my-list__title">
           <img :src="iconLiuc" width="20" alt="">
-          <span>我创建的流程图</span>
+          <span>我创建的</span>
         </div>
         <div class="my-list__content">
           <ul>
@@ -101,7 +105,7 @@ const formatTime = (id: number) => {
                 active: +route.params.id === item.id
               }"
             >
-              <span>{{ item.filename }}</span>
+              <span>{{ item.filename }}.xs</span>
               <span class="my-list__operate">
                 <span class="my-list__time">{{ formatTime(item.id) }}</span>
 <!--                <img title="编辑" :src="iconEdit">-->
@@ -129,6 +133,7 @@ const formatTime = (id: number) => {
     height: @title-height;
     padding: 0 15px;
     background-color: #f7f8f9;
+    //background-color: rgba(@main-color, 0.1);
     border-bottom: 1px @border-color solid;
     img {
       margin-right: 10px;

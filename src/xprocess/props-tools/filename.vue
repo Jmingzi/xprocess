@@ -31,7 +31,7 @@ const onAlter = (e: InputEvent) => {
       @keyup.stop=""
       @keydown.stop=""
     >
-    <span>.xprocess</span>
+    <span>.xs</span>
   </div>
 </template>
 

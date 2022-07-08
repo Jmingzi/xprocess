@@ -6,13 +6,13 @@ import iconAdd from './icon-system/add.png'
 // import iconUnlock from './icon-system/unlock.png'
 import Filename from './filename.vue'
 import iconZhankai from './icon-system/zhankai.png'
-import { ref, inject, watchEffect, Ref } from 'vue'
+import { ref, inject, watchEffect, Ref, onMounted } from 'vue'
 import { IConfig } from '../'
 import { Message } from '../message'
 import { getStateRaw } from '../editor/state'
 
 const config = inject<Ref<IConfig>>('config')
-const showListPanel = ref(!config?.value.paramsId)
+const showListPanel = ref(false)
 const lock = ref(false)
 const onLock = () => {
   lock.value = true
@@ -40,7 +40,11 @@ watchEffect(() => {
     config?.value.api.list()
   }
 })
-
+onMounted(() => {
+  if (!config?.value.paramsId) {
+    showListPanel.value = true
+  }
+})
 document.body.addEventListener('click', () => {
   showListPanel.value = false
 })

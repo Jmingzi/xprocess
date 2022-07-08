@@ -64,15 +64,17 @@ export function useCanvas () {
           nextTick(() => {
             layoutSetScroll()
           })
-        })
+        }, { immediate: true })
 
         return () => {
           const showMovingItem = moving.value && !state.isStartInCanvas
           // console.log('showMovingItem', showMovingItem, moving.value, state.isStartInCanvas)
           return h(Canvas, {
             onMounted (minSizeWidth: number, minSizeHeight: number) {
+              // console.log(minSizeWidth, minSizeHeight)
               minSize.width = minSizeWidth
               minSize.height = minSizeHeight
+              calCanvasSize()
             },
             onRect (rect: DOMRect) {
               state.rect = rect.toJSON()
@@ -126,7 +128,7 @@ function calCanvasSize () {
   // todo 画布只能自动增加右下角宽高，如果要自增左上角，则所有元素的坐标都需要重新计算
   const width = maxRight - minLeft + CANVAS_PADDING
   const height = maxBottom - minTop + CANVAS_PADDING
-
+  // console.log(width, height, minSize.width, minSize.height)
   size.value.width = width < minSize.width ? minSize.width : width
   size.value.height = height < minSize.height ? minSize.height : height
 }
