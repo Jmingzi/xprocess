@@ -2,6 +2,7 @@ import Editor from './editor/index.vue'
 import { State, initState, state } from './editor/state'
 import { h, provide, SetupContext, Ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { Message } from './message'
 
 export type IConfig = {
   paramsId?: string
@@ -21,6 +22,7 @@ export function useProcess (config: Ref<IConfig>) {
   return {
     initState,
     canvasHasData,
+    Message,
     Process: {
       setup (props: any, context: SetupContext) {
         const route = useRoute()

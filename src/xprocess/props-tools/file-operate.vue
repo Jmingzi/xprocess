@@ -94,9 +94,9 @@ document.body.addEventListener('click', () => {
 <!--      <img :src="iconUnlock">-->
 <!--      <span>分享公开</span>-->
 <!--    </div>-->
-    <div class="file-operate__item" title="分享文件" @click="onShare">
-      <img :src="iconShare">
-    </div>
+<!--    <div class="file-operate__item" title="分享文件" @click="onShare">-->
+<!--      <img :src="iconShare">-->
+<!--    </div>-->
     <div class="file-operate__item" title="保存文件" @click="onSave">
       <img :src="iconSave">
     </div>

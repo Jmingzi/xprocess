@@ -4,7 +4,7 @@ import { save, share, getDetail, getUserList, deleteById } from '../api'
 import { useRouter, useRoute } from 'vue-router'
 import { reactive, ref, watch } from 'vue'
 import iconLiuc from './icon/liucheng.png'
-import iconEdit from './icon/edit.png'
+// import iconEdit from './icon/edit.png'
 import iconDelete from './icon/delete.png'
 
 const route = useRoute()
@@ -34,7 +34,7 @@ const config = ref({
     addNew: onAdd
   }
 })
-const { Process, initState, canvasHasData } = useProcess(config)
+const { Process, initState, canvasHasData, Message } = useProcess(config)
 
 const onEdit = (item: Item) => {
   if (String(item.id) === route.params.id) {
@@ -46,6 +46,7 @@ const onEdit = (item: Item) => {
     //   return
     // }
   }
+  Message.info(`画布切换至【${item.filename}】`)
   initState(item)
   router.push(`/editor/${item.id}`)
 }

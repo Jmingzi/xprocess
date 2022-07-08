@@ -1,4 +1,4 @@
-import { defineComponent, h, ref, createApp, App, nextTick } from 'vue'
+import { defineComponent, h, ref, createApp, App } from 'vue'
 import iconSuccess from './icon/success.png'
 import iconError from './icon/error.png'
 import iconInfo from './icon/info.png'
@@ -23,24 +23,27 @@ const Component = defineComponent({
     // @ts-ignore
     const props: { option: IOption, div: HTMLDivElement, index: number } = p
     const show = ref(true)
-    const top = ref('-100%')
-    nextTick(() => {
-      top.value = `${(props.index - 1) * 50 + 20}px`
-    })
-
+    const top = ref('0')
+    const opacity = ref(0)
     setTimeout(() => {
-      top.value = '-100%'
-      queen.splice(props.index - 1, 1)
+      top.value = `${(props.index - 1) * 50 + 20}px`
+      opacity.value = 1
+    })
+    setTimeout(() => {
+      top.value = `${parseInt(top.value) - 50}px`
+      queen.pop()
+      opacity.value = 0
       setTimeout(() => {
         show.value = false
         document.body.removeChild(props.div)
       }, 500)
-    }, 3000 + 500)
+    }, 2000 + 500)
 
     return () => h('div', {
       class: `message ${props.option.type}`,
       style: {
-        top: top.value
+        top: top.value,
+        opacity: opacity.value
       }
     }, [
       h('img', { src: icon[props.option.type], width: 15 }),
