@@ -13,15 +13,15 @@ const handleScroll = () => {
   state.scrollTop = box.scrollTop
   state.scrollLeft = box.scrollLeft
 }
-provide('layout', state)
-
-onMounted(() => {
+const setScroll = (top = state.scrollTop, left = state.scrollLeft) => {
   const box = el.value
   if (box) {
-    box.scrollTop = state.scrollTop
-    box.scrollLeft = state.scrollLeft
+    box.scrollTop = top
+    box.scrollLeft = left
   }
-})
+}
+provide('layout', state)
+provide('layoutSetScroll', setScroll)
 </script>
 
 <template>

@@ -18,7 +18,7 @@ const state = reactive<{
 })
 const getList = async () => {
   const data = await getUserList<{ [id: string]: Item }>()
-  state.list = Object.values(data)
+  state.list = Object.values(data).reverse()
 }
 
 const onAdd = () => {
@@ -76,6 +76,11 @@ watch(() => route.params.id, (id) => {
   }
   config.value.paramsId = id as string
 }, { immediate: true })
+
+const formatTime = (id: number) => {
+  const d = new Date(id)
+  return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`
+}
 </script>
 
 <template>
@@ -97,7 +102,8 @@ watch(() => route.params.id, (id) => {
             >
               <span>{{ item.filename }}</span>
               <span class="my-list__operate">
-                <img title="编辑" :src="iconEdit">
+                <span class="my-list__time">{{ formatTime(item.id) }}</span>
+<!--                <img title="编辑" :src="iconEdit">-->
                 <img title="删除" :src="iconDelete" @click.stop="onDelete(item)">
               </span>
             </li>
@@ -158,8 +164,14 @@ watch(() => route.params.id, (id) => {
       margin-top: 3px;
     }
   }
+  &__time {
+    font-size: 12px;
+    color: #999999;
+  }
   &__operate {
     //float: right;
+    display: flex;
+    align-items: center;
   }
 }
 </style>

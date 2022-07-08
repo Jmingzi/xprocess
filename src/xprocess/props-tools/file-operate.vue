@@ -10,8 +10,8 @@ import { ref, inject, watchEffect, Ref } from 'vue'
 import { IConfig } from '../'
 import { Message } from '../message'
 import { getStateRaw } from '../editor/state'
-const config = inject<Ref<IConfig>>('config')
 
+const config = inject<Ref<IConfig>>('config')
 const showListPanel = ref(!config?.value.paramsId)
 const lock = ref(false)
 const onLock = () => {
@@ -56,7 +56,9 @@ document.body.addEventListener('click', () => {
       <slot name="list-panel" />
     </div>
   </transition>
+
   <Filename />
+
   <div class="file-operate">
     <div
       class="file-operate__item"
