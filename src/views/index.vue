@@ -34,18 +34,18 @@ const config = ref({
     addNew: onAdd
   }
 })
-const { Process, initState, canvasHasData, Message } = useProcess(config)
+const { Process, initState, stateCanvasDataChange, Message } = useProcess(config)
 
 const onEdit = (item: Item) => {
   if (String(item.id) === route.params.id) {
     return
   }
-  if (canvasHasData.value) {
-    // const value = confirm('该操作会覆盖现有画布的元素且不可恢复，确定这样做吗？')
-    // if (!value){
-    //   return
-    // }
-  }
+  // if (stateCanvasDataChange.value) {
+  //   const value = confirm('该操作会覆盖您的更改，且不可恢复，确定这样做吗？')
+  //   if (!value){
+  //     return
+  //   }
+  // }
   Message.info(`画布切换至【${item.filename}】`)
   initState(item)
   router.push(`/editor/${item.id}`)
@@ -58,8 +58,10 @@ const onDelete = async (item: Item) => {
   }
   await deleteById(item.id)
   await getList()
+  Message.success('删除成功')
   if (route.params.id && Number(route.params.id) === item.id) {
     onAdd()
+    Message.info('已为您重置画布')
   }
 }
 

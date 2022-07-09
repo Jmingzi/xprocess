@@ -1,4 +1,4 @@
-import { computed, reactive, toRaw, ref } from 'vue'
+import { computed, reactive, toRaw, ref, watch } from 'vue'
 import { IEventHandlerData } from '../hooks/use-drag'
 import {
   DEFAULT_PROPS,
@@ -89,6 +89,7 @@ export type State = {
   selectedNodes: XProcessNode[]
 }
 
+export const stateCanvasDataChange = ref(false)
 export const state = reactive<State>({
   filename: '',
   currentNode: undefined,
@@ -153,6 +154,7 @@ export function initState (data: Pick<State, 'nodes' | 'lines' | 'filename'>) {
   state.referenceLines = []
   state.selectedNodes = []
   state.currentNode = undefined
+  stateCanvasDataChange.value = false
   state.nodes = data.nodes.map(node => {
     node.fromLines = node.fromLines.map(x => data.lines.find(y => x.id === y.id)!)
     node.toLines = node.toLines.map(x => data.lines.find(y => x.id === y.id)!)
@@ -160,6 +162,11 @@ export function initState (data: Pick<State, 'nodes' | 'lines' | 'filename'>) {
   })
   state.lines = data.lines
   state.filename = data.filename
+
+  // const stop = watch(() => [state.nodes, state.lines], () => {
+  //   stateCanvasDataChange.value = true
+  //   stop()
+  // }, { deep: true })
 }
 
 export function getStateRaw () {
