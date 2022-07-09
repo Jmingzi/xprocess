@@ -46,6 +46,10 @@ const props = defineProps<{
 
 provide('type', props.type)
 provide('nodeId', props.id)
+/**
+ * 仅仅提供给 line.vue 文件使用
+ */
+provide('currentLine', currentLine)
 
 const getLinePosition = (start: number[], end: number[]) => {
   // x, y 是图形左上角的点
