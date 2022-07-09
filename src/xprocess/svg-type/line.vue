@@ -1,64 +1,26 @@
 <script lang="ts">
-import { changeCase, IPropsLine, clearCustomProps, STROKE_WIDTH } from './base'
-import { h } from 'vue'
-import { getDirection, getEdge } from '../editor/state'
+import { changeCase, IPropsLine, clearCustomProps } from './base'
+import { h, inject, Ref } from 'vue'
+import { getLineInfo } from './utils/line'
 
 export default function Line (props: IPropsLine) {
   const {
-    strokeWidth = STROKE_WIDTH,
-    lineType = 'line',
-    start = [],
-    end = [],
-    fromNode,
-    toNode
-  } = props
-  const isStraight = lineType === 'line'
-  const isPath = lineType === 'path'
-  const isPolyline = lineType === 'polyline'
-  // start, end 是线条矩形的左上角和右下角
-  // 线条方向
-  const { isLeftTop, isLeftBottom, isRightTop, isRightBottom } = getDirection(start, end)
-  // 宽高
-  let width = Math.abs(start[0] - end[0])
-  let height = Math.abs(start[1] - end[1])
+    x,
+    y,
+    endY,
+    endX,
+    x1,
+    x2,
+    isPolyline,
+    isStraight,
+    isPath,
+    lineSegment
+  } = getLineInfo(props)
 
-  // 折叠宽度和高度
-  if (width < 5) {
-    width = 0
-  }
-  if (height < 5) {
-    height = 0
-  }
-
-  // 默认起点
-  let x = strokeWidth / 2
-  let y = strokeWidth / 2
-  // 默认终点
-  let endX = x + width
-  let endY = y + height
-
-  const fromEdge = getEdge(fromNode.edge)
-  const toEdge = toNode.nodeId > 0 ? getEdge(toNode.edge) : null
-  // todo 折线起点和终点都在同一条方向边
-  // const bothTop = fromEdge.isTop && toEdge?.isTop
-  // const bothBottom = fromEdge.isBottom && toEdge?.isBottom
-  // if (isPolyline) {
-  //   if (bothTop || bothBottom) {
-  //     // 需要增加高度
-  //     height += 40
-  //     endY += bothBottom ? 40 : -40
-  //   }
-  // }
-
-  if (isRightTop) {
-    [y, endY] = [endY, y]
-  } else if (isLeftTop) {
-    [x, y, endX, endY] = [endX, endY, x, y]
-  } else if (isLeftBottom) {
-    [x, endX] = [endX, x]
-  }
+  const currentLine = inject<Ref<{ id: number }>>('currentLine')
 
   let lineVnode
+  let activeCircle
   if (isStraight) {
     lineVnode = h('line', {
       ...changeCase(clearCustomProps(props, ['start', 'end', 'type'])),
@@ -66,87 +28,35 @@ export default function Line (props: IPropsLine) {
       y1: y,
       x2: endX,
       y2: endY,
-      'marker-end': 'url(#triangle)'
+      markerEnd: 'url(#triangle)'
     })
-  }
-
-  if (isPolyline) {
-    let x1 = ''
-    let x2 = ''
-    if (fromEdge.isLeft || fromEdge.isRight) {
-      // 水平方向
-      if (
-        (!toEdge && (width > height)) ||
-        (toEdge?.isLeft || toEdge?.isRight)
-      ) {
-        // 横着的矩形
-        // 需要 2 个拐点
-        if (fromEdge.isRight) {
-          x1 = `${x + width / 2} ${y},`
-          x2 = `${x + width / 2} ${endY},`
-        } else {
-          x1 = `${x - width / 2} ${y},`
-          x2 = `${x - width / 2} ${endY},`
-        }
-      } else {
-        // 竖着的矩形
-        // 只需要 1 个
-        x1 = `${endX} ${y},`
-        x2 = ''
-      }
-    } else if (fromEdge.isTop || fromEdge.isBottom) {
-      // 垂直方向
-      if (
-        (!toEdge && width < height) ||
-        (toEdge?.isTop || toEdge?.isBottom)
-      ) {
-        // if (bothTop || bothBottom) {
-        //   // 终点不是右下角
-        //   x1 = `${x} ${y + height},`
-        //   x2 = `${x + width} ${endY}`
-        //   endY += bothBottom ? -40 : 40
-        // } else
-        if (fromEdge.isBottom) {
-          x1 = `${x} ${y + height / 2},`
-          x2 = `${endX} ${y + height / 2},`
-        } else {
-          x1 = `${x} ${y - height / 2},`
-          x2 = `${endX} ${y - height / 2},`
-        }
-      } else {
-        x1 = `${x} ${endY},`
-        x2 = ''
-      }
-    }
-
-    const points = `${x} ${y}, ${x1 + x2} ${endX} ${endY}`
-    const p = {
+  } else if (isPolyline) {
+    const points = `${x} ${y}, ${x1.join(' ')},${x2.length ? ` ${x2.join(' ')},` : ''} ${endX} ${endY}`
+    lineVnode = h('polyline', changeCase({
       ...clearCustomProps(props, ['start', 'end', 'type']),
       fill: 'transparent',
       points,
       markerEnd: 'url(#triangle)',
       strokeLinejoin: 'round'
+    }))
+    // 高亮当前连线
+    if (currentLine?.value?.id === props.id) {
+      // 获取线段的中点
+      activeCircle = lineSegment
+        .map(([x, y]) => {
+          const w = y[0] - x[0]
+          const h = y[1] - x[1]
+          return [x[0] + w / 2, x[1] + h / 2]
+        })
+        .map(([cx, cy]) => h('circle', { cx, cy, r: 4, fill: 'rgba(77,143,239,0.7)' }))
     }
-    lineVnode = h('polyline', changeCase(p))
-  }
-
-  if (isPath) {
-    const getDefaultControl = (): number[] => [x + width / 2, y, x + width / 2, y + height]
-    // 默认的线条控制点
-    let [
-      startControlX,
-      startControlY,
-      endControlX,
-      endControlY
-    ] = getDefaultControl()
-
-    const result = {
+  } else if (isPath) {
+    lineVnode = h('path', changeCase({
       ...props,
       x,
       y,
-      d: `M${x} ${y} C ${startControlX} ${startControlY}, ${endControlX} ${endControlY}, ${endX} ${endY}`
-    }
-    return h('path', changeCase(result))
+      d: `M${x} ${y} C ${x1.join(' ')}, ${x2.join(' ')}, ${endX} ${endY}`
+    }))
   }
 
   const marker = h('marker', {
@@ -163,6 +73,7 @@ export default function Line (props: IPropsLine) {
       style: `fill: ${props.stroke}`
     })
   ])
-  return [marker, lineVnode]
+
+  return [marker, lineVnode, activeCircle]
 }
 </script>

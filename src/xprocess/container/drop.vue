@@ -14,10 +14,12 @@ import {
   DEFAULT_FONT,
   XProcessNode,
   NodeLine,
-  canvasNodeMoving
+  canvasNodeMoving,
+  getPointFromCanvas
 } from '../editor/state'
 import { SvgType, SVG_TYPE } from '../svg-type/base'
 import XText from '../text/index.vue'
+import { getLineInfo, onSegment } from '../svg-type/utils/line'
 
 const { inCanvasRect, isStartInCanvas } = useCanvas()
 const { onMouseDown: handleMouseDown, registerCallback } = useDrag()
@@ -45,28 +47,40 @@ const props = defineProps<{
 provide('type', props.type)
 provide('nodeId', props.id)
 
+const getLinePosition = (start: number[], end: number[]) => {
+  // x, y 是图形左上角的点
+  let x: number = start[0]
+  let y: number = start[1]
+  // start, end 是线条的起点和终点
+  // 需要转换为左上角点的位置
+  const { isLeftTop, isLeftBottom, isRightTop, isRightBottom } = getDirection(start, end)
+  if (isRightBottom) {
+    x = start[0]
+    y = start[1]
+  } else if (isRightTop) {
+    x = start[0]
+    y = end[1]
+  } else if (isLeftTop) {
+    x = end[0]
+    y = end[1]
+  } else if (isLeftBottom) {
+    x = end[0]
+    y = start[1]
+  }
+  return {
+    x, y
+  }
+}
+
 const position = computed(() => {
   const { start, end, type, zIndex } = props
   // x, y 是图形左上角的点
   let x: number = start[0]
   let y: number = start[1]
   if (type === SVG_TYPE.LINE) {
-    // start, end 是线条的起点和终点
-    // 需要转换为左上角点的位置
-    const { isLeftTop, isLeftBottom, isRightTop, isRightBottom } = getDirection(start, end)
-    if (isRightBottom) {
-      x = start[0]
-      y = start[1]
-    } else if (isRightTop) {
-      x = start[0]
-      y = end[1]
-    } else if (isLeftTop) {
-      x = end[0]
-      y = end[1]
-    } else if (isLeftBottom) {
-      x = end[0]
-      y = start[1]
-    }
+    const p = getLinePosition(start, end)
+    x = p.x
+    y = p.y
   }
 
   return {
@@ -85,7 +99,25 @@ const onMouseDown = (e: MouseEvent) => {
     setCurrentLine()
     isStartInCanvas.value = true
   } else if (isNodeLine(props.id)) {
-    setCurrentLine(props.id)
+    // 判断当前点击位置在线条上
+    const line = editorState.lines.find(x => x.id === props.id)
+    if (line) {
+      const { isPolyline, lineSegment } = getLineInfo(line)
+      const mousePoint = getPointFromCanvas([e.clientX, e.clientY])
+      // 鼠标点击坐标转换为当前线条的相对坐标
+      const linePosition = getLinePosition(line.start, line.end)
+      mousePoint[0] -= linePosition.x
+      mousePoint[1] -= linePosition.y
+      if (isPolyline) {
+        // 当前点击点是否在线段上
+        if (lineSegment.some(segment => onSegment(segment[0], segment[1], mousePoint))) {
+          setCurrentLine(props.id)
+          // console.log('set current line.')
+        } else {
+          setCurrentLine()
+        }
+      }
+    }
     setCurrentNode()
   }
 }

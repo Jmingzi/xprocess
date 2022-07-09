@@ -1,7 +1,6 @@
 <script lang="ts">
 import { h, SetupContext, VNodeChild } from 'vue'
 import { STROKE_WIDTH, SvgType } from './base'
-// import { isNodeLine } from '../views/state'
 
 export default function SvgWrapper (props: {
   width: number,

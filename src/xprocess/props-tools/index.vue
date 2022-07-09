@@ -19,10 +19,11 @@ const style = computed(() => {
   // const nodeHeight = Math.abs(node.start[1] - node.end[1])
   const halfX = (elRect.value.width - nodeWidth) / 2
   // 线条的起点不一定是左上角
-  const start = Math.min(node.start[0], node.end[0])
+  const left = Math.min(node.start[0], node.end[0])
+  const top = Math.min(node.start[1], node.end[1])
   return {
-    left: `${start - halfX}px`,
-    top: `${-80 + node.start[1]}px`
+    left: `${left - halfX}px`,
+    top: `${-80 + top}px`
   }
 })
 

@@ -9,7 +9,13 @@ import FileOperate from '../props-tools/file-operate.vue'
 import MultiSelect from '../operation/multi-select.vue'
 import PropsTool from '../props-tools/index.vue'
 import ResizeInfo from '../resize-info/index.vue'
+import {provide} from "vue";
+import {currentLine} from '../operation/state'
 
+/**
+ * 仅仅提供给 line.vue 文件使用
+ */
+provide('currentLine', currentLine)
 const { Layout } = useLayout()
 </script>
 
