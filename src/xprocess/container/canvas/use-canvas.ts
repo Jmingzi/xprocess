@@ -40,6 +40,7 @@ export function useCanvas () {
   return {
     inCanvasRect,
     inCanvasDOM,
+    calCanvasSize,
 
     Canvas: {
       setup (props: any, ctx: SetupContext) {
@@ -48,23 +49,10 @@ export function useCanvas () {
         const layoutSetScroll = inject<(scrollTop?: number, scrollLeft?: number) => void>('layoutSetScroll', () => {})
         provide('page', size)
 
-        // watch(() => [size.value.width, size.value.height], ([nW, nH], [oW, oH]) => {
-        //   if ((nH !== oH || nW !== oW) && oW !== 0 && oH !== 0) {
-        //     const x = nW - oW
-        //     const y = nH - oH
-        //     layoutSetScroll(layout.scrollTop + y, layout.scrollLeft + x)
-        //     // console.log('layout scroll', x, y)
-        //   }
-        // })
-
-        watch(() => editorState.nodes.length, () => {
-          // 设置画布大小
-          calCanvasSize()
-          // 设置画布滚动条
-          nextTick(() => {
-            layoutSetScroll()
-          })
-        }, { immediate: true })
+        // watch(() => editorState.nodes.length, () => {
+        //   // 设置画布大小
+        //   calCanvasSize()
+        // }, { immediate: true, deep: true })
 
         return () => {
           const showMovingItem = moving.value && !state.isStartInCanvas
@@ -75,6 +63,10 @@ export function useCanvas () {
               minSize.width = minSizeWidth
               minSize.height = minSizeHeight
               calCanvasSize()
+              // 设置画布滚动条
+              nextTick(() => {
+                layoutSetScroll()
+              })
             },
             onRect (rect: DOMRect) {
               state.rect = rect.toJSON()
@@ -126,8 +118,8 @@ function calCanvasSize () {
     }
   })
   // todo 画布只能自动增加右下角宽高，如果要自增左上角，则所有元素的坐标都需要重新计算
-  const width = maxRight - minLeft + CANVAS_PADDING
-  const height = maxBottom - minTop + CANVAS_PADDING
+  const width = maxRight - minLeft + CANVAS_PADDING * 2
+  const height = maxBottom - minTop + CANVAS_PADDING * 2
   // console.log(width, height, minSize.width, minSize.height)
   size.value.width = width < minSize.width ? minSize.width : width
   size.value.height = height < minSize.height ? minSize.height : height

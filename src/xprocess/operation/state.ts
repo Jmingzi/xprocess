@@ -15,7 +15,9 @@ import {
   deleteNode,
   deleteLine,
   // DEFAULT_FONT,
-  copyAndCreateNode, moveNodeLines
+  copyAndCreateNode,
+  moveNodeLines,
+  onCalCanvasSize
 } from '../editor/state'
 import { DEFAULT_PROPS, SVG_TYPE } from '../svg-type/base'
 import { IEventHandlerData } from '../hooks/use-drag'
@@ -466,4 +468,8 @@ export const handleOperationSizeMouseMove = (evData: IEventHandlerData) => {
   }
 
   moveNodeLines(currentNode)
+}
+
+export function handleOperationSizeMouseUp () {
+  onCalCanvasSize()
 }

@@ -18,7 +18,7 @@ import {
   DEFAULT_FILENAME
 } from '../constant'
 
-const { rect: canvasRect } = useCanvas()
+const { rect: canvasRect, calCanvasSize } = useCanvas()
 
 type IBase = {
   id: number
@@ -197,8 +197,8 @@ export function onDrop (data: IEventHandlerData, node: LocalListItem) {
   const item = createItem()
   const localItem = state.localComponentList.find(x => x.type === node.type) as LocalListItemRect
   const newItem: XProcessNode = {
-    ...item,
     ...localItem,
+    ...item,
     start: getPointFromCanvas([data.endTopLeftX, data.endTopLeftY]),
     end: getPointFromCanvas([
       data.endTopLeftX + localItem.end[0] * ENLARGE_TIMES_FROM_LOCAL_SIZE,
@@ -217,6 +217,9 @@ export function onDrop (data: IEventHandlerData, node: LocalListItem) {
   state.selectedNodes = []
   state.nodes.push(newItem)
   setCurrentNode(newItem.id)
+
+  // 计算画布尺寸
+  calCanvasSize()
   return newItem
 }
 
@@ -407,6 +410,8 @@ export function deleteNode (node: XProcessNode) {
   // 删除节点
   removeNode(node.id)
   setCurrentNode()
+  // 计算画布尺寸
+  calCanvasSize()
 }
 
 export function deleteLine (line: NodeLine) {
@@ -421,7 +426,9 @@ export function copyAndCreateNode (node: XProcessNode) {
   const newItem = {
     ...JSON.parse(JSON.stringify(node)),
     ...createItem(),
-    font: node.font,
+    font: {
+      ...node.font
+    },
     fontEditable: false,
     fromLines: [],
     toLines: [],
@@ -480,3 +487,5 @@ export function handleMultiNodesMove (copySelectedNodes: XProcessNode[], delta: 
 export function handleMultiNodesUp () {
   preventCanvasClickToggle()
 }
+
+export const onCalCanvasSize = calCanvasSize

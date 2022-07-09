@@ -9,6 +9,7 @@ import {
   handleOperationDotMouseUp,
   handleOperationSizeMouseDown,
   handleOperationSizeMouseMove,
+  handleOperationSizeMouseUp,
   Edge,
   DirectionString,
 } from './state'
@@ -58,6 +59,10 @@ watchEffect(() => {
   if (refSizeEl.value) {
     registerCallback('mousemove', {
       handler: handleOperationSizeMouseMove,
+      draggedWrapperEl: refSizeEl.value!
+    })
+    registerCallback('mouseup', {
+      handler: handleOperationSizeMouseUp,
       draggedWrapperEl: refSizeEl.value!
     })
   }

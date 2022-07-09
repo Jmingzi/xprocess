@@ -21,7 +21,7 @@ import { SvgType, SVG_TYPE } from '../svg-type/base'
 import XText from '../text/index.vue'
 import { getLineInfo, onSegment } from '../svg-type/utils/line'
 
-const { inCanvasRect, isStartInCanvas } = useCanvas()
+const { inCanvasRect, isStartInCanvas, calCanvasSize } = useCanvas()
 const { onMouseDown: handleMouseDown, registerCallback } = useDrag()
 const elRef = ref<HTMLElement | null>(null)
 const emits = defineEmits(['move', 'drop'])
@@ -157,6 +157,8 @@ onMounted(() => {
     handler: () => {
       canvasNodeMoving.value = false
       editorState.referenceLines = []
+      // 计算画布尺寸
+      calCanvasSize()
     },
     draggedWrapperEl: elRef.value!
   })

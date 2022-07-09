@@ -18,6 +18,7 @@ const onSelect = (color: string) => {
   latest.value.splice(10, latest.value.length - 10)
   emit('update:modelValue', color)
   localStorage.setItem(key, latest.value.join('_'))
+  show.value = false
 }
 const show = ref(false)
 const left = ref(0)
@@ -47,7 +48,10 @@ const onClick = (e: MouseEvent) => {
         top: `${top}px`
       }"
     >
-      <div class="color-pick__transparent">
+      <div
+        class="color-pick__transparent"
+        @click="onSelect('transparent')"
+      >
         <div class="color-pick__group-item" />
         <span>透明</span>
       </div>
