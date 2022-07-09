@@ -93,10 +93,25 @@ export const changeCase = (props: { [k in string]: any }) => {
   return newProps
 }
 
+const removeKeys = [
+  'fromLines',
+  'toLines',
+  'lineType',
+  'fromNode',
+  'toNode',
+  'from-lines',
+  'to-lines',
+  'line-type',
+  'from-node',
+  'to-node',
+  'font',
+  'z-index',
+  'zIndex'
+]
 export const clearCustomProps = (obj: { [k in string]: any }, excludePropsArr: string[]) => {
   const newObj: { [k in string]: any } = {}
   Object.keys(obj).forEach(key => {
-    if (!['from-lines', 'to-lines'].concat(excludePropsArr).includes(key)) {
+    if (!removeKeys.concat(excludePropsArr).includes(key)) {
       newObj[key] = obj[key]
     }
   })
