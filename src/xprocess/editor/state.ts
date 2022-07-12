@@ -219,7 +219,7 @@ export function onDrop (data: IEventHandlerData, node: LocalListItem) {
   setCurrentNode(newItem.id)
 
   // 计算画布尺寸
-  calCanvasSize()
+  // calCanvasSize()
   return newItem
 }
 
@@ -411,7 +411,7 @@ export function deleteNode (node: XProcessNode) {
   removeNode(node.id)
   setCurrentNode()
   // 计算画布尺寸
-  calCanvasSize()
+  // calCanvasSize()
 }
 
 export function deleteLine (line: NodeLine) {

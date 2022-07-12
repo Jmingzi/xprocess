@@ -17,7 +17,8 @@ import {
   // DEFAULT_FONT,
   copyAndCreateNode,
   moveNodeLines,
-  onCalCanvasSize
+  onCalCanvasSize,
+  getReferenceLine
 } from '../editor/state'
 import { DEFAULT_PROPS, SVG_TYPE } from '../svg-type/base'
 import { IEventHandlerData } from '../hooks/use-drag'
@@ -289,7 +290,7 @@ document.body.addEventListener('click', (e: MouseEvent) => {
     preventCanvasClick(false)
     return
   }
-  // console.log('canvas click')
+  console.log('canvas click: 清空选择状态')
   // 置空多选
   editorState.selectedNodes = []
   const line = currentLine.value
@@ -467,9 +468,12 @@ export const handleOperationSizeMouseMove = (evData: IEventHandlerData) => {
     ]
   }
 
+  // 先生成参考线，并自动吸附
+  getReferenceLine(copyNode)
   moveNodeLines(currentNode)
 }
 
 export function handleOperationSizeMouseUp () {
+  editorState.referenceLines = []
   onCalCanvasSize()
 }

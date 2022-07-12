@@ -36,7 +36,7 @@ const handleChange = (e: InputEvent, field: any, isFontStyle: Boolean) => {
       input,
       select
     }"
-    v-if="!(isFill && isNodeLine(node.id))"
+    v-if="!(isFill && isNodeLine(node?.id))"
   >
     <slot
       :font="font"

@@ -25,10 +25,12 @@ const refDotEl = ref<HTMLElement | null>()
 const refSizeEls = ref<Array<HTMLElement>>([])
 const refSizeEl = ref<HTMLElement | null>()
 const hasOperation = computed(() => type !== SVG_TYPE.LINE)
-const isActive = computed(() =>
-  editorState?.currentNode?.id === nodeId ||
-  (isMultiSelect.value && editorState.selectedNodes.some(x => x.id === nodeId))
-)
+// const isActive = computed(() =>
+//   editorState?.currentNode?.id === nodeId ||
+//   (isMultiSelect.value && editorState.selectedNodes.some(x => x.id === nodeId))
+// )
+const isActive = computed(() => editorState?.currentNode?.id === nodeId && !isMultiSelect.value)
+const isActiveMultiSelected = computed(() => isMultiSelect.value && editorState.selectedNodes.some(x => x.id === nodeId))
 
 const onOperationDotMouseDown = (e: MouseEvent, i: number, edgeString: Edge) => {
   handleOperationDotMouseDown(e, nodeId!, edgeString, e => {
@@ -73,7 +75,7 @@ watchEffect(() => {
   <div
     class="xprocess__drop-wrap"
     :class="{
-      active: isActive && !isMultiSelect,
+      active: isActive || isActiveMultiSelected,
       [type]: true
     }"
   >

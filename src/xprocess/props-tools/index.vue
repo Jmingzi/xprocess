@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { state as editorState, canvasNodeMoving } from '../editor/state'
+import { state as editorState, canvasNodeMoving, isMultiSelect } from '../editor/state'
 import { currentLine } from '../operation/state'
 import { computed, watchEffect, ref, nextTick } from 'vue'
 import TextTool from './text-tool.vue'
@@ -57,7 +57,7 @@ watchEffect(() => {
 <template>
   <transition name="tools">
     <div
-      v-if="show"
+      v-if="show && !isMultiSelect"
       ref="refEl"
       class="props-tool"
       :style="style"

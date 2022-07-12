@@ -133,6 +133,9 @@ const handlerMove: IEventHandler = (data, e) => {
   }
 }
 
+const onClick = () => {
+}
+
 const onDoubleClick = () => {
   const createFont = (node: XProcessNode | NodeLine) => {
     // 创建空的文本内容
@@ -170,7 +173,7 @@ onMounted(() => {
     :style="position"
     class="drop"
     @mousedown="onMouseDown"
-    @click.stop=""
+    @click.stop="onClick"
     @dblclick="onDoubleClick"
   >
     <div

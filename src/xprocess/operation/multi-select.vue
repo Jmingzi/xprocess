@@ -36,11 +36,12 @@ const style = computed(() => {
     }
   })
 
+  const padding = 20
   return {
-    left: `${minLeft}px`,
-    top: `${minTop}px`,
-    width: `${maxRight - minLeft}px`,
-    height: `${maxBottom - minTop}px`
+    left: `${minLeft - padding}px`,
+    top: `${minTop - padding}px`,
+    width: `${maxRight - minLeft + padding * 2}px`,
+    height: `${maxBottom - minTop + padding * 2}px`
   }
 })
 
@@ -81,10 +82,14 @@ watchEffect(() => {
 </template>
 
 <style lang="less">
+@import '../var';
 .multi-select {
   position: absolute;
   z-index: 0;
-  border: 1px #3b8ff6 solid;
+  border: 1px @main-color solid;
   cursor: move;
+  &:hover {
+    box-shadow: @shadow-hover;
+  }
 }
 </style>
