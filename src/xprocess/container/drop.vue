@@ -50,6 +50,7 @@ provide('nodeId', props.id)
  */
 provide('currentLine', currentLine)
 
+const isActive = computed(() => editorState.currentNode?.id === props.id || editorState.selectedNodes.some(x => x.id === props.id))
 const getLinePosition = (start: number[], end: number[]) => {
   // x, y 是图形左上角的点
   let x: number = start[0]
@@ -125,6 +126,13 @@ const onMouseDown = (e: MouseEvent) => {
   }
 }
 
+const onMouseOver = () => {
+  editorState.hoverNode = editorState.nodes.find(x => x.id === props.id)
+}
+const onMouseOut = () => {
+  editorState.hoverNode = undefined
+}
+
 const handlerMove: IEventHandler = (data, e) => {
   if (inCanvasRect(e)) {
     canvasNodeMoving.value = true
@@ -171,7 +179,12 @@ onMounted(() => {
   <div
     :style="position"
     class="drop"
+    :class="{
+      active: isActive
+    }"
     @mousedown="onMouseDown"
+    @mouseover="onMouseOver"
+    @mouseout="onMouseOut"
     @click.stop="onClick"
     @dblclick="onDoubleClick"
   >
@@ -186,10 +199,12 @@ onMounted(() => {
 </template>
 
 <style lang="less">
+@import '../var';
 .drop {
   position: absolute;
-  &:hover .xprocess__drop-wrap-dot {
-    display: block!important;
+  border: 1px transparent solid;
+  &.active {
+    border-color: @main-color;
   }
   &__node {
     display: flex;

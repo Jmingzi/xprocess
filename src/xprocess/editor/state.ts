@@ -91,6 +91,7 @@ type ReferenceLine = ReferenceLineCol | ReferenceLineRow
 export type State = {
   filename: string
   currentNode?: XProcessNode
+  hoverNode?: XProcessNode
   localComponentList: LocalListItem[]
   nodes: XProcessNode[]
   lines: NodeLine[],
@@ -102,6 +103,9 @@ export const stateCanvasDataChange = ref(false)
 export const state = reactive<State>({
   filename: '',
   currentNode: undefined,
+  // 节点的 hover 用 js 实现，因为操作面板放到外层了
+  // hover 时需要展示 dot 操作
+  hoverNode: undefined,
   referenceLines: [],
   selectedNodes: [],
   localComponentList: [
