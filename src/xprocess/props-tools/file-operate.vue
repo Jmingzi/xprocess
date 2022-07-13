@@ -157,8 +157,7 @@ document.body.addEventListener('click', () => {
   box-shadow: @shadow-tools;
   border: 1px @border-color solid;
   border-radius: 4px;
-  bottom: -10px;
-  transform: translateY(100%);
+  bottom: -510px;
   right: 0;
   pointer-events: all;
   &-icon {
@@ -171,12 +170,12 @@ document.body.addEventListener('click', () => {
 
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.5s ease;
+  transition: all 0.3s ease-in-out;
 }
 
 .list-enter-from,
 .list-leave-to {
   opacity: 0;
-  transform: translateY(-50%);
+  transform: translateX(100%);
 }
 </style>
