@@ -35,15 +35,15 @@ watchEffect(() => {
 
 <template>
   <div
-    v-if="!!lineUpActionPanelData"
+    v-show="!!lineUpActionPanelData"
     ref="refEl"
     class="xprocess__over-panel"
     :style="style"
-    @click.stop=""
   >
     <div
       v-for="item in editorState.localComponentList"
-      @click="handleCreateToNode(item)"
+      @click.stop="handleCreateToNode(item)"
+      class="xprocess__over-panel-item"
     >
       <SvgType v-bind="item" />
     </div>

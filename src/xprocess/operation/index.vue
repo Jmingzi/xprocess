@@ -14,8 +14,9 @@ import {
   DirectionString,
 } from './state'
 
-const type = inject<SvgType>('type')
-const nodeId = inject<number>('nodeId')
+// const type = inject<SvgType>('type')
+// const nodeId = inject<number>('nodeId')
+const nodeId = computed(() => editorState.currentNode?.id)
 const lineDot: Edge[] = ['top', 'right', 'bottom', 'left']
 const sizeDot = ['leftTop', 'rightTop', 'rightBottom', 'leftBottom']
 const { onMouseDown, registerCallback } = useDrag()
@@ -24,16 +25,29 @@ const refDotEls = ref<Array<HTMLElement>>([])
 const refDotEl = ref<HTMLElement | null>()
 const refSizeEls = ref<Array<HTMLElement>>([])
 const refSizeEl = ref<HTMLElement | null>()
-const hasOperation = computed(() => type !== SVG_TYPE.LINE)
+const hasOperation = computed(() => editorState.currentNode?.type !== SVG_TYPE.LINE)
 // const isActive = computed(() =>
 //   editorState?.currentNode?.id === nodeId ||
 //   (isMultiSelect.value && editorState.selectedNodes.some(x => x.id === nodeId))
 // )
-const isActive = computed(() => editorState?.currentNode?.id === nodeId && !isMultiSelect.value)
-const isActiveMultiSelected = computed(() => isMultiSelect.value && editorState.selectedNodes.some(x => x.id === nodeId))
+const isActive = computed(() => editorState?.currentNode?.id && !isMultiSelect.value)
+const isActiveMultiSelected = computed(() => isMultiSelect.value && editorState.selectedNodes.some(x => x.id === nodeId.value))
+const style = computed(() => {
+  if (editorState.currentNode && hasOperation) {
+    const { start, end } = editorState.currentNode
+    const width = Math.abs(start[0] - end[0])
+    const height = Math.abs(start[1] - end[1])
+    return {
+      left: `${start[0]}px`,
+      top: `${start[1]}px`,
+      width: `${width}px`,
+      height: `${height}px`
+    }
+  }
+})
 
 const onOperationDotMouseDown = (e: MouseEvent, i: number, edgeString: Edge) => {
-  handleOperationDotMouseDown(e, nodeId!, edgeString, e => {
+  handleOperationDotMouseDown(e, nodeId.value!, edgeString, e => {
     refDotEl.value = refDotEls.value[i]
     onMouseDown(e, el => el === refDotEl.value)
   })
@@ -73,13 +87,14 @@ watchEffect(() => {
 
 <template>
   <div
+    v-show="style"
     class="xprocess__drop-wrap"
     :class="{
       active: isActive || isActiveMultiSelected,
-      [type]: true
+      [editorState.currentNode?.type]: true
     }"
+    :style="style"
   >
-    <slot />
     <template v-for="(edge, i) in lineDot">
       <div
         v-if="hasOperation"

@@ -482,5 +482,6 @@ export const handleOperationSizeMouseMove = (evData: IEventHandlerData) => {
 
 export function handleOperationSizeMouseUp () {
   editorState.referenceLines = []
+  preventCanvasClickToggle()
   onCalCanvasSize()
 }

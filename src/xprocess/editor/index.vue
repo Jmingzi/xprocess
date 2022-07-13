@@ -10,6 +10,7 @@ import MultiSelect from '../operation/multi-select.vue'
 import CircleSelect from '../operation/multi-select-circle.vue'
 import PropsTool from '../props-tools/index.vue'
 import ResizeInfo from '../resize-info/index.vue'
+import Operation from '../operation/index.vue'
 
 const { Layout } = useLayout()
 </script>
@@ -33,6 +34,7 @@ const { Layout } = useLayout()
         <PropsTool />
         <ResizeInfo />
         <CircleSelect />
+        <Operation />
         <XDrop
           v-for="item in state.nodes"
           v-bind="item"

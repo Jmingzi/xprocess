@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { state as editorState, isNodeLine, isMultiSelect } from '../editor/state'
-import {computed, nextTick, ref, watchEffect} from 'vue'
+import { computed, nextTick, ref, watchEffect, watch } from 'vue'
 
 const node = computed(() => editorState.currentNode)
 const width = computed(() => node.value ? Math.abs(node.value.start[0] - node.value.end[0]) : 0)
 const height = computed(() => node.value ? Math.abs(node.value.start[1] - node.value.end[1]) : 0)
 const refEl = ref()
 const elRect = ref()
+const show = ref(false)
 
 const style = computed(() => {
   if (!node.value || !elRect.value) {
@@ -21,6 +22,23 @@ const style = computed(() => {
   }
 })
 
+let handle = 0
+watch(() => ([editorState.currentNode?.start, editorState.currentNode?.end]), ([start, end], [oldStart, oldEnd]) => {
+  if (start && end && oldStart && oldEnd) {
+    const width = Math.abs(start[0] - end[0])
+    const height = Math.abs(start[1] - end[1])
+    const oWidth = Math.abs(oldStart[0] - oldEnd[0])
+    const oHeight = Math.abs(oldStart[1] - oldEnd[1])
+    if (width !== oWidth || height !== oHeight) {
+      show.value = true
+      clearTimeout(handle)
+      handle = setTimeout(() => {
+        show.value = false
+      }, 1000)
+    }
+  }
+}, { deep: true })
+
 watchEffect(() => {
   if (refEl.value) {
     nextTick(() => {
@@ -32,7 +50,7 @@ watchEffect(() => {
 
 <template>
   <div
-    v-if="!isNodeLine(node?.id) && !isMultiSelect"
+    v-if="show && !isNodeLine(node?.id) && !isMultiSelect"
     class="xprocess-resize-info"
     ref="refEl"
     :style="style"
