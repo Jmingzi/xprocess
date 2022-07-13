@@ -19,7 +19,7 @@ const state = reactive<{
 const getList = async () => {
   const data = await getUserList<{ [id: string]: Item }>()
   state.list = Object.values(data).reverse()
-  if (state.list.length) {
+  if (state.list.length && !route.params.id) {
     router.push(`/editor/${state.list[0].id}`)
   }
 }

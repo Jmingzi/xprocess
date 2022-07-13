@@ -165,8 +165,8 @@ export function initState (data: Pick<State, 'nodes' | 'lines' | 'filename'>) {
   state.currentNode = undefined
   stateCanvasDataChange.value = false
   state.nodes = data.nodes.map(node => {
-    node.fromLines = node.fromLines.map(x => data.lines.find(y => x.id === y.id)!)
-    node.toLines = node.toLines.map(x => data.lines.find(y => x.id === y.id)!)
+    node.fromLines = node.fromLines.filter(Boolean).map(x => data.lines.find(y => x.id === y.id)!)
+    node.toLines = node.toLines.filter(Boolean).map(x => data.lines.find(y => x.id === y.id)!)
     return node
   })
   state.lines = data.lines
@@ -512,6 +512,7 @@ export function handleMultiNodesMove (copySelectedNodes: XProcessNode[], delta: 
 
 export function handleMultiNodesUp () {
   preventCanvasClickToggle()
+  calCanvasSize()
 }
 
 export const onCalCanvasSize = calCanvasSize
