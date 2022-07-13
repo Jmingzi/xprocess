@@ -77,7 +77,7 @@ watchEffect(() => {
     ref="refEl"
     class="multi-select"
     :style="style"
-    @mousedown="handleMousedown"
+    @mousedown.stop="handleMousedown"
   />
 </template>
 

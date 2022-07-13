@@ -16,7 +16,7 @@ import { useCanvas } from '../container/canvas/use-canvas'
 import {
   ENLARGE_TIMES_FROM_LOCAL_SIZE,
   ENLARGE_TIMES_FROM_LOCAL_STROKE,
-  DEFAULT_FILENAME
+  REFERENCE_ATTACH_RANGE
 } from '../constant'
 
 const { rect: canvasRect, calCanvasSize } = useCanvas()
@@ -273,7 +273,7 @@ export function moveNodeLines (node: XProcessNode) {
  * 思路：在节点中匹配当前节点的 6 个边界：x, x1, x2, y, y1, y2
  */
 export function getReferenceLine (node: XProcessNode) {
-  const broadPx = 2
+  const broadPx = REFERENCE_ATTACH_RANGE
   state.referenceLines = []
   const _getNodePoint = (node: XProcessNode) => {
     const { start, end } = node
@@ -464,11 +464,12 @@ export function copyAndCreateNode (node: XProcessNode) {
   setCurrentNode(newItem.id)
 }
 
-export const isMultiSelect = computed(() =>
-  state.currentNode &&
-  state.selectedNodes.length > 1 &&
-  state.selectedNodes.some(x => x.id === state.currentNode!.id)
-)
+// export const isMultiSelect = computed(() =>
+//   state.currentNode &&
+//   state.selectedNodes.length > 1 &&
+//   state.selectedNodes.some(x => x.id === state.currentNode!.id)
+// )
+export const isMultiSelect = computed(() => state.selectedNodes.length > 1)
 export function selectNode (id: number, metaKey: boolean) {
   const node = state.nodes.find(x => x.id === id)!
   // 取消多选时，需要重新设置当前节点
@@ -500,7 +501,7 @@ export function handleMultiNodesMove (copySelectedNodes: XProcessNode[], delta: 
     originNodePoint[1] = copyNodePoint[1] + delta[1]
   }
   copySelectedNodes.forEach(copyNode => {
-    const originNode = state.selectedNodes.find(x => x.id === copyNode.id)
+    const originNode = state.nodes.find(x => x.id === copyNode.id)
     if (originNode) {
       alterNodePoint(originNode.start, copyNode.start)
       alterNodePoint(originNode.end, copyNode.end)

@@ -31,14 +31,9 @@ export const lineUpActionPanelData = ref<{
   mouseData: IEventHandlerData
 } | null>()
 export const circleSelect = ref<{
+  open: boolean
   start: number[]
   end: number[]
-  direction?: {
-    isLeftTop: boolean
-    isLeftBottom: boolean
-    isRightTop: boolean
-    isRightBottom: boolean
-  }
 }>()
 
 export function setCurrentLine (id?: number) {
@@ -300,6 +295,11 @@ document.body.addEventListener('click', (e: MouseEvent) => {
   console.log('canvas click: 清空选择状态')
   // 置空多选
   editorState.selectedNodes = []
+  // 清空圈选
+  if (circleSelect.value) {
+    circleSelect.value.start = []
+    circleSelect.value.end = []
+  }
   const line = currentLine.value
   // line.toNode.nodeId 默认是 0
   if (line && line.toNode.nodeId === 0) {
