@@ -167,6 +167,7 @@ export function initState (data: Pick<State, 'nodes' | 'lines' | 'filename'>) {
   state.referenceLines = []
   state.selectedNodes = []
   state.currentNode = undefined
+  state.hoverNode = undefined
   stateCanvasDataChange.value = false
   state.nodes = data.nodes.map(node => {
     node.fromLines = node.fromLines.filter(Boolean).map(x => data.lines.find(y => x.id === y.id)!)
@@ -175,7 +176,6 @@ export function initState (data: Pick<State, 'nodes' | 'lines' | 'filename'>) {
   })
   state.lines = data.lines
   state.filename = data.filename
-
   // const stop = watch(() => [state.nodes, state.lines], () => {
   //   stateCanvasDataChange.value = true
   //   stop()
@@ -439,8 +439,7 @@ export function deleteNode (node: XProcessNode) {
   // 删除节点
   removeNode(node.id)
   setCurrentNode()
-  // 计算画布尺寸
-  // calCanvasSize()
+  state.hoverNode = undefined
 }
 
 export function deleteLine (line: NodeLine) {

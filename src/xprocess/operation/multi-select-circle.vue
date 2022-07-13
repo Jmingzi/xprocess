@@ -13,6 +13,10 @@ const style = computed(() => {
   let width = Math.abs(start[0] - end[0])
   let height = Math.abs(start[1] - end[1])
 
+  if (width < 3 && height < 3) {
+    return
+  }
+
   return {
     left: left + 'px',
     top: top + 'px',

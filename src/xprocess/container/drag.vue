@@ -42,7 +42,6 @@ const onMouseDown = (e: MouseEvent) => {
       })
       const div = document.createElement('div')
       ins.mount(div)
-      // return el.querySelector('svg')!.outerHTML
       return div.innerHTML
     }
   )
@@ -58,7 +57,14 @@ onMounted(() => {
         // 计算参考线
         const local = editorState.localComponentList.find(x => x.type === props.type)!
         const start = getPointFromCanvas([data.endTopLeftX, data.endTopLeftY])
-        const node = { start, end: [start[0] + local.end[0], start[1] + local.end[1]], id: 0 }
+        const node = {
+          start,
+          end: [
+            start[0] + local.end[0] * ENLARGE_TIMES_FROM_LOCAL_SIZE,
+            start[1] + local.end[1] * ENLARGE_TIMES_FROM_LOCAL_SIZE
+          ],
+          id: 0
+        }
         // 参考线的吸附会直接修改引用值
         getReferenceLine(node as NodeRect)
         // 将参考线的吸附修改映射到 state
