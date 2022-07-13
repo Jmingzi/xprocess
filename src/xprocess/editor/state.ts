@@ -1,4 +1,5 @@
 import { computed, reactive, toRaw, ref, watch } from 'vue'
+import minBy from 'lodash/minBy'
 import { IEventHandlerData } from '../hooks/use-drag'
 import {
   DEFAULT_PROPS,
@@ -69,15 +70,23 @@ export const DEFAULT_FONT: IFont = {
   horizontalAlign: 'center'
 }
 
-type ReferenceLine = {
-  nodeId: number
-  type: 'col' | 'row'
+type ReferenceLineCol = {
+  type: 'col'
+  height: number
   left: number
-  top: number
-  width?: number
-  height?: number
-  distance?: number
+  heightTop: number
+  delta: number
+  index: number
 }
+type ReferenceLineRow = {
+  type: 'row'
+  top: number
+  width: number
+  widthLeft: number
+  delta: number
+  index: number
+}
+type ReferenceLine = ReferenceLineCol | ReferenceLineRow
 
 export type State = {
   filename: string
@@ -264,7 +273,7 @@ export function moveNodeLines (node: XProcessNode) {
  * 思路：在节点中匹配当前节点的 6 个边界：x, x1, x2, y, y1, y2
  */
 export function getReferenceLine (node: XProcessNode) {
-  const broadPx = 5
+  const broadPx = 2
   state.referenceLines = []
   const _getNodePoint = (node: XProcessNode) => {
     const { start, end } = node
@@ -278,65 +287,81 @@ export function getReferenceLine (node: XProcessNode) {
     }
   }
   const { rowsY, colsX, width, height } = _getNodePoint(node)
+  // 计算当前节点与所有其它节点线条的差值距离
+  const resultCols: ReferenceLine[] = []
+  const resultRows: ReferenceLine[] = []
   state.nodes.filter(x => x.id !== node.id).map(item => {
     const itemPoint = _getNodePoint(item)
     itemPoint.colsX.forEach(x => {
-      const colsXIndex = colsX.findIndex(colX => x <= colX + broadPx && x >= colX - broadPx)
-      if (colsXIndex > -1) {
-        // 同一节点去重，不应该出现多条对齐线
-        if (!state.referenceLines.some(x => x.nodeId === item.id && x.type === 'col')) {
-          // 自动吸附
-          if (colsXIndex === 0) {
-            // 中位线
-            node.start[0] = x - width / 2
-            node.end[0] = x + width / 2
-          } else if (colsXIndex === 1) {
-            // 头线
-            node.start[0] = x
-            node.end[0] = x + width
-          } else {
-            // 底线
-            node.start[0] = x - width
-            node.end[0] = x
-          }
-          state.referenceLines.push({
-            nodeId: item.id,
-            type: 'col',
-            top: 0,
-            left: x
-          })
-        }
-      }
+      colsX.forEach((y, index) => {
+        resultCols.push({
+          index,
+          delta: Math.abs(x - y),
+          type: 'col',
+          height: Math.max(
+            Math.abs(node.start[1] - item.end[1]),
+            Math.abs(node.end[1] - item.start[1])
+          ),
+          heightTop: Math.min(node.start[1], item.start[1]),
+          left: x
+        })
+      })
     })
-    itemPoint.rowsY.forEach(y => {
-      const rowsYIndex = rowsY.findIndex(rowY => y <= rowY + broadPx && y >= rowY - broadPx)
-      if (rowsYIndex > -1) {
-        // 同一节点去重，不应该出现多条对齐线
-        if (!state.referenceLines.some(x => x.nodeId === item.id && x.type === 'row')) {
-          state.referenceLines.push({
-            nodeId: item.id,
-            type: 'row',
-            top: y,
-            left: 0
-          })
-          // 自动吸附
-          if (rowsYIndex === 0) {
-            // 中位线
-            node.start[1] = y - height / 2
-            node.end[1] = y + height / 2
-          } else if (rowsYIndex === 1) {
-            // 头线
-            node.start[1] = y
-            node.end[1] = y + height
-          } else {
-            // 底线
-            node.start[1] = y - height
-            node.end[1] = y
-          }
-        }
-      }
+    itemPoint.rowsY.forEach(x => {
+      rowsY.forEach((y, index) => {
+        resultRows.push({
+          index,
+          delta: Math.abs(x - y),
+          type: 'row',
+          width: Math.max(
+            Math.abs(node.start[0] - item.end[0]),
+            Math.abs(node.end[0] - item.start[0])
+          ),
+          widthLeft: Math.min(node.start[0], item.start[0]),
+          top: x
+        })
+      })
     })
   })
+  // 找到最小的差值
+  const minCol = minBy(resultCols, 'delta') as ReferenceLineCol
+  if (minCol && minCol.delta < broadPx) {
+    state.referenceLines.push(minCol)
+    // 吸附
+    const x = minCol.left
+    if (minCol.index === 0) {
+      // 中位线
+      node.start[0] = x - width / 2
+      node.end[0] = x + width / 2
+    } else if (minCol.index === 1) {
+      // 头线
+      node.start[0] = x
+      node.end[0] = x + width
+    } else {
+      // 底线
+      node.start[0] = x - width
+      node.end[0] = x
+    }
+  }
+  const minRow = minBy(resultRows, 'delta') as ReferenceLineRow
+  if (minRow && minRow.delta < broadPx) {
+    state.referenceLines.push(minRow)
+    // 自动吸附
+    const y = minRow.top
+    if (minRow.index === 0) {
+      // 中位线
+      node.start[1] = y - height / 2
+      node.end[1] = y + height / 2
+    } else if (minRow.index === 1) {
+      // 头线
+      node.start[1] = y
+      node.end[1] = y + height
+    } else {
+      // 底线
+      node.start[1] = y - height
+      node.end[1] = y
+    }
+  }
 }
 
 let currentNodeCopy: NodeRect | null
