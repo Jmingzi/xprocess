@@ -10,11 +10,8 @@ import {
   onDrop,
   setCurrentNode,
   getPointFromCanvas,
-  // getPointFromCanvasX,
-  // getPointFromCanvasY,
   deleteNode,
   deleteLine,
-  // DEFAULT_FONT,
   copyAndCreateNode,
   moveNodeLines,
   onCalCanvasSize,
@@ -33,6 +30,16 @@ export const lineUpActionPanelData = ref<{
   y: number
   mouseData: IEventHandlerData
 } | null>()
+export const circleSelect = ref<{
+  start: number[]
+  end: number[]
+  direction?: {
+    isLeftTop: boolean
+    isLeftBottom: boolean
+    isRightTop: boolean
+    isRightBottom: boolean
+  }
+}>()
 
 export function setCurrentLine (id?: number) {
   currentLine.value = editorState.lines.find(x => x.id === id)

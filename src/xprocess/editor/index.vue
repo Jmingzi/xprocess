@@ -7,6 +7,7 @@ import LineActionPanel from '../operation/action-panel.vue'
 import Sidebar from './sidebar.vue'
 import FileOperate from '../props-tools/file-operate.vue'
 import MultiSelect from '../operation/multi-select.vue'
+import CircleSelect from '../operation/multi-select-circle.vue'
 import PropsTool from '../props-tools/index.vue'
 import ResizeInfo from '../resize-info/index.vue'
 
@@ -31,6 +32,7 @@ const { Layout } = useLayout()
         <MultiSelect />
         <PropsTool />
         <ResizeInfo />
+        <CircleSelect />
         <XDrop
           v-for="item in state.nodes"
           v-bind="item"
