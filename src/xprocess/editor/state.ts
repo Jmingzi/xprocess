@@ -135,7 +135,8 @@ export const state = reactive<State>({
       fontEditable: true,
       font: {
         ...DEFAULT_FONT,
-        content: '文本'
+        // 无效设置
+        // content: '文本'
       }
     },
     {

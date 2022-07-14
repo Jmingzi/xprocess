@@ -2,8 +2,8 @@
 import { ref, onMounted, h, createApp } from 'vue'
 import { useDrag, IEventHandler } from '../hooks/use-drag'
 import { useCanvas } from './canvas/use-canvas'
-import { getPointFromCanvas, getReferenceLine, state as editorState, NodeRect } from '../editor/state'
-import { SvgType } from '../svg-type/base'
+import { getPointFromCanvas, getReferenceLine, state as editorState, NodeRect, NodeText } from '../editor/state'
+import { SVG_TYPE, SvgType } from '../svg-type/base'
 import { ENLARGE_TIMES_FROM_LOCAL_SIZE } from '../constant'
 import SvgTypeComponent from '../svg-type/index.vue'
 
@@ -30,16 +30,14 @@ const onMouseDown = (e: MouseEvent) => {
       // 将本地缩小的尺寸放大到等比
       const svg = el.querySelector('svg')!
       const local = editorState.localComponentList.find(x => svg.classList.contains(x.type))!
-      const ins = createApp({
-        // @ts-ignore
-        render: () => h(SvgTypeComponent, {
-          ...local,
-          end: [
-            local.end[0] * ENLARGE_TIMES_FROM_LOCAL_SIZE,
-            local.end[1] * ENLARGE_TIMES_FROM_LOCAL_SIZE,
-          ]
-        })
-      })
+      const width = local.end[0] * ENLARGE_TIMES_FROM_LOCAL_SIZE
+      const height = local.end[1] * ENLARGE_TIMES_FROM_LOCAL_SIZE
+      const renderLocalProps = {
+        ...local,
+        end: [width, height]
+      }
+      // @ts-ignore
+      const ins = createApp({ render: () => h(SvgTypeComponent, renderLocalProps) })
       const div = document.createElement('div')
       ins.mount(div)
       return div.innerHTML
@@ -57,12 +55,11 @@ onMounted(() => {
         // 计算参考线
         const local = editorState.localComponentList.find(x => x.type === props.type)!
         const start = getPointFromCanvas([data.endTopLeftX, data.endTopLeftY])
+        const width = local.end[0] * ENLARGE_TIMES_FROM_LOCAL_SIZE
+        const height = local.end[1] * ENLARGE_TIMES_FROM_LOCAL_SIZE
         const node = {
           start,
-          end: [
-            start[0] + local.end[0] * ENLARGE_TIMES_FROM_LOCAL_SIZE,
-            start[1] + local.end[1] * ENLARGE_TIMES_FROM_LOCAL_SIZE
-          ],
+          end: [start[0] + width, start[1] + height],
           id: 0
         }
         // 参考线的吸附会直接修改引用值

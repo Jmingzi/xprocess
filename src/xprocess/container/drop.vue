@@ -34,6 +34,7 @@ const props = defineProps<{
   fromLines?: any[]
   toLines?: any
   font?: any
+  fontEditable?: boolean
   fromNode?: any
   toNode?: any
   lineType?: string
