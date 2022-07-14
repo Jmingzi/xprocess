@@ -42,8 +42,9 @@ const rows = ref(Math.ceil(state.localComponentList.length / LOCAL_ROW_NUMS))
       height: 40px;
       align-items: center;
       &:not(:last-of-type) {
-        //margin-bottom: 10px;
-        //margin: 0;
+      }
+      svg {
+        cursor: pointer !important;
       }
     }
   }
