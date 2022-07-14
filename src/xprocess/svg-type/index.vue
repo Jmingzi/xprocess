@@ -1,6 +1,6 @@
 <script lang="ts">
 import { SVG_TYPE, ISvgType, SvgType } from './base'
-import { h } from 'vue'
+import { h, computed } from 'vue'
 import Wrapper from './wrapper.vue'
 import Rect from './rect.vue'
 import Line from './line.vue'
@@ -11,6 +11,7 @@ import PolygonArrowLeft from './polygon-arrow-left.vue'
 import PolygonArrowTop from './polygon-arrow-top.vue'
 import PolygonArrowBottom from './polygon-arrow-bottom.vue'
 import Text from './text.vue'
+import FlowStartStop from './flow-start-stop.vue'
 
 export default function SvgType (props: ISvgType & { type: SvgType }) {
   const { strokeWidth, start, end, type } = props
@@ -25,6 +26,7 @@ export default function SvgType (props: ISvgType & { type: SvgType }) {
     default: () => {
       switch (props.type) {
         case SVG_TYPE.RECT:
+        case SVG_TYPE.FLOW_RECT:
           return h(Rect, props)
         case SVG_TYPE.LINE:
           return h(Line, props)
@@ -42,6 +44,8 @@ export default function SvgType (props: ISvgType & { type: SvgType }) {
           return h(PolygonArrowTop, props)
         case SVG_TYPE.POLYGON_ARROW_BOTTOM:
           return h(PolygonArrowBottom, props)
+        case SVG_TYPE.FLOW_START_STOP:
+          return h(FlowStartStop, props)
       }
     }
   })

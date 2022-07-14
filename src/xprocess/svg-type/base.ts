@@ -51,18 +51,29 @@ export type SvgType = 'rect'
   | 'polygon-arrow-right'
   | 'polygon-arrow-top'
   | 'polygon-arrow-bottom'
+  | 'flow-start-stop'
+  | 'flow-rect'
+
+export type IFont = {
+  content: string
+  fontSize: number
+  bold: boolean
+  italics: boolean
+  underline: boolean
+  color: string
+  horizontalAlign: 'left' | 'center' | 'right'
+}
 
 export const STROKE_WIDTH = CANVAS_STROKE_WIDTH
 
-export const DEFAULT_SIZE = {
-  // rect: [80, 50],
-  // circle: [60, 60],
-  // polygon: [80, 60],
-  // text: [80, 50]
-  rect: [30, 20],
-  circle: [25, 25],
-  polygon: [30, 25],
-  text: [30, 25]
+export const DEFAULT_FONT: IFont = {
+  content: '',
+  fontSize: 12,
+  italics: false,
+  bold: false,
+  underline: false,
+  color: '#333333',
+  horizontalAlign: 'center'
 }
 
 export const DEFAULT_PROPS = {
@@ -73,7 +84,7 @@ export const DEFAULT_PROPS = {
   type: 'rect'
 }
 
-export const SVG_TYPE: { [k in string]: SvgType } = {
+export const SVG_TYPE = {
   LINE: 'line',
   RECT: 'rect',
   CIRCLE: 'circle',
@@ -82,8 +93,67 @@ export const SVG_TYPE: { [k in string]: SvgType } = {
   POLYGON_ARROW_TOP: 'polygon-arrow-top',
   POLYGON_ARROW_BOTTOM: 'polygon-arrow-bottom',
   POLYGON_ARROW_LEFT: 'polygon-arrow-left',
-  POLYGON_ARROW_RIGHT: 'polygon-arrow-right'
+  POLYGON_ARROW_RIGHT: 'polygon-arrow-right',
+  FLOW_START_STOP: 'flow-start-stop',
+  FLOW_RECT: 'flow-rect'
 }
+
+export const DEFAULT_SIZE = {
+  rect: [30, 20],
+  'flow-start-stop': [30, 15],
+  circle: [25, 25],
+  polygon: [30, 25],
+  text: [30, 25]
+}
+
+export const LOCAL_LIST = [
+  {
+    type: SVG_TYPE.FLOW_START_STOP,
+    end: DEFAULT_SIZE['flow-start-stop']
+  },
+  {
+    type: SVG_TYPE.FLOW_RECT,
+    round: 0,
+    end: DEFAULT_SIZE.rect
+  },
+  {
+    type: SVG_TYPE.RECT,
+    round: 5,
+    end: DEFAULT_SIZE.rect
+  },
+  {
+    type: SVG_TYPE.CIRCLE,
+    end: DEFAULT_SIZE.circle
+  },
+  {
+    type: SVG_TYPE.POLYGON,
+    end: DEFAULT_SIZE.polygon
+  },
+  {
+    type: SVG_TYPE.TEXT,
+    end: DEFAULT_SIZE.text,
+    strokeWidth: 0,
+    status: 0,
+    fill: 'transparent',
+    fontEditable: true
+  },
+  {
+    type: SVG_TYPE.POLYGON_ARROW_LEFT,
+    end: DEFAULT_SIZE.polygon
+  },
+  {
+    type: SVG_TYPE.POLYGON_ARROW_RIGHT,
+    end: DEFAULT_SIZE.polygon
+  },
+  {
+    type: SVG_TYPE.POLYGON_ARROW_TOP,
+    end: DEFAULT_SIZE.polygon.slice().reverse()
+  },
+  {
+    type: SVG_TYPE.POLYGON_ARROW_BOTTOM,
+    end: DEFAULT_SIZE.polygon.slice().reverse()
+  }
+]
 
 export const changeCase = (props: { [k in string]: any }) => {
   const newProps: { [k in string]: any } = {}

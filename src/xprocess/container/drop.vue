@@ -10,13 +10,12 @@ import {
   isNodeLine,
   getDirection,
   selectNode,
-  DEFAULT_FONT,
   XProcessNode,
   NodeLine,
   canvasNodeMoving,
   getPointFromCanvas
 } from '../editor/state'
-import { SvgType, SVG_TYPE } from '../svg-type/base'
+import { SvgType, SVG_TYPE, DEFAULT_FONT } from '../svg-type/base'
 import XText from '../text/index.vue'
 import { getLineInfo, onSegment } from '../svg-type/utils/line'
 

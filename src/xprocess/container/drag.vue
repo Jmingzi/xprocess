@@ -8,13 +8,14 @@ import { ENLARGE_TIMES_FROM_LOCAL_SIZE } from '../constant'
 import SvgTypeComponent from '../svg-type/index.vue'
 
 const elRef = ref<HTMLElement | null>(null)
+const canDrop = ref(false)
 const emits = defineEmits(['drop'])
 const props = defineProps<{ type: SvgType }>()
 const { registerCallback, onMouseDown: handleMouseDown } = useDrag()
 const { isStartInCanvas, inCanvasDOM, inCanvasRect, rect: canvasRect } = useCanvas()
 
 const handler: IEventHandler = (data, e, wrapper) => {
-  if (inCanvasRect(e)) {
+  if (inCanvasRect(e) && canDrop.value) {
     emits('drop', data, wrapper)
     editorState.referenceLines = []
   } else {
@@ -27,6 +28,7 @@ const onMouseDown = (e: MouseEvent) => {
     e,
     el => el === elRef.value,
     el => {
+      canDrop.value = false
       // 将本地缩小的尺寸放大到等比
       const svg = el.querySelector('svg')!
       const local = editorState.localComponentList.find(x => svg.classList.contains(x.type))!
@@ -52,6 +54,7 @@ onMounted(() => {
   registerCallback('mousemove', {
     handler: (data, e, wrapper, moveState) => {
       if (inCanvasRect(e)) {
+        canDrop.value = Math.abs(data.deltaX) >= 5 && Math.abs(data.deltaY) >= 5
         // 计算参考线
         const local = editorState.localComponentList.find(x => x.type === props.type)!
         const start = getPointFromCanvas([data.endTopLeftX, data.endTopLeftY])

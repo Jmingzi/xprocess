@@ -7,9 +7,11 @@ import {
   IPropsLine,
   SVG_TYPE,
   IPropsCircle,
-  DEFAULT_SIZE,
   IPropsPolygon,
-  IPropsText
+  IPropsText,
+  LOCAL_LIST,
+  IFont,
+  DEFAULT_FONT
 } from '../svg-type/base'
 import { Edge, setCurrentLine, preventCanvasClickToggle } from '../operation/state'
 import { useCanvas } from '../container/canvas/use-canvas'
@@ -34,16 +36,6 @@ export type NodeCircle = Omit<IPropsCircle, 'width' | 'height'> & IBase
 export type NodePolygon = Omit<IPropsPolygon, 'width' | 'height'> & IBase
 export type NodeText = Omit<IPropsText, 'width' | 'height'> & IBase
 
-export type IFont = {
-  content: string
-  fontSize: number
-  bold: boolean
-  italics: boolean
-  underline: boolean
-  color: string
-  horizontalAlign: 'left' | 'center' | 'right'
-}
-
 export type NodeLine = IPropsLine & {
   id: number
   font?: IFont
@@ -59,16 +51,6 @@ type LocalListItemCircle = ILocalBase<NodeCircle>
 type LocalListItemPolygon = ILocalBase<NodePolygon>
 type LocalListItemText = ILocalBase<NodeText>
 export type LocalListItem = LocalListItemRect | LocalListItemCircle | LocalListItemPolygon | LocalListItemText
-
-export const DEFAULT_FONT: IFont = {
-  content: '',
-  fontSize: 12,
-  italics: false,
-  bold: false,
-  underline: false,
-  color: '#333333',
-  horizontalAlign: 'center'
-}
 
 type ReferenceLineCol = {
   type: 'col'
@@ -108,58 +90,7 @@ export const state = reactive<State>({
   hoverNode: undefined,
   referenceLines: [],
   selectedNodes: [],
-  localComponentList: [
-    {
-      ...DEFAULT_PROPS,
-      type: 'rect',
-      round: 5,
-      end: DEFAULT_SIZE.rect
-    },
-    {
-      ...DEFAULT_PROPS,
-      type: 'circle',
-      end: DEFAULT_SIZE.circle
-    },
-    {
-      ...DEFAULT_PROPS,
-      type: 'polygon',
-      end: DEFAULT_SIZE.polygon
-    },
-    {
-      ...DEFAULT_PROPS,
-      type: 'text',
-      end: DEFAULT_SIZE.text,
-      strokeWidth: 0,
-      status: 0,
-      fill: 'transparent',
-      fontEditable: true,
-      font: {
-        ...DEFAULT_FONT,
-        // 无效设置
-        // content: '文本'
-      }
-    },
-    {
-      ...DEFAULT_PROPS,
-      type: 'polygon-arrow-left',
-      end: DEFAULT_SIZE.polygon
-    },
-    {
-      ...DEFAULT_PROPS,
-      type: 'polygon-arrow-right',
-      end: DEFAULT_SIZE.polygon
-    },
-    {
-      ...DEFAULT_PROPS,
-      type: 'polygon-arrow-top',
-      end: DEFAULT_SIZE.polygon.slice().reverse()
-    },
-    {
-      ...DEFAULT_PROPS,
-      type: 'polygon-arrow-bottom',
-      end: DEFAULT_SIZE.polygon.slice().reverse()
-    }
-  ],
+  localComponentList: LOCAL_LIST.map(x => ({ ...DEFAULT_PROPS, ...x })) as LocalListItem[],
   nodes: [],
   lines: []
 })
@@ -382,7 +313,7 @@ export function setCurrentNode (id?: number) {
 
 export function isNodeLine (id: number) {
   const node = state.nodes.find(x => x.id === id)
-  return node?.type === SVG_TYPE.CURVE
+  return node?.type === SVG_TYPE.LINE
 }
 
 export function isMovable (id: number) {
