@@ -76,6 +76,6 @@ jobs:
           HOST: 1.117.74.21
           USER: root
           PRIVATE_SSH_KEY: ${{ secrets.TOKEN }}
-          COMMAND: "npm install && npm run restart"
+          COMMAND: "cd /home/xprocess/ && npm install && npm run restart"
 
 
