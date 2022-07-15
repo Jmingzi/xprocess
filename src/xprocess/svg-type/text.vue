@@ -1,5 +1,5 @@
 <script lang="ts">
-import { IPropsText, changeCase, clearCustomProps } from './base'
+import { IPropsText, clearCustomProps } from './base'
 import { h } from 'vue'
 import icon from './image/text.png'
 
@@ -18,7 +18,7 @@ export default function Text (props: IPropsText) {
     y: 0
   }
   return [
-    h('rect', clearCustomProps(changeCase(p), ['start', 'end', 'status', 'type'])),
+    h('rect', clearCustomProps(p)),
     status === 0 ? h('image', {
       'xlink:href': icon,
       width: width * 0.8,

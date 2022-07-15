@@ -15,7 +15,7 @@ import {
 } from './state'
 
 const lineDot: Edge[] = ['top', 'right', 'bottom', 'left']
-const sizeDot = ['leftTop', 'rightTop', 'rightBottom', 'leftBottom']
+const sizeDot: DirectionString[] = ['leftTop', 'rightTop', 'rightBottom', 'leftBottom']
 const { onMouseDown, registerCallback } = useDrag()
 
 const refDotEls = ref<Array<HTMLElement>>([])

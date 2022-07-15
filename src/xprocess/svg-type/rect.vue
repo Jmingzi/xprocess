@@ -1,5 +1,5 @@
 <script lang="ts">
-import { IPropsRect, changeCase, STROKE_WIDTH, clearCustomProps } from './base'
+import { IPropsRect, STROKE_WIDTH, clearCustomProps } from './base'
 import { h } from 'vue'
 
 export default function Rect (props: IPropsRect) {
@@ -16,6 +16,6 @@ export default function Rect (props: IPropsRect) {
     x: strokeWidth / 2,
     y: strokeWidth / 2
   }
-  return h('rect', clearCustomProps(changeCase(p), ['start', 'end', 'round', 'type']))
+  return h('rect', clearCustomProps(p))
 }
 </script>

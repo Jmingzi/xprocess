@@ -2,14 +2,14 @@
 import { state as editorState, getDirection } from '../editor/state'
 import SvgType from '../svg-type/index.vue'
 import { useCanvas } from '../container/canvas/use-canvas'
-import { computed, ref, onMounted, watchEffect, nextTick } from 'vue'
+import { computed, ref, CSSProperties, watchEffect, nextTick } from 'vue'
 import { lineUpActionPanelData, handleCreateToNode } from './state'
 
 const refEl = ref<HTMLElement>()
 const elRect = ref()
 
 const { rect: canvasRect } = useCanvas()
-const style = computed(() => {
+const style = computed<CSSProperties | undefined>(() => {
   if (!lineUpActionPanelData.value) {
     return
   }

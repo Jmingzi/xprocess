@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, computed, getCurrentInstance, nextTick, watchEffect, watch, inject } from 'vue'
+import { ref, onMounted, computed, getCurrentInstance, nextTick, watchEffect, watch, inject, CSSProperties } from 'vue'
 import { state as editorState, isNodeLine } from '../editor/state'
 
 const vm = getCurrentInstance()
@@ -14,19 +14,19 @@ const node = computed(() =>
 const parentHeight = ref(0)
 const style = computed(() => {
   if (!node.value?.font) {
-    return null
+    return
   }
   const { horizontalAlign, fontSize, color, bold, italics, underline } = node.value?.font
   const edit = node.value?.fontEditable
-  const result = {
+  const result: Partial<CSSProperties> = {
     fontSize: `${fontSize}px`,
-    pointerEvents: edit ? null : 'none',
-    userSelect: edit ? null : 'none',
+    pointerEvents: edit ? undefined : 'none',
+    userSelect: edit ? undefined : 'none',
     textAlign: horizontalAlign,
     color,
-    fontWeight: bold ? 'bold' : null,
-    fontStyle: italics ? 'italics' : null,
-    textDecoration: underline ? 'underline' : null
+    fontWeight: bold ? 'bold' : undefined,
+    fontStyle: italics ? 'italics' : undefined,
+    textDecoration: underline ? 'underline' : undefined
   }
   if (textHeight.value === 0) {
     // 未渲染
@@ -49,7 +49,7 @@ const calcHeight = () => {
   // console.log('文本高度', refEl.value, textHeight.value)
 }
 
-const handleInput = (e: InputEvent) => {
+const handleInput = (e: Event) => {
   const target = e.target as HTMLInputElement
   const text = target.innerText
   nextTick(() => {

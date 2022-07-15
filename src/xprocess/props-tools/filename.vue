@@ -10,7 +10,7 @@ const onPreview = async () => {
   await nextTick()
   refEl.value.focus()
 }
-const onAlter = (e: InputEvent) => {
+const onAlter = (e: FocusEvent) => {
   isPreview.value = true
   editorState.filename = (e.target! as HTMLInputElement).value.trim()
   if (!editorState.filename) {

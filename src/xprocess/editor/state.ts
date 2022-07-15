@@ -308,12 +308,17 @@ export function setCurrentNode (id?: number) {
     return
   }
   state.currentNode = state.nodes.find(x => x.id === id)
-  currentNodeCopy = JSON.parse(JSON.stringify(state.currentNode))
+  if (state.currentNode) {
+    currentNodeCopy = JSON.parse(JSON.stringify(state.currentNode))
+  } else {
+    console.warn(`the id ${id} isn\`t find in nodes`)
+  }
 }
 
 export function isNodeLine (id: number) {
-  const node = state.nodes.find(x => x.id === id)
-  return node?.type === SVG_TYPE.LINE
+  const line = state.lines.find(x => x.id === id)
+  return line?.type === SVG_TYPE.LINE ||
+    !!line?.lineType
 }
 
 export function isMovable (id: number) {

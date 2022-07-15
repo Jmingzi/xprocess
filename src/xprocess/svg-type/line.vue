@@ -1,5 +1,5 @@
 <script lang="ts">
-import { changeCase, IPropsLine, clearCustomProps } from './base'
+import { IPropsLine, clearCustomProps } from './base'
 import { h, inject, Ref } from 'vue'
 import { getLineInfo } from './utils/line'
 
@@ -22,18 +22,18 @@ export default function Line (props: IPropsLine) {
   let lineVnode
   let activeCircle
   if (isStraight) {
-    lineVnode = h('line', {
-      ...changeCase(clearCustomProps(props, ['start', 'end', 'type'])),
+    lineVnode = h('line', clearCustomProps({
+      ...props,
       x1: x,
       y1: y,
       x2: endX,
       y2: endY,
       markerEnd: 'url(#triangle)'
-    })
+    }))
   } else if (isPolyline) {
     const points = `${x} ${y}, ${x1.join(' ')},${x2.length ? ` ${x2.join(' ')},` : ''} ${endX} ${endY}`
-    lineVnode = h('polyline', changeCase({
-      ...clearCustomProps(props, ['start', 'end', 'type']),
+    lineVnode = h('polyline', clearCustomProps({
+      ...props,
       fill: 'transparent',
       points,
       markerEnd: 'url(#triangle)',
@@ -51,7 +51,7 @@ export default function Line (props: IPropsLine) {
         .map(([cx, cy]) => h('circle', { cx, cy, r: 4, fill: 'rgba(77,143,239,0.7)' }))
     }
   } else if (isPath) {
-    lineVnode = h('path', changeCase({
+    lineVnode = h('path', clearCustomProps({
       ...props,
       x,
       y,

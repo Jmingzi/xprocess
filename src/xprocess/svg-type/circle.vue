@@ -1,5 +1,5 @@
 <script lang="ts">
-import { IPropsCircle, changeCase, clearCustomProps, STROKE_WIDTH } from './base'
+import { IPropsCircle, clearCustomProps, STROKE_WIDTH } from './base'
 import { h } from 'vue'
 
 export default function Circle (props: IPropsCircle) {
@@ -16,6 +16,6 @@ export default function Circle (props: IPropsCircle) {
     rx: cx,
     ry: cy
   }
-  return h('ellipse', clearCustomProps(changeCase(p), ['start', 'end', 'radius', 'type']))
+  return h('ellipse', clearCustomProps(p))
 }
 </script>

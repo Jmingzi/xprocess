@@ -1,5 +1,5 @@
 <script lang="ts">
-import { IPropsPolygon, changeCase, clearCustomProps, STROKE_WIDTH } from './base'
+import { IPropsPolygon, clearCustomProps, STROKE_WIDTH } from './base'
 import { h } from 'vue'
 
 export default function PolygonArrowBottom (props: IPropsPolygon) {
@@ -23,6 +23,6 @@ export default function PolygonArrowBottom (props: IPropsPolygon) {
     ...props,
     points: `${x1}, ${x2}, ${x3}, ${x4}, ${x5}, ${x6}, ${x7}`
   }
-  return h('polygon', clearCustomProps(changeCase(p), ['start', 'end', 'type']))
+  return h('polygon', clearCustomProps(p))
 }
 </script>

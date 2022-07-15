@@ -1,5 +1,5 @@
 <script lang="ts">
-import { h, SetupContext, VNodeChild } from 'vue'
+import { h, SetupContext } from 'vue'
 import { STROKE_WIDTH, SvgType } from './base'
 
 export default function SvgWrapper (props: {

@@ -17,7 +17,7 @@ import {
   onCalCanvasSize,
   getReferenceLine
 } from '../editor/state'
-import { DEFAULT_PROPS, SVG_TYPE } from '../svg-type/base'
+import { DEFAULT_PROPS, SVG_TYPE, SvgType } from '../svg-type/base'
 import { IEventHandlerData } from '../hooks/use-drag'
 import { CANVAS_CLASS, ENLARGE_TIMES_FROM_LOCAL_SIZE } from '../constant'
 
@@ -74,7 +74,7 @@ export const handleOperationDotMouseDown = (
   currentLine.value = {
     ...createItem(),
     ...DEFAULT_PROPS,
-    type: SVG_TYPE.CURVE,
+    type: SVG_TYPE.LINE as SvgType,
     start: [x, y],
     end: [x, y],
     lineType: 'polyline',

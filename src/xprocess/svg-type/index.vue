@@ -1,6 +1,14 @@
 <script lang="ts">
-import { SVG_TYPE, ISvgType, SvgType } from './base'
-import { h, computed } from 'vue'
+import {
+  SVG_TYPE,
+  ISvgType,
+  IPropsRect,
+  IPropsLine,
+  IPropsCircle,
+  IPropsPolygon,
+  IPropsText
+} from './base'
+import { h, FunctionalComponent } from 'vue'
 import Wrapper from './wrapper.vue'
 import Rect from './rect.vue'
 import Line from './line.vue'
@@ -13,11 +21,11 @@ import PolygonArrowBottom from './polygon-arrow-bottom.vue'
 import Text from './text.vue'
 import FlowStartStop from './flow-start-stop.vue'
 
-export default function SvgType (props: ISvgType & { type: SvgType }) {
+export default function SvgType (props: ISvgType) {
   const { strokeWidth, start, end, type } = props
   const width = Math.abs(start[0] - end[0])
   const height = Math.abs(start[1] - end[1])
-  return h(Wrapper, {
+  return h(Wrapper as FunctionalComponent, {
     width,
     height,
     strokeWidth,
@@ -27,25 +35,25 @@ export default function SvgType (props: ISvgType & { type: SvgType }) {
       switch (props.type) {
         case SVG_TYPE.RECT:
         case SVG_TYPE.FLOW_RECT:
-          return h(Rect, props)
+          return h<IPropsRect>(Rect, props as IPropsRect)
         case SVG_TYPE.LINE:
-          return h(Line, props)
+          return h<IPropsLine>(Line, props as IPropsLine)
         case SVG_TYPE.CIRCLE:
-          return h(Circle, props)
+          return h<IPropsCircle>(Circle, props as IPropsCircle)
         case SVG_TYPE.POLYGON:
-          return h(Polygon, props)
+          return h<IPropsPolygon>(Polygon, props as IPropsPolygon)
         case SVG_TYPE.TEXT:
-          return h(Text, props)
+          return h<IPropsText>(Text, props as IPropsText)
         case SVG_TYPE.POLYGON_ARROW_RIGHT:
-          return h(PolygonArrowRight, props)
+          return h<IPropsPolygon>(PolygonArrowRight, props as IPropsPolygon)
         case SVG_TYPE.POLYGON_ARROW_LEFT:
-          return h(PolygonArrowLeft, props)
+          return h<IPropsPolygon>(PolygonArrowLeft, props as IPropsPolygon)
         case SVG_TYPE.POLYGON_ARROW_TOP:
-          return h(PolygonArrowTop, props)
+          return h<IPropsPolygon>(PolygonArrowTop, props as IPropsPolygon)
         case SVG_TYPE.POLYGON_ARROW_BOTTOM:
-          return h(PolygonArrowBottom, props)
+          return h<IPropsPolygon>(PolygonArrowBottom, props as IPropsPolygon)
         case SVG_TYPE.FLOW_START_STOP:
-          return h(FlowStartStop, props)
+          return h<IPropsRect>(FlowStartStop, props as IPropsRect)
       }
     }
   })
@@ -54,6 +62,5 @@ export default function SvgType (props: ISvgType & { type: SvgType }) {
 
 <style lang="less">
 .xprocess__svg {
-  // overflow: visible;
 }
 </style>

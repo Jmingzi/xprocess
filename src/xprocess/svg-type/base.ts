@@ -3,6 +3,7 @@ import { Edge } from '../operation/state'
 import { CANVAS_STROKE_WIDTH } from '../constant'
 
 export type SvgBase = {
+  id?: number
   type: SvgType
   strokeWidth?: number
   stroke?: string
@@ -24,20 +25,20 @@ export type IPropsLine = SvgBase & {
 }
 export type IPropsRect = SvgBase & {
   round: number
-  width: number
-  height: number
+  // width: number
+  // height: number
 }
 export type IPropsCircle = SvgBase & {
-  width: number
-  height: number
+  // width: number
+  // height: number
 }
 export type IPropsPolygon = SvgBase & {
   points: string
 }
 export type IPropsText = SvgBase & {
   status: 0 | 1
-  width: number
-  height: number
+  // width: number
+  // height: number
 }
 
 export type ISvgType = IPropsLine | IPropsRect | IPropsCircle | IPropsPolygon | IPropsText
@@ -155,34 +156,27 @@ export const LOCAL_LIST = [
   }
 ]
 
-export const changeCase = (props: { [k in string]: any }) => {
-  const newProps: { [k in string]: any } = {}
-  Object.keys(props).forEach(key => {
-    newProps[paramCase(key)] = props[key]
-  })
-  return newProps
-}
-
 const removeKeys = [
   'fromLines',
   'toLines',
   'lineType',
   'fromNode',
   'toNode',
-  'from-lines',
-  'to-lines',
-  'line-type',
-  'from-node',
-  'to-node',
   'font',
-  'z-index',
-  'zIndex'
+  'fontEditable',
+  'zIndex',
+  'start',
+  'end',
+  'round',
+  'status',
+  'radius',
+  'type'
 ]
-export const clearCustomProps = (obj: { [k in string]: any }, excludePropsArr: string[]) => {
+export const clearCustomProps = (obj: { [k in string]: any }, excludePropsArr: string[] = []) => {
   const newObj: { [k in string]: any } = {}
   Object.keys(obj).forEach(key => {
     if (!removeKeys.concat(excludePropsArr).includes(key)) {
-      newObj[key] = obj[key]
+      newObj[paramCase(key)] = obj[key]
     }
   })
   return newObj
