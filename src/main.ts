@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import axios from 'axios'
 
-axios.defaults.baseURL = import.meta.env.VITE_APP_BASE_URL
+axios.defaults.baseURL = './'
 axios.interceptors.request.use(req => {
   if (req.method === 'get') {
     if (!req.params) {
