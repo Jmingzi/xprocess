@@ -8,7 +8,7 @@ import Filename from './filename.vue'
 import iconZhankai from './icon-system/zhankai.png'
 import { ref, inject, watchEffect, Ref, onMounted } from 'vue'
 import { IConfig } from '../'
-import { Message } from '../message'
+// import { Message } from '../message'
 import { getStateRaw } from '../editor/state'
 
 const config = inject<Ref<IConfig>>('config')
@@ -31,7 +31,6 @@ const onSave = async () => {
   }
 }
 const onAdd = () => {
-  Message.info('新建文件，画布已重置')
   showListPanel.value = false
   config?.value.api.addNew()
 }

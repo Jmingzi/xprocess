@@ -26,6 +26,7 @@ const getList = async () => {
 
 const onAdd = () => {
   router.replace('/editor')
+  Message.info('已为您重置画布!')
 }
 
 const config = ref({

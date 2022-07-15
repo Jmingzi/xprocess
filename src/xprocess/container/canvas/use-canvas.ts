@@ -65,7 +65,7 @@ export function useCanvas () {
               minSize.height = minSizeHeight
               calCanvasSize()
               // 设置画布滚动条
-              nextTick(() => {
+              setTimeout(() => {
                 layoutSetScroll()
               })
             },

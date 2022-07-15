@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref, reactive, provide } from 'vue'
+import { ref, reactive, provide, inject, Ref } from 'vue'
 import logo from './logo.png'
 import { CANVAS_PADDING, CANVAS_MARGIN_LEFT, CANVAS_MARGIN_TOP } from '../../constant'
+import { IConfig } from '../../'
+
+const config = inject<Ref<IConfig>>('config')
 
 const el = ref()
 const state = reactive({
@@ -26,7 +29,7 @@ provide('layoutSetScroll', setScroll)
 
 <template>
   <div class="xprocess__header">
-    <div class="xprocess__header-title">
+    <div class="xprocess__header-title" @click="config.api.addNew">
       <img :src="logo" align="center" width="35">
       <span>XProcess</span>
     </div>
@@ -67,6 +70,7 @@ provide('layoutSetScroll', setScroll)
       font-weight: 200;
       font-size: 30px;
       pointer-events: all;
+      cursor: pointer;
       //font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
       span {
         margin-left: 15px;
