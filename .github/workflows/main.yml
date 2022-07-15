@@ -43,7 +43,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run build
         run: |
-          npm run "build:github"
+          npm run "build"
           echo test, and deploy your project
         env:
           CI: true

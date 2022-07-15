@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "build:github": "vue-tsc --noEmit && vite build --mode github",
     "preview": "vite preview",
     "start": "pm2 start server/index.js --name=xprocess",
     "restart": "pm2 restart xprocess"
