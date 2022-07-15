@@ -43,7 +43,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run build
         run: |
-          npm run "build"
+          npm run "build:github"
           echo test, and deploy your project
         env:
           CI: true
@@ -69,4 +69,13 @@ jobs:
           # ARGS: # optional, default is -rltgoDzvO
           # An array of folder to exclude
           EXCLUDE: node_modules # optional, default is
+
+      - name: start server
+        uses: D3rHase/ssh-command-action@0.2.1
+        with:
+          HOST: 1.117.74.21
+          USER: root
+          PRIVATE_SSH_KEY: ${{ secrets.TOKEN }}
+          COMMAND: "npm install && npm run restart"
+
 
