@@ -20,7 +20,7 @@ const getList = async () => {
   const data = await getUserList<{ [id: string]: Item }>()
   state.list = Object.values(data).reverse()
   if (state.list.length && !route.params.id) {
-    router.push(`/editor/${state.list[0].id}`)
+    // router.push(`/editor/${state.list[0].id}`)
   }
 }
 
@@ -118,6 +118,7 @@ const formatTime = (id: number) => {
               </span>
             </li>
           </ul>
+          <p v-if="!state.list.length" style="text-align: center;color: #666">还没有数据哦～</p>
         </div>
       </div>
     </template>
