@@ -20,6 +20,7 @@ import {
 import { DEFAULT_PROPS, SVG_TYPE, SvgType } from '../svg-type/base'
 import { IEventHandlerData } from '../hooks/use-drag'
 import { CANVAS_CLASS, ENLARGE_TIMES_FROM_LOCAL_SIZE } from '../constant'
+import { getTargetPath } from '../utils'
 
 export type Edge = 'top' | 'right' | 'bottom' | 'left'
 export type DirectionString = 'leftTop' | 'rightTop' | 'rightBottom' | 'leftBottom'
@@ -282,7 +283,7 @@ export function preventCanvasClickToggle () {
     preventCanvasClick(false)
   }, 300)
 }
-const isCanvasClick = (e: MouseEvent) => (e as MouseEvent & { path: HTMLElement[] }).path.some(el => el?.classList?.contains(CANVAS_CLASS))
+const isCanvasClick = (e: MouseEvent) => getTargetPath(e).some(el => el?.classList?.contains(CANVAS_CLASS))
 document.body.addEventListener('click', (e: MouseEvent) => {
   if (!isCanvasClick(e)) {
     // 只处理画布上的点击事件

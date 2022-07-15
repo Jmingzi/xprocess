@@ -139,7 +139,7 @@ onMounted(() => {
 .xprocess-content_wrap {
   position: relative;
   box-sizing: content-box;
-  user-select: none;
+  -webkit-user-select: none;
 }
 .xprocess-canvas {
   position: relative;

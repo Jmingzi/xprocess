@@ -71,7 +71,6 @@ provide('layoutSetScroll', setScroll)
       font-size: 30px;
       pointer-events: all;
       cursor: pointer;
-      //font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
       span {
         margin-left: 15px;
       }

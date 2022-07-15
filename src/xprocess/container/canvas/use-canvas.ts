@@ -4,6 +4,7 @@ import Moving from './moving-item.vue'
 import { useDrag } from '../../hooks/use-drag'
 import { CANVAS_CLASS, CANVAS_PADDING } from '../../constant'
 import { state as editorState } from '../../editor/state'
+import { getTargetPath } from '../../utils'
 
 type IRect = {
   width: number
@@ -89,7 +90,7 @@ export function useCanvas () {
 }
 
 function inCanvasDOM (e: MouseEvent) {
-  return (e as MouseEvent & { path: HTMLElement[] }).path.some(el => el?.classList?.contains(CANVAS_CLASS))
+  return getTargetPath(e).some(el => el?.classList?.contains(CANVAS_CLASS))
 }
 
 function inCanvasRect (e: MouseEvent) {

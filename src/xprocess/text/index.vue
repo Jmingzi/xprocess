@@ -124,6 +124,8 @@ watchEffect(() => {
   line-height: 1.5;
   border-radius: 2px;
   height: fit-content;
+  // 适配 safari
+  -webkit-user-select: text;
   &:focus {
     outline: 2px #F4DDB0 solid;
   }
