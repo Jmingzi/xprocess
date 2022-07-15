@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "start": "npm run build && pm2 start server/index.js --name=xprocess",
+    "start": "pm2 start server/index.js --name=xprocess",
     "restart": "pm2 restart xprocess"
   },
   "dependencies": {
