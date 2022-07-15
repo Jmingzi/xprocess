@@ -71,7 +71,7 @@ jobs:
           EXCLUDE: node_modules # optional, default is
 
       - name: start server
-        uses: D3rHase/ssh-command-action@0.2.1
+        uses: D3rHase/ssh-command-action@v0.2.1
         with:
           HOST: 1.117.74.21
           USER: root
