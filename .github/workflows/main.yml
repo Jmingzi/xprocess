@@ -62,10 +62,11 @@ jobs:
           # Remote port
           # REMOTE_PORT: # optional, default is 22
           # Source directory
-          SOURCE: "server/, package.json" # optional, default is
+          SOURCE: "" # optional, default is
           # Target directory
           TARGET: /home/xprocess/ # optional, default is /home/
           # Arguments to pass to rsync
           # ARGS: # optional, default is -rltgoDzvO
           # An array of folder to exclude
-          # EXCLUDE: # optional, default is
+          EXCLUDE: node_modules # optional, default is
+
