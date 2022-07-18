@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import SvgType from '../svg-type/index.vue'
-import { Canvas as XCanvas, Drop as XDrop } from '../container'
+import SvgType from '../core/svg/index.vue'
+import { Canvas as XCanvas, Drop as XDrop } from '../core/container'
 import { state, onMoving } from './state'
-import { useLayout } from '../hooks/use-layout'
-import LineActionPanel from '../operation/action-panel.vue'
-import Sidebar from './sidebar.vue'
-import FileOperate from '../props-tools/file-operate.vue'
-import MultiSelect from '../operation/multi-select.vue'
-import CircleSelect from '../operation/multi-select-circle.vue'
-import PropsTool from '../props-tools/index.vue'
-import ResizeInfo from '../resize-info/index.vue'
-import Operation from '../operation/index.vue'
+import { useLayout } from './use-layout'
+import LineActionPanel from '../core/operator/action-panel.vue'
+import Sidebar from './component/sidebar.vue'
+import FileOperate from './component/file-operate.vue'
+import MultiSelect from '../core/operator/multi-select.vue'
+import CircleSelect from '../core/operator/multi-select-circle.vue'
+import PropsTool from '../core/style-tool/index.vue'
+import ResizeInfo from '../core/operator/resize-info.vue'
+import Operation from '../core/operator/node.vue'
+import Reference from '../core/operator/reference-line.vue'
 
 const { Layout } = useLayout()
 </script>
@@ -29,6 +30,7 @@ const { Layout } = useLayout()
     </template>
     <template #content>
       <XCanvas>
+        <Reference />
         <LineActionPanel />
         <MultiSelect />
         <PropsTool />

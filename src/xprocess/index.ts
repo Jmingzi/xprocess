@@ -2,7 +2,7 @@ import Editor from './editor/index.vue'
 import { State, initState, state, stateCanvasDataChange } from './editor/state'
 import { h, provide, SetupContext, Ref, computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Message } from './message'
+import { Message } from './component/message'
 
 export type IConfig = {
   paramsId?: string

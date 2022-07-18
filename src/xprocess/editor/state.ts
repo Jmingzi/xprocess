@@ -1,6 +1,6 @@
 import { computed, reactive, toRaw, ref, watch } from 'vue'
 import minBy from 'lodash/minBy'
-import { IEventHandlerData } from '../hooks/use-drag'
+import { IEventHandlerData } from '../component/use-drag'
 import {
   DEFAULT_PROPS,
   IPropsRect,
@@ -12,9 +12,9 @@ import {
   LOCAL_LIST,
   IFont,
   DEFAULT_FONT
-} from '../svg-type/base'
-import { Edge, setCurrentLine, preventCanvasClickToggle } from '../operation/state'
-import { useCanvas } from '../container/canvas/use-canvas'
+} from '../core/svg/base'
+import { Edge, setCurrentLine, preventCanvasClickToggle } from '../core/operator/state'
+import { useCanvas } from '../core/container/use-canvas'
 import {
   ENLARGE_TIMES_FROM_LOCAL_SIZE,
   ENLARGE_TIMES_FROM_LOCAL_STROKE,
