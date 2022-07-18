@@ -17,22 +17,27 @@ const style = computed(() => {
   }
 
   // 从 nodes 中找到四个边界
-  let minLeft = 100000
-  let maxRight = 0
-  let minTop = 100000
-  let maxBottom = 0
-  editorState.selectedNodes.forEach(node => {
-    if (node.start[0] <= minLeft) {
+  let minLeft = -1
+  let maxRight = -1
+  let minTop = -1
+  let maxBottom = -1
+  let zIndex = -1
+  editorState.selectedNodes.forEach((node, i) => {
+    const init = i === 0
+    if (init || node.start[0] <= minLeft) {
       minLeft = node.start[0]
     }
-    if (node.end[0] >= maxRight) {
+    if (init || node.end[0] >= maxRight) {
       maxRight = node.end[0]
     }
-    if (node.start[1] <= minTop) {
+    if (init || node.start[1] <= minTop) {
       minTop = node.start[1]
     }
-    if (node.end[1] >= maxBottom) {
+    if (init || node.end[1] >= maxBottom) {
       maxBottom = node.end[1]
+    }
+    if (init || node.zIndex < zIndex) {
+      zIndex = node.zIndex
     }
   })
 
@@ -41,7 +46,8 @@ const style = computed(() => {
     left: `${minLeft - padding}px`,
     top: `${minTop - padding}px`,
     width: `${maxRight - minLeft + padding * 2}px`,
-    height: `${maxBottom - minTop + padding * 2}px`
+    height: `${maxBottom - minTop + padding * 2}px`,
+    zIndex
   }
 })
 
