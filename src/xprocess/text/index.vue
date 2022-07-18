@@ -51,7 +51,7 @@ const calcHeight = () => {
 
 const handleInput = (e: Event) => {
   const target = e.target as HTMLInputElement
-  const text = target.innerText
+  const text = target.innerHTML
   nextTick(() => {
     textHeight.value = target.offsetHeight
     /**
@@ -75,7 +75,10 @@ watch(() => node.value, node => {
      * 此处不做受控文本
      * 仅仅是节点变化时初始化下内容
      */
-    initialContent.value = node?.font?.content ?? ''
+    initialContent.value = (node?.font?.content ?? '')
+      .split('\n')
+      .map((item, i) => i === 0 ? item : `<div>${item}</div>`)
+      .join('')
   }
 }, { immediate: true })
 
