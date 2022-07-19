@@ -184,7 +184,7 @@ onMounted(() => {
     }"
     @mousedown="onMouseDown"
     @mouseover="onMouseOver"
-    @mouseout="onMouseOut"
+    @mouseleave="onMouseOut"
     @click.stop="onClick"
     @dblclick="onDoubleClick"
   >

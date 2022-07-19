@@ -32,7 +32,7 @@ const onSave = async () => {
 }
 const onAdd = () => {
   showListPanel.value = false
-  config?.value.api.addNew()
+  config?.value.toCreate()
 }
 watchEffect(() => {
   if (showListPanel.value) {

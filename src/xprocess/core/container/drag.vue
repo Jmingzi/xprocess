@@ -2,8 +2,8 @@
 import { ref, onMounted, h, createApp } from 'vue'
 import { useDrag, IEventHandler } from '../../component/use-drag'
 import { useCanvas } from './use-canvas'
-import { getPointFromCanvas, getReferenceLine, state as editorState, NodeRect, NodeText } from '../../editor/state'
-import { SVG_TYPE, SvgType } from '../svg/base'
+import { getPointFromCanvas, getReferenceLine, state as editorState, NodeRect } from '../../editor/state'
+import { SvgType } from '../svg/base'
 import { ENLARGE_TIMES_FROM_LOCAL_SIZE } from '../../constant'
 import SvgTypeComponent from '../svg/index.vue'
 
@@ -14,7 +14,7 @@ const props = defineProps<{ type: SvgType }>()
 const { registerCallback, onMouseDown: handleMouseDown } = useDrag()
 const { isStartInCanvas, inCanvasDOM, inCanvasRect, rect: canvasRect } = useCanvas()
 
-const handler: IEventHandler = (data, e, wrapper) => {
+const onMouseUp: IEventHandler = (data, e, wrapper) => {
   if (inCanvasRect(e) && canDrop.value) {
     emits('drop', data, wrapper)
     editorState.referenceLines = []
@@ -48,7 +48,7 @@ const onMouseDown = (e: MouseEvent) => {
 }
 onMounted(() => {
   registerCallback('mouseup', {
-    handler,
+    handler: onMouseUp,
     draggedWrapperEl: elRef.value!
   })
   registerCallback('mousemove', {

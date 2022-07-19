@@ -2,11 +2,10 @@
 import SvgType from '../../core/svg/index.vue'
 import { Drag as XDrag } from '../../core/container'
 import { state, onDrop } from '../state'
-// import iconTriangleDownFill from '../style-tool/icon/triangle_down_fill.png'
 import { ref } from 'vue'
+import { SIDEBAR_LOCAL_ROW_NUMS } from '../../constant'
 
-const LOCAL_ROW_NUMS = 2
-const rows = ref(Math.ceil(state.localComponentList.length / LOCAL_ROW_NUMS))
+const rows = ref(Math.ceil(state.localComponentList.length / SIDEBAR_LOCAL_ROW_NUMS))
 </script>
 
 <template>
@@ -14,7 +13,7 @@ const rows = ref(Math.ceil(state.localComponentList.length / LOCAL_ROW_NUMS))
     <p class="xprocess-sidebar__title">基础图形</p>
     <div class="xprocess-sidebar__group" v-for="(_, i) in rows">
       <XDrag
-        v-for="item in state.localComponentList.slice(i * LOCAL_ROW_NUMS, (i + 1) * LOCAL_ROW_NUMS)"
+        v-for="item in state.localComponentList.slice(i * SIDEBAR_LOCAL_ROW_NUMS, (i + 1) * SIDEBAR_LOCAL_ROW_NUMS)"
         :type="item.type"
         @drop="data => onDrop(data, item)"
       >

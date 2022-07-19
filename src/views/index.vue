@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useProcess, IProcessState } from '../xprocess'
+import { useProcess, IProcessState, IConfig } from '../xprocess'
 import { save, share, getDetail, getUserList, deleteById } from '../api'
 import { useRouter, useRoute } from 'vue-router'
 import { reactive, ref, watch } from 'vue'
@@ -29,13 +29,18 @@ const onAdd = () => {
   Message.info('已为您重置画布!')
 }
 
-const config = ref({
+const toDetail = (id: number) => {
+  router.replace(`/editor/${id}`)
+}
+
+const config = ref<IConfig>({
   paramsId: route.params.id as string,
+  toCreate: onAdd,
+  toDetail,
   api: {
     save,
     share,
-    list: getList,
-    addNew: onAdd
+    list: getList
   }
 })
 const { Process, initState, stateCanvasDataChange, Message } = useProcess(config)
