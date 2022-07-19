@@ -24,8 +24,9 @@ export function useProcess (config: Ref<IConfig>) {
     Process: {
       setup (props: any, context: SetupContext) {
         const { api, paramsId } = config.value
+        const { save, share } = api
         config.value.api.save = async (data: State): Promise<number | undefined> => {
-          const dataId = await api.save(data, paramsId)
+          const dataId = await save(data, paramsId)
           if (dataId) {
             config.value.toDetail(dataId)
           }
@@ -33,7 +34,7 @@ export function useProcess (config: Ref<IConfig>) {
         }
 
         config.value.api.share = async (data: State) => {
-          await api.share(data, paramsId)
+          await share(data, paramsId)
         }
 
         provide('config', config)
