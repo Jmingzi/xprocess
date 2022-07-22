@@ -39,7 +39,7 @@ watchPostEffect(() => {
 
 <template>
   <div class="xprocess__header">
-    <div class="xprocess__header-title" @click="config.toCreate">
+    <div class="xprocess__header-title" @click="config.toHome">
       <img :src="logo" align="center" width="35">
       <span>XProcess</span>
     </div>

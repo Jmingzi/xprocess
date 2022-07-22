@@ -4,14 +4,15 @@ import { h, provide, SetupContext, Ref } from 'vue'
 import { Message } from './component/message'
 
 export type IConfig = {
-  paramsId?: string
-  toCreate: () => void
-  toDetail: (id: number) => void
-  api: {
-    save: (data: State, fileId?: string) => Promise<number | undefined>
-    share: (data: State, fileId?: string) => Promise<void>
-    list: () => Promise<void>
-  }
+  toHome: () => void
+  fileOperators: IFileOperatorItem[]
+}
+
+export type IFileOperatorItem = {
+  icon: string
+  title: string
+  action: (data: State) => void
+  condition?: () => boolean
 }
 
 export type IProcessState = State
@@ -21,22 +22,11 @@ export function useProcess (config: Ref<IConfig>) {
     initState,
     stateCanvasDataChange,
     Message,
+    openListPanel: () => {
+      state.showListPanel = true
+    },
     Process: {
       setup (props: any, context: SetupContext) {
-        const { api, paramsId } = config.value
-        const { save, share } = api
-        config.value.api.save = async (data: State): Promise<number | undefined> => {
-          const dataId = await save(data, paramsId)
-          if (dataId) {
-            config.value.toDetail(dataId)
-          }
-          return dataId
-        }
-
-        config.value.api.share = async (data: State) => {
-          await share(data, paramsId)
-        }
-
         provide('config', config)
         return () => h(Editor, null, context.slots)
       }

@@ -285,6 +285,7 @@ export function preventCanvasClickToggle () {
 }
 const isCanvasClick = (e: MouseEvent) => getTargetPath(e).some(el => el?.classList?.contains(CANVAS_CLASS))
 document.body.addEventListener('click', (e: MouseEvent) => {
+  editorState.showListPanel = false
   if (!isCanvasClick(e)) {
     // 只处理画布上的点击事件
     return

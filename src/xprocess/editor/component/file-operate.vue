@@ -1,58 +1,17 @@
 <script lang="ts" setup>
-import iconSave from '../icon/save.png'
-import iconShare from '../icon/share.png'
-import iconAdd from '../icon/add.png'
-// import iconLock from './icon/lock.png'
-// import iconUnlock from './icon/unlock.png'
 import Filename from './filename.vue'
 import iconZhankai from '../icon/zhankai.png'
-import { ref, inject, watchEffect, Ref, onMounted } from 'vue'
+import { inject, Ref } from 'vue'
 import { IConfig } from '../../index'
-// import { Message } from '../message'
-import { getStateRaw } from '../state'
+import { getStateRaw, state as editorState } from '../state'
 
 const config = inject<Ref<IConfig>>('config')
-const showListPanel = ref(false)
-const lock = ref(false)
-const onLock = () => {
-  lock.value = true
-}
-const onUnlock = () => {
-  lock.value = false
-}
-const onShare = () => {
-  config?.value.api.share(getStateRaw())
-}
-const onSave = async () => {
-  const isEdit = !!config?.value.paramsId
-  await config?.value.api.save(getStateRaw())
-  if (!isEdit) {
-    showListPanel.value = true
-  }
-}
-const onAdd = () => {
-  showListPanel.value = false
-  config?.value.toCreate()
-}
-watchEffect(() => {
-  if (showListPanel.value) {
-    config?.value.api.list()
-  }
-})
-onMounted(() => {
-  if (!config?.value.paramsId) {
-    showListPanel.value = true
-  }
-})
-document.body.addEventListener('click', () => {
-  showListPanel.value = false
-})
 </script>
 
 <template>
   <transition name="list">
     <div
-      v-if="showListPanel"
+      v-if="editorState.showListPanel"
       class="file-list-panel"
       @click.stop=""
     >
@@ -66,51 +25,28 @@ document.body.addEventListener('click', () => {
     <div
       class="file-operate__item"
       title="展开文件列表"
-      @click.stop="showListPanel = !showListPanel"
+      @click.stop="editorState.showListPanel = !editorState.showListPanel"
     >
       <img
         class="file-list-panel-icon"
         :class="{
-          active: showListPanel
+          active: editorState.showListPanel
         }"
         :src="iconZhankai"
       >
     </div>
   </div>
   <div class="file-operate">
-<!--    <span>已保存 14:22</span>-->
-<!--    <div-->
-<!--      v-if="lock"-->
-<!--      class="file-operate__item"-->
-<!--      title="分享加密"-->
-<!--      @click="onUnlock"-->
-<!--    >-->
-<!--      <img :src="iconLock">-->
-<!--      <span>分享加密</span>-->
-<!--    </div>-->
-<!--    <div-->
-<!--      v-else-->
-<!--      class="file-operate__item"-->
-<!--      title="分享公开"-->
-<!--      @click="onLock"-->
-<!--    >-->
-<!--      <img :src="iconUnlock">-->
-<!--      <span>分享公开</span>-->
-<!--    </div>-->
-<!--    <div class="file-operate__item" title="分享文件" @click="onShare">-->
-<!--      <img :src="iconShare">-->
-<!--    </div>-->
-    <div class="file-operate__item" title="保存文件" @click="onSave">
-      <img :src="iconSave">
-    </div>
-    <div
-      v-if="config?.paramsId"
-      class="file-operate__item"
-      title="新建流程"
-      @click="onAdd"
-    >
-      <img :src="iconAdd">
-    </div>
+    <template v-for="item in config.fileOperators ?? []">
+      <div
+        v-if="item.condition ? item.condition() : true"
+        class="file-operate__item"
+        :title="item.title"
+        @click="item.action(getStateRaw())"
+      >
+        <img :src="item.icon">
+      </div>
+    </template>
   </div>
 </template>
 

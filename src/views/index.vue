@@ -2,10 +2,14 @@
 import { useProcess, IProcessState, IConfig } from '../xprocess'
 import { save, share, getDetail, getUserList, deleteById } from '../api'
 import { useRouter, useRoute } from 'vue-router'
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref, watch, onMounted } from 'vue'
 import iconLiuc from './icon/liucheng.png'
-// import iconEdit from './icon/edit.png'
+import iconExport from './icon/export.png'
 import iconDelete from './icon/delete.png'
+import iconSave from './icon/save.png'
+import iconShare from './icon/share.png'
+import iconImport from './icon/import.png'
+import iconAdd from './icon/add.png'
 
 const route = useRoute()
 const router = useRouter()
@@ -19,9 +23,8 @@ const state = reactive<{
 const getList = async () => {
   const data = await getUserList<{ [id: string]: Item }>()
   state.list = Object.values(data).reverse()
-  if (state.list.length && !route.params.id) {
-    // router.push(`/editor/${state.list[0].id}`)
-  }
+  // if (state.list.length && !route.params.id) {
+  // }
 }
 
 const onAdd = () => {
@@ -33,17 +36,52 @@ const toDetail = (id: number) => {
   router.replace(`/editor/${id}`)
 }
 
+const onImport = () => {}
+const onExport = () => {}
+const onShare = () => {}
+
 const config = ref<IConfig>({
-  paramsId: route.params.id as string,
-  toCreate: onAdd,
-  toDetail,
-  api: {
-    save,
-    share,
-    list: getList
-  }
+  toHome: onAdd,
+  fileOperators: [
+    {
+      title: '导入文件',
+      icon: iconImport,
+      action: onImport
+    },
+    {
+      condition: () => !!route.params.id,
+      title: '分享文件',
+      icon: iconShare,
+      action: onShare
+    },
+    {
+      title: '保存文件',
+      icon: iconSave,
+      action: async (data) => {
+        const isEdit = !!route.params.id
+        const dataId = await save(data)
+        await getList()
+        if (!isEdit && dataId) {
+          openListPanel()
+          toDetail(dataId)
+        }
+      }
+    },
+    {
+      condition: () => !!route.params.id,
+      title: '新建文件',
+      icon: iconAdd,
+      action: onAdd
+    }
+  ]
 })
-const { Process, initState, stateCanvasDataChange, Message } = useProcess(config)
+const {
+  Process,
+  initState,
+  stateCanvasDataChange,
+  Message,
+  openListPanel
+} = useProcess(config)
 
 const onEdit = (item: Item) => {
   if (String(item.id) === route.params.id) {
@@ -90,8 +128,14 @@ watch(() => route.params.id, (id) => {
       lines: []
     })
   }
-  config.value.paramsId = id as string
 }, { immediate: true })
+
+onMounted(() => {
+  getList()
+  if (!route.params.id) {
+    openListPanel()
+  }
+})
 
 const formatTime = (id: number) => {
   const d = new Date(id)
@@ -119,7 +163,7 @@ const formatTime = (id: number) => {
               <span>{{ item.filename }}.xs</span>
               <span class="my-list__operate">
                 <span class="my-list__time">{{ formatTime(item.id) }}</span>
-<!--                <img title="编辑" :src="iconEdit">-->
+                <img title="导出" :src="iconExport" @click.stop="onExport(item)">
                 <img title="删除" :src="iconDelete" @click.stop="onDelete(item)">
               </span>
             </li>

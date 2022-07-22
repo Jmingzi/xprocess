@@ -76,9 +76,10 @@ export type State = {
   hoverNode?: XProcessNode
   localComponentList: LocalListItem[]
   nodes: XProcessNode[]
-  lines: NodeLine[],
-  referenceLines: ReferenceLine[],
+  lines: NodeLine[]
+  referenceLines: ReferenceLine[]
   selectedNodes: XProcessNode[]
+  showListPanel: boolean
 }
 
 export const stateCanvasDataChange = ref(false)
@@ -92,7 +93,8 @@ export const state = reactive<State>({
   selectedNodes: [],
   localComponentList: LOCAL_LIST.map(x => ({ ...DEFAULT_PROPS, ...x })) as LocalListItem[],
   nodes: [],
-  lines: []
+  lines: [],
+  showListPanel: false
 })
 
 export function initState (data: Pick<State, 'nodes' | 'lines' | 'filename'>) {
