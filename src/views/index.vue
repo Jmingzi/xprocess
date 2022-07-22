@@ -80,6 +80,7 @@ const {
   initState,
   stateCanvasDataChange,
   Message,
+  Dialog,
   openListPanel
 } = useProcess(config)
 
@@ -99,10 +100,7 @@ const onEdit = (item: Item) => {
 }
 
 const onDelete = async (item: Item) => {
-  const v = confirm('删除后不可恢复，确定要删除吗？')
-  if (!v) {
-    return
-  }
+  await Dialog.confirm('删除后不可恢复，确定要删除吗？')
   await deleteById(item.id)
   await getList()
   Message.success('删除成功')

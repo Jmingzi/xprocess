@@ -2,6 +2,7 @@ import Editor from './editor/index.vue'
 import { State, initState, state, stateCanvasDataChange } from './editor/state'
 import { h, provide, SetupContext, Ref } from 'vue'
 import { Message } from './component/message'
+import { Dialog } from './component/dialog'
 
 export type IConfig = {
   toHome: () => void
@@ -22,6 +23,7 @@ export function useProcess (config: Ref<IConfig>) {
     initState,
     stateCanvasDataChange,
     Message,
+    Dialog,
     openListPanel: () => {
       state.showListPanel = true
     },
