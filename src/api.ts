@@ -21,7 +21,6 @@ export async function save (editorStateRaw: State, fileId?: string) {
   })
   const { data: { success, data } } = res
   if (success) {
-    Message.success('保存成功')
     return data.id
   } else {
     // @ts-ignore

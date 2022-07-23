@@ -3,7 +3,7 @@ import iconInfo from '../message/icon/info.png'
 import { withDefaults, Ref } from 'vue'
 
 withDefaults(defineProps<{
-  message: string
+  message?: string
   show?: Ref<boolean>
   cancelText?: string
   confirmText?: string
@@ -26,7 +26,9 @@ withDefaults(defineProps<{
             <span>提示</span>
           </div>
           <div class="xdialog__body">
-            {{ message }}
+            <slot>
+              {{ message }}
+            </slot>
           </div>
           <div class="xdialog__footer">
             <div class="xdialog__button" @click="onCancel">{{ cancelText }}</div>

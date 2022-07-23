@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { useProcess, IProcessState, IConfig } from '../xprocess'
-import { save, share, getDetail, getUserList, deleteById } from '../api'
+import {
+  save,
+  getDetail,
+  getUserList,
+  deleteById
+} from '../api'
 import { useRouter, useRoute } from 'vue-router'
-import { reactive, ref, watch, onMounted } from 'vue'
+import { reactive, ref, watch, onMounted, h } from 'vue'
 import iconLiuc from './icon/liucheng.png'
 import iconExport from './icon/export.png'
 import iconDelete from './icon/delete.png'
@@ -10,6 +15,8 @@ import iconSave from './icon/save.png'
 import iconShare from './icon/share.png'
 import iconImport from './icon/import.png'
 import iconAdd from './icon/add.png'
+import ShareModalContent from './share-modal-content.vue'
+import { selectFile, download, formatTime } from './util'
 
 const route = useRoute()
 const router = useRouter()
@@ -36,9 +43,46 @@ const toDetail = (id: number) => {
   router.replace(`/editor/${id}`)
 }
 
-const onImport = () => {}
-const onExport = () => {}
-const onShare = () => {}
+const onImport = async () => {
+  const file = await selectFile()
+  const reader = new FileReader()
+  reader.readAsText(file)
+  reader.onload = async function () {
+    try {
+      const json = JSON.parse(this.result as string)
+      // 判断文件是否存在
+      if (state.list.some(x => x.id === json.id)) {
+        return Message.error(`【${json.filename}】已存在您的列表了呢，导入失败～`)
+      }
+      delete json.id
+      await save(json)
+      Message.success('导入成功')
+      await getList()
+      openListPanel()
+    } catch (e) {
+      Message.error(`${file.name} 格式错误，无法识别`)
+    }
+  }
+  reader.onerror = function () {
+    Message.error(`${file.name} 格式错误，无法识别`)
+  }
+}
+
+const onExport = (item: Item) => {
+  // 使用 File 保存文件
+  const blob = new Blob([JSON.stringify(item)], { type: 'application/json' })
+  const reader = new FileReader()
+  reader.readAsDataURL(blob)
+  reader.onload = function () {
+    download(item.filename, this.result as string)
+  }
+}
+
+const onShare = async () => {
+  await Dialog.confirm({
+    content: h(ShareModalContent, { id: route.params.id })
+  })
+}
 
 const config = ref<IConfig>({
   toHome: onAdd,
@@ -60,6 +104,7 @@ const config = ref<IConfig>({
       action: async (data) => {
         const isEdit = !!route.params.id
         const dataId = await save(data)
+        Message.success('保存成功')
         await getList()
         if (!isEdit && dataId) {
           openListPanel()
@@ -134,11 +179,6 @@ onMounted(() => {
     openListPanel()
   }
 })
-
-const formatTime = (id: number) => {
-  const d = new Date(id)
-  return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes()}`
-}
 </script>
 
 <template>
