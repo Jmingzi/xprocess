@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useProcess, IProcessState, IConfig } from '../xprocess'
+import { useProcess, IProcessState, IConfig } from '../../xprocess'
 import {
   save,
   getDetail,
   getUserList,
   deleteById
-} from '../api'
+} from '../../api'
 import { useRouter, useRoute } from 'vue-router'
 import { reactive, ref, watch, onMounted, h } from 'vue'
 import iconLiuc from './icon/liucheng.png'
@@ -16,7 +16,7 @@ import iconShare from './icon/share.png'
 import iconImport from './icon/import.png'
 import iconAdd from './icon/add.png'
 import ShareModalContent from './share-modal-content.vue'
-import { selectFile, download, formatTime } from './util'
+import { selectFile, download, formatTime } from '../util'
 
 const route = useRoute()
 const router = useRouter()
@@ -214,7 +214,7 @@ onMounted(() => {
 </template>
 
 <style lang="less">
-@import '../xprocess/var';
+@import '../../xprocess/var';
 @title-height: 50px;
 .my-list {
   position: relative;

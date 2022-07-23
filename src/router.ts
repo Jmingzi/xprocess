@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import File from './views/index.vue'
+import File from './views/index/index.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -14,6 +14,10 @@ const router = createRouter({
           component: File
         }
       ]
+    },
+    {
+      path: '/share/:id',
+      component: File
     }
   ]
 })

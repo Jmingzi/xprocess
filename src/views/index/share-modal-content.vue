@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { onCopy } from './util'
+import { onCopy } from '../util'
+import { Message } from '../../xprocess/component/message'
 const props = defineProps<{ id: string }>()
 const ok = ref(false)
 const shareLink = computed(() => `${location.protocol}//${location.host}${location.pathname}#/share/${props.id}`)
 const handleCopy = async () => {
   ok.value = false
   await onCopy(shareLink.value)
+  Message.success('复制成功')
   setTimeout(() => {
     ok.value = true
   })
@@ -26,7 +28,7 @@ const handleCopy = async () => {
 </template>
 
 <style lang="less">
-@import '../xprocess/var';
+@import '../../xprocess/var';
 .share-modal-content {
   padding-bottom: 30px;
   &__input {
