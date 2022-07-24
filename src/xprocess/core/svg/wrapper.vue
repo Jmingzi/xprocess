@@ -1,6 +1,7 @@
 <script lang="ts">
-import { h, SetupContext } from 'vue'
+import { h, SetupContext, inject } from 'vue'
 import { STROKE_WIDTH, SvgType } from './base'
+import { IConfig } from '../../index'
 
 export default function SvgWrapper (props: {
   width: number,
@@ -9,8 +10,9 @@ export default function SvgWrapper (props: {
   type: SvgType
 }, context: SetupContext) {
   const { strokeWidth = STROKE_WIDTH, width, height, type } = props
+  const config = inject<IConfig>('config')!
   return h('svg', {
-    class: `xprocess__svg ${type}`,
+    class: `xprocess__svg ${type} ${config.isReadonly() ? '' : 'move'}`,
     width: width + strokeWidth,
     height: height + strokeWidth,
     xmlns: 'http://www.w3.org/2000/svg'
@@ -23,8 +25,10 @@ export default function SvgWrapper (props: {
 <style lang="less">
 .xprocess__svg {
   overflow: visible;
-  &:not(.line) {
-    cursor: move;
+  &.move {
+    &:not(.line) {
+      cursor: move;
+    }
   }
 }
 </style>

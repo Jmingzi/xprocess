@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { State } from './xprocess/editor/state'
-import { Message } from './xprocess/component/message'
+import { State } from '../xprocess/editor/state'
+import { Message } from '../xprocess/component/message'
 
 export type ApiResult<T = any> = { success: boolean, data: T }
 

@@ -5,7 +5,7 @@ import { CANVAS_PADDING, CANVAS_MARGIN_LEFT, CANVAS_MARGIN_TOP } from '../../con
 import { IConfig } from '../../index'
 import iconZhankai from '../icon/zhankai.png'
 
-const config = inject<Ref<IConfig>>('config')
+const config = inject<IConfig>('config')!
 
 const el = ref()
 const elSidebar = ref()
@@ -48,6 +48,7 @@ watchPostEffect(() => {
     </div>
   </div>
   <div
+    v-if="!config.isReadonly()"
     class="xprocess__sidebar-touch"
     @click.stop="showSidebar = !showSidebar"
     :class="{ open: showSidebar }"
@@ -57,7 +58,7 @@ watchPostEffect(() => {
   </div>
   <transition name="sidebar">
     <div
-      v-if="showSidebar"
+      v-if="!config.isReadonly() && showSidebar"
       class="xprocess__sidebar"
       ref="elSidebar"
     >

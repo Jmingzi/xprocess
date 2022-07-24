@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import Filename from './filename.vue'
 import iconZhankai from '../icon/zhankai.png'
-import { inject, Ref } from 'vue'
+import { inject, Ref, watch } from 'vue'
 import { IConfig } from '../../index'
 import { getStateRaw, state as editorState } from '../state'
 
-const config = inject<Ref<IConfig>>('config')
+const config = inject<IConfig>('config')
 </script>
 
 <template>
@@ -21,7 +21,7 @@ const config = inject<Ref<IConfig>>('config')
 
   <Filename />
 
-  <div class="file-operate">
+  <div v-if="!config.isReadonly()" class="file-operate">
     <div
       class="file-operate__item"
       title="展开文件列表"

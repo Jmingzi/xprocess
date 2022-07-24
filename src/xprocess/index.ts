@@ -7,6 +7,7 @@ import { Dialog } from './component/dialog'
 export type IConfig = {
   toHome: () => void
   fileOperators: IFileOperatorItem[]
+  isReadonly: () => boolean
 }
 
 export type IFileOperatorItem = {
@@ -29,7 +30,7 @@ export function useProcess (config: Ref<IConfig>) {
     },
     Process: {
       setup (props: any, context: SetupContext) {
-        provide('config', config)
+        provide('config', config.value)
         return () => h(Editor, null, context.slots)
       }
     }

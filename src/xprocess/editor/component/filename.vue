@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, inject } from 'vue'
 import { state as editorState } from '../state'
 import { DEFAULT_FILENAME } from '../../constant'
+import { IConfig } from '../../index'
 
+const config = inject<IConfig>('config')
 const isPreview = ref(true)
 const refEl = ref()
 const onPreview = async () => {
@@ -22,6 +24,7 @@ const onAlter = (e: FocusEvent) => {
 <template>
   <div class="filename" @click="onPreview">
     <input
+      :disabled="config.isReadonly()"
       :readonly="isPreview"
       ref="refEl"
       type="text"

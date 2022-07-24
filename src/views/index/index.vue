@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { useProcess, IProcessState, IConfig } from '../../xprocess'
-import {
-  save,
-  getDetail,
-  getUserList,
-  deleteById
-} from '../../api'
+import { save, getDetail, getUserList, deleteById } from '../../assets/api'
 import { useRouter, useRoute } from 'vue-router'
-import { reactive, ref, watch, onMounted, h } from 'vue'
+import { reactive, ref, watch, onMounted, h, computed, watchEffect } from 'vue'
 import iconLiuc from './icon/liucheng.png'
 import iconExport from './icon/export.png'
 import iconDelete from './icon/delete.png'
@@ -15,11 +10,13 @@ import iconSave from './icon/save.png'
 import iconShare from './icon/share.png'
 import iconImport from './icon/import.png'
 import iconAdd from './icon/add.png'
+import iconFile from './icon/file.png'
 import ShareModalContent from './share-modal-content.vue'
-import { selectFile, download, formatTime } from '../util'
+import { selectFile, download, formatTime } from '../../assets/util'
 
 const route = useRoute()
 const router = useRouter()
+const isShare = computed(() => route.path.startsWith('/share'))
 
 type Item = { id: number } & IProcessState
 const state = reactive<{
@@ -27,6 +24,7 @@ const state = reactive<{
 }>({
   list: []
 })
+
 const getList = async () => {
   const data = await getUserList<{ [id: string]: Item }>()
   state.list = Object.values(data).reverse()
@@ -40,7 +38,7 @@ const onAdd = () => {
 }
 
 const toDetail = (id: number) => {
-  router.replace(`/editor/${id}`)
+  router.push(`/editor/${id}`)
 }
 
 const onImport = async () => {
@@ -79,47 +77,66 @@ const onExport = (item: Item) => {
 }
 
 const onShare = async () => {
-  await Dialog.confirm({
-    content: h(ShareModalContent, { id: route.params.id })
+  await Dialog({
+    content: h(ShareModalContent, { id: route.params.id }),
+    cancelText: '打开链接',
+    onCancel: () => {
+      router.push(`/share/${route.params.id}`)
+    }
   })
 }
 
-const config = ref<IConfig>({
-  toHome: onAdd,
-  fileOperators: [
-    {
-      title: '导入文件',
-      icon: iconImport,
-      action: onImport
-    },
-    {
-      condition: () => !!route.params.id,
-      title: '分享文件',
-      icon: iconShare,
-      action: onShare
-    },
-    {
-      title: '保存文件',
-      icon: iconSave,
-      action: async (data) => {
-        const isEdit = !!route.params.id
-        const dataId = await save(data)
-        Message.success('保存成功')
-        await getList()
-        if (!isEdit && dataId) {
-          openListPanel()
-          toDetail(dataId)
-        }
+const fileOperators = [
+  {
+    title: '导入文件',
+    icon: iconImport,
+    action: onImport
+  },
+  {
+    condition: () => !!route.params.id,
+    title: '分享文件',
+    icon: iconShare,
+    action: onShare
+  },
+  {
+    title: '保存文件',
+    icon: iconSave,
+    action: async (data: IProcessState) => {
+      const isEdit = !!route.params.id
+      const dataId = await save(data)
+      Message.success('保存成功')
+      await getList()
+      if (!isEdit && dataId) {
+        openListPanel()
+        toDetail(dataId)
       }
-    },
-    {
-      condition: () => !!route.params.id,
-      title: '新建文件',
-      icon: iconAdd,
-      action: onAdd
     }
-  ]
+  },
+  {
+    condition: () => !!route.params.id,
+    title: '新建文件',
+    icon: iconAdd,
+    action: onAdd
+  }
+]
+
+const fileOperatorsShare = [
+  {
+    title: '查看原文件',
+    icon: iconFile,
+    action: () => {
+      toDetail(+route.params.id)
+      Message.success('已进入编辑模式')
+    }
+  }
+]
+
+const config = ref<IConfig>({
+  isReadonly: () => isShare.value,
+  toHome: onAdd,
+  fileOperators
 })
+
 const {
   Process,
   initState,
@@ -172,6 +189,15 @@ watch(() => route.params.id, (id) => {
     })
   }
 }, { immediate: true })
+
+watchEffect(() => {
+  config.value.fileOperators = isShare.value
+      ? fileOperatorsShare
+      : fileOperators
+  if (isShare.value) {
+    Dialog.close()
+  }
+})
 
 onMounted(() => {
   getList()

@@ -9,18 +9,16 @@ withDefaults(defineProps<{
   confirmText?: string
   onCancel?: () => void
   onConfirm?: () => void
-}>(), {
-  message: '这是提示语',
-  cancelText: '取消',
-  confirmText: '确定'
-})
+}>(), {})
+
+const emit = defineEmits(['close'])
 </script>
 
 <template>
   <teleport to="body">
     <transition name="dialog">
-      <div v-if="show.value" class="xdialog" @click.stop="">
-        <div class="xdialog__content">
+      <div v-if="show.value" class="xdialog" @click.stop="emit('close')">
+        <div class="xdialog__content" @click.stop="">
           <div class="xdialog__header">
             <img :src="iconInfo" alt="" width="16">
             <span>提示</span>
@@ -30,9 +28,9 @@ withDefaults(defineProps<{
               {{ message }}
             </slot>
           </div>
-          <div class="xdialog__footer">
-            <div class="xdialog__button" @click="onCancel">{{ cancelText }}</div>
-            <div class="xdialog__button xdialog__button--primary" @click="onConfirm">{{ confirmText }}</div>
+          <div v-if="cancelText || confirmText" class="xdialog__footer">
+            <div v-if="cancelText" class="xdialog__button" @click="onCancel">{{ cancelText }}</div>
+            <div v-if="confirmText" class="xdialog__button xdialog__button--primary" @click="onConfirm">{{ confirmText }}</div>
           </div>
         </div>
       </div>

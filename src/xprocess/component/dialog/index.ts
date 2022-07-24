@@ -11,23 +11,28 @@ interface IDialogConfig {
 }
 
 const showDialog = ref(false)
+let div: HTMLDivElement
 
 export function Dialog (config?: IDialogConfig) {
   const content = config?.content
   delete config?.content
   const vNode = h(Component, {
     ...config,
-    show: showDialog
+    show: showDialog,
+    onClose: closeDialog
   }, {
     default: () => content
   })
-  render(vNode, document.createElement('div'))
+  div = document.createElement('div')
+  render(vNode, div)
   showDialog.value = true
 }
 
 Dialog.confirm = function (message: string | IDialogConfig) {
   return new Promise((resolve, reject) => {
     Dialog({
+      cancelText: '取消',
+      confirmText: '确定',
       ...(typeof message === 'string' ? { message } : message),
       onCancel: () => {
         closeDialog()
@@ -41,6 +46,14 @@ Dialog.confirm = function (message: string | IDialogConfig) {
   })
 }
 
+Dialog.close = closeDialog
+
 function closeDialog () {
   showDialog.value = false
+  if (div) {
+    // unmount vNode
+    setTimeout(() => {
+      render(null, div)
+    }, 500)
+  }
 }

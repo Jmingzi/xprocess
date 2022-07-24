@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import { onCopy } from '../util'
+import { onCopy } from '../../assets/util'
 import { Message } from '../../xprocess/component/message'
 const props = defineProps<{ id: string }>()
 const ok = ref(false)
