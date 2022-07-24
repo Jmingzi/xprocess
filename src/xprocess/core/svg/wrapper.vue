@@ -10,9 +10,9 @@ export default function SvgWrapper (props: {
   type: SvgType
 }, context: SetupContext) {
   const { strokeWidth = STROKE_WIDTH, width, height, type } = props
-  const config = inject<IConfig>('config')!
+  const config = inject<IConfig>('config')
   return h('svg', {
-    class: `xprocess__svg ${type} ${config.isReadonly() ? '' : 'move'}`,
+    class: `xprocess__svg ${type} ${config?.isReadonly() ? '' : 'move'}`,
     width: width + strokeWidth,
     height: height + strokeWidth,
     xmlns: 'http://www.w3.org/2000/svg'

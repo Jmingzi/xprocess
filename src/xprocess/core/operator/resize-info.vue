@@ -17,8 +17,8 @@ const style = computed(() => {
   const nodeHeight = Math.abs(node.value.start[1] - node.value.end[1])
   const halfX = (nodeWidth - elRect.value.width) / 2
   return {
-    left: `${halfX + node.value.start[0]}px`,
-    top: `${nodeHeight + node.value.start[1] + 10}px`
+    left: `${parseFloat(String(halfX + node.value.start[0]))}px`,
+    top: `${parseFloat(String(nodeHeight + node.value.start[1] + 10))}px`
   }
 })
 
