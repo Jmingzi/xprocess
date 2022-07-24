@@ -46,7 +46,7 @@ const config = inject<IConfig>('config')
           v-for="item in state.nodes"
           v-bind="item"
           :key="item.id"
-          @move="config.isReadonly() ? null : data => onMoving(data, item)"
+          @move="data => config.isReadonly() ? null : onMoving(data, item)"
         >
           <SvgType v-bind="item" />
         </XDrop>

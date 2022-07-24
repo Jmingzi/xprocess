@@ -137,6 +137,7 @@ const handlerMove: IEventHandler = (data, e) => {
   if (inCanvasRect(e)) {
     canvasNodeMoving.value = true
     emits('move', data, e)
+    console.log('move')
   }
 }
 
