@@ -52,7 +52,7 @@ watchPostEffect(() => {
     class="xprocess__sidebar-touch"
     @click.stop="showSidebar = !showSidebar"
     :class="{ open: showSidebar }"
-    :style="{ left: showSidebar ? `${sidebarRect?.width + 10}px` : null }"
+    :style="{ left: showSidebar ? `${sidebarRect?.width + 10}px` : undefined }"
   >
     <img :src="iconZhankai" width="15">
   </div>

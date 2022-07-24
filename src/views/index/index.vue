@@ -78,6 +78,7 @@ const onExport = (item: Item) => {
 
 const onShare = async () => {
   await Dialog({
+    // @ts-ignore
     content: h(ShareModalContent, { id: route.params.id }),
     cancelText: '打开链接',
     onCancel: () => {
