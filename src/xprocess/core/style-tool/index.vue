@@ -23,7 +23,7 @@ const style = computed(() => {
   const top = Math.min(node.start[1], node.end[1])
   return {
     left: `${left - halfX}px`,
-    top: `${-80 + top}px`
+    top: `${-60 + top}px`
   }
 })
 
