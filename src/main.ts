@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
+import { userConnect, getUid } from './assets/user-connect'
 
 axios.defaults.baseURL = './'
 axios.interceptors.request.use(req => {
@@ -9,14 +10,16 @@ axios.interceptors.request.use(req => {
     if (!req.params) {
       req.params = {}
     }
-    req.params.uid = 1
+    req.params.uid = getUid()
   } else if (req.method === 'post') {
-    req.data.uid = 1
+    req.data.uid = getUid()
   }
   return req
 })
-// axios.interceptors.response.use<ApiResult<1>>(res => res.data)
 
-const app = createApp(App)
-app.use(router)
-app.mount('#app')
+userConnect().then(() => {
+  const app = createApp(App)
+  app.use(router)
+  app.mount('#app')
+})
+
