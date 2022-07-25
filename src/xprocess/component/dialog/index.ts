@@ -2,6 +2,7 @@ import Component from './xdialog.vue'
 import { ref, h, render, VNode } from 'vue'
 
 interface IDialogConfig {
+  title?: string
   message?: string
   cancelText?: string
   confirmText?: string

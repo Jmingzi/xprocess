@@ -21,6 +21,9 @@ const config = inject<IConfig>('config')
 
 <template>
   <Layout>
+    <template #user>
+      <slot name="user" />
+    </template>
     <template #header>
       <FileOperate>
         <template v-slot:list-panel>
@@ -34,13 +37,13 @@ const config = inject<IConfig>('config')
     <template #content>
       <XCanvas>
         <template v-if="!config.isReadonly()">
-          <Reference />
-          <LineActionPanel />
           <MultiSelect />
-          <PropsTool />
           <ResizeInfo />
           <CircleSelect />
           <Operation />
+          <LineActionPanel />
+          <PropsTool />
+          <Reference />
         </template>
         <XDrop
           v-for="item in state.nodes"

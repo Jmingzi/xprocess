@@ -44,5 +44,21 @@ module.exports = {
       const success = typeof data !== 'string'
       res.json({ success, data })
     }
-  }
+  },
+
+  '/xprocess/userList': {
+    get: async (req, res) => {
+      const data = await controller.getUserList(req)
+      const success = typeof data !== 'string'
+      res.json({ success, data })
+    }
+  },
+
+  '/xprocess/userSave': {
+    post: async (req, res) => {
+      const data = await controller.userSave(req)
+      const success = typeof data !== 'string'
+      res.json({ success, data })
+    }
+  },
 }

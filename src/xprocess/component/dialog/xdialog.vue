@@ -3,13 +3,16 @@ import iconInfo from '../message/icon/info.png'
 import { withDefaults, Ref } from 'vue'
 
 withDefaults(defineProps<{
+  title?: string
   message?: string
   show?: Ref<boolean>
   cancelText?: string
   confirmText?: string
   onCancel?: () => void
   onConfirm?: () => void
-}>(), {})
+}>(), {
+  title: '提示'
+})
 
 const emit = defineEmits(['close'])
 </script>
@@ -17,11 +20,11 @@ const emit = defineEmits(['close'])
 <template>
   <teleport to="body">
     <transition name="dialog">
-      <div v-if="show.value" class="xdialog" @click.stop="emit('close')">
+      <div v-if="show.value" class="xdialog" @click.stop="emit('close'), onCancel()">
         <div class="xdialog__content" @click.stop="">
           <div class="xdialog__header">
             <img :src="iconInfo" alt="" width="16">
-            <span>提示</span>
+            <span>{{ title }}</span>
           </div>
           <div class="xdialog__body">
             <slot>

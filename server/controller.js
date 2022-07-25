@@ -15,6 +15,19 @@ module.exports = {
     }
   },
 
+  async getUserList () {
+    try {
+      return db.getData('/process/users')
+    } catch (e) {
+      return {}
+    }
+  },
+
+  async userSave (req) {
+    db.push(`/process/users/${req.body.id}`, req.body)
+    return req.body
+  },
+
   async getDetail (req) {
     const { uid, id } = req.query
     if (!uid) {

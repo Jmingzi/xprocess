@@ -42,6 +42,9 @@ watchPostEffect(() => {
     <div class="xprocess__header-title" @click="config.toHome">
       <img :src="logo" align="center" width="35">
       <span>XProcess</span>
+      <div class="xprocess__header-user" @click.stop="">
+        <slot name="user" />
+      </div>
     </div>
     <div class="file-operate-panel">
       <slot name="header" />
@@ -92,13 +95,19 @@ watchPostEffect(() => {
     &-title {
       display: flex;
       align-items: center;
-      font-weight: 200;
-      font-size: 30px;
       pointer-events: all;
       cursor: pointer;
-      span {
+      & > span {
+        font-weight: 200;
+        font-size: 30px;
         margin-left: 15px;
       }
+    }
+    &-user {
+      font-size: 13px;
+      color: #666;
+      margin-left: 20px;
+      padding-top: 10px;
     }
     .file-operate-panel {
       position: relative;

@@ -3,6 +3,7 @@ import { State } from '../xprocess/editor/state'
 import { Message } from '../xprocess/component/message'
 
 export type ApiResult<T = any> = { success: boolean, data: T }
+export type User = { name: string, id: string }
 
 export async function save (editorStateRaw: State, fileId?: string) {
   if (!editorStateRaw.nodes.length) {
@@ -28,9 +29,8 @@ export async function save (editorStateRaw: State, fileId?: string) {
   }
 }
 
-export async function share (editorStateRaw: State) {
-
-}
+// export async function share (editorStateRaw: State) {
+// }
 
 export async function getDetail<T = any> (id: number) {
   const res = await axios.get<ApiResult<T>>('/xprocess/detail', { params: { id } })
@@ -46,5 +46,15 @@ export async function getUserList<T = any> () {
   // if (res.data.success) {
   //   state.list = res.data
   // }
+  return res.data.data
+}
+
+export async function findUserByName (name: string) {
+  const res = await axios.get<ApiResult<User[]>>('/xprocess/userList')
+  return Object.values(res.data.data).find(x => x.name === name)
+}
+
+export async function signUp (user: User) {
+  const res = await axios.post('/xprocess/userSave', user)
   return res.data.data
 }

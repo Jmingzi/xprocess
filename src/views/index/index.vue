@@ -11,8 +11,10 @@ import iconShare from './icon/share.png'
 import iconImport from './icon/import.png'
 import iconAdd from './icon/add.png'
 import iconFile from './icon/file.png'
-import ShareModalContent from './share-modal-content.vue'
+import iconTriangle from '../../xprocess/editor/icon/triangle_down_fill.png'
+import ShareModalContent from '../../component/share-modal-content.vue'
 import { selectFile, download, formatTime } from '../../assets/util'
+import { switchUser, getUser } from '../../assets/user-connect'
 
 const route = useRoute()
 const router = useRouter()
@@ -173,6 +175,10 @@ const onDelete = async (item: Item) => {
   }
 }
 
+const onSwitchUser = () => {
+  switchUser()
+}
+
 const getProcessDetail = async (id: string) => {
   const data = await getDetail<IProcessState>(+id)
   initState(data)
@@ -210,6 +216,12 @@ onMounted(() => {
 
 <template>
   <Process>
+    <template #user>
+      <div @click="onSwitchUser">
+        <span style="margin-right: 10px">你好，{{ getUser()?.name }}</span>
+        <img :src="iconTriangle" width="8">
+      </div>
+    </template>
     <template v-slot:list-panel>
       <div class="my-list">
         <div class="my-list__title">
