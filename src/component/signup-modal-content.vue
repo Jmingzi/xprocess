@@ -2,7 +2,7 @@
 const emit = defineEmits(['updateText'])
 defineProps<{
   text: string
-  tip: string
+  tip?: string
 }>()
 const onInput = (e: Event) => {
   emit('updateText', (e.target as HTMLInputElement).value)

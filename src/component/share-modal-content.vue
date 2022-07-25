@@ -2,9 +2,9 @@
 import { computed, ref } from 'vue'
 import { onCopy } from '../assets/util'
 import { Message } from '../xprocess/component/message'
-const props = defineProps<{ id: string }>()
+const props = defineProps<{ url: string }>()
 const ok = ref(false)
-const shareLink = computed(() => `${location.protocol}//${location.host}${location.pathname}#/share/${props.id}`)
+const shareLink = computed(() => `${location.protocol}//${location.host}${location.pathname}#${props.url}`)
 const handleCopy = async () => {
   ok.value = false
   await onCopy(shareLink.value)

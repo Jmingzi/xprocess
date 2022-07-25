@@ -50,40 +50,48 @@ export async function userConnect () {
   })
 }
 
-export function switchUser () {
-  const name = ref('')
-  Dialog({
-    title: '切换用户',
-    content: h(Signup, {
-      text: name.value,
-      tip: '请输入你要切换的昵称',
-      onUpdateText: (v: string) => {
-        name.value = v
-      }
-    }),
-    confirmText: '确定',
-    cancelText: '取消',
-    async onConfirm () {
-      if (!name.value.trim()) {
-        Message.error('昵称为空，请检查')
-        return
-      }
-      const user = await findUserByName(name.value)
-      if (user) {
-        Message.success('用户已切换')
-        localStore.setObject(userKey, user)
+export function login (title = '登录') {
+  return new Promise((resolve, reject) => {
+    const name = ref('')
+    Dialog({
+      title,
+      content: h(Signup, {
+        text: name.value,
+        tip: '请输入您的昵称',
+        onUpdateText: (v: string) => {
+          name.value = v
+        }
+      }),
+      confirmText: '确定',
+      cancelText: '取消',
+      async onConfirm () {
+        if (!name.value.trim()) {
+          Message.error('昵称为空，请检查')
+          return
+        }
+        const user = await findUserByName(name.value)
+        if (user) {
+          localStore.setObject(userKey, user)
+          Dialog.close()
+          resolve(user)
+        } else {
+          Message.error('昵称不存在，请检查')
+        }
+      },
+      onCancel () {
         Dialog.close()
-        setTimeout(() => {
-          location.href = location.pathname
-        },  1000)
-      } else {
-        Message.error('昵称不存在，请检查')
       }
-    },
-    onCancel () {
-      Dialog.close()
-    }
+    })
   })
+}
+
+export async function switchUser () {
+  await login('切换用户')
+  Message.success('用户已切换')
+  setTimeout(() => {
+    // location.href = location.pathname
+    location.reload()
+  },  1000)
 }
 
 export function getUser () {

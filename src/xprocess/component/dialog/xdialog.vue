@@ -68,7 +68,7 @@ const emit = defineEmits(['close'])
   &__header {
     display: flex;
     align-items: center;
-    height: 40px;
+    height: 50px;
     padding: 0 20px;
     color: #666;
     border-bottom: 1px solid rgba(@border-color, 0.5);

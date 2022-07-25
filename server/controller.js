@@ -37,7 +37,7 @@ module.exports = {
       const obj = db.getData(`/process/${uid}/${id}`)
       return obj
     } catch (e) {
-      return []
+      return null
     }
   },
 

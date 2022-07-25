@@ -14,7 +14,7 @@ import iconFile from './icon/file.png'
 import iconTriangle from './icon/triangle_down_fill.png'
 import ShareModalContent from '../../component/share-modal-content.vue'
 import { selectFile, download, formatTime } from '../../assets/util'
-import { switchUser, getUser, userConnect } from '../../assets/user-connect'
+import { switchUser, getUser, login, userConnect } from '../../assets/user-connect'
 
 const route = useRoute()
 const router = useRouter()
@@ -37,6 +37,7 @@ const getList = async () => {
 const onAdd = () => {
   router.replace('/editor')
   Message.info('已为您重置画布!')
+  getList()
 }
 
 const toDetail = (id: number) => {
@@ -79,12 +80,13 @@ const onExport = (item: Item) => {
 }
 
 const onShare = async () => {
+  const shareLink = `/share/${route.params.id}?user=${getUser().name}&uid=${getUser().id}`
   await Dialog({
     // @ts-ignore
-    content: h(ShareModalContent, { id: route.params.id }),
+    content: h(ShareModalContent, { url: shareLink }),
     cancelText: '打开链接',
     onCancel: () => {
-      router.push(`/share/${route.params.id}?user=${getUser().name}`)
+      router.push(shareLink)
     }
   })
 }
@@ -128,16 +130,16 @@ const fileOperatorsShare = [
     title: '查看原文件',
     icon: iconFile,
     action: async () => {
-      // 检查该用户是否存在该文件
-      if (!getUser()) {
-        await userConnect()
+      let user = getUser()
+      if (!user) {
+        user = await login()
       }
-      const data = await getDetail(+route.params.id)
+      const data = await getDetail(+route.params.id, user.id)
       if (data) {
         toDetail(+route.params.id)
         Message.success('已进入编辑模式')
       } else {
-        Dialog.confirm(`您没有该文件，可以联系 ${route.query.name} 导出给您～`)
+        Message.error(`您没有该文件，可以联系【${route.query.user}】导出给您～`)
       }
     }
   }
@@ -145,14 +147,20 @@ const fileOperatorsShare = [
 
 const config = ref<IConfig>({
   isReadonly: () => isShare.value,
-  toHome: onAdd,
+  toHome: () => {
+    if (getUser()) {
+      onAdd()
+    } else {
+      location.href = `${location.protocol}//${location.host}${location.pathname}`
+    }
+  },
   fileOperators
 })
 
 const {
   Process,
   initState,
-  stateCanvasDataChange,
+  // stateCanvasDataChange,
   Message,
   Dialog,
   openListPanel
@@ -226,12 +234,10 @@ onMounted(() => {
 <template>
   <Process>
     <template #user>
-      <div v-if="isShare" @click="onSwitchUser">
+      <div v-if="getUser()?.name" @click="onSwitchUser">
         <span style="margin-right: 10px">你好，{{ getUser()?.name }}</span>
         <img :src="iconTriangle" width="8">
-      </div>
-      <div v-if="route.query.name">
-        <span>来自{{ route.query.name }}的分享</span>
+        <span v-if="route.query.user" style="margin-left: 10px">—— 来自{{ route.query.user }}的分享</span>
       </div>
     </template>
     <template v-slot:list-panel>

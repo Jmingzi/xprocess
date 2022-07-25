@@ -32,8 +32,8 @@ export async function save (editorStateRaw: State, fileId?: string) {
 // export async function share (editorStateRaw: State) {
 // }
 
-export async function getDetail<T = any> (id: number) {
-  const res = await axios.get<ApiResult<T>>('/xprocess/detail', { params: { id } })
+export async function getDetail<T = any> (id: number, uid?: string) {
+  const res = await axios.get<ApiResult<T>>('/xprocess/detail', { params: { id, uid } })
   return res.data.data
 }
 
