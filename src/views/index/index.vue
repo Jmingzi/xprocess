@@ -14,7 +14,7 @@ import iconFile from './icon/file.png'
 import iconTriangle from './icon/triangle_down_fill.png'
 import ShareModalContent from '../../component/share-modal-content.vue'
 import { selectFile, download, formatTime } from '../../assets/util'
-import { switchUser, getUser } from '../../assets/user-connect'
+import { switchUser, getUser, userConnect } from '../../assets/user-connect'
 
 const route = useRoute()
 const router = useRouter()
@@ -84,7 +84,7 @@ const onShare = async () => {
     content: h(ShareModalContent, { id: route.params.id }),
     cancelText: '打开链接',
     onCancel: () => {
-      router.push(`/share/${route.params.id}`)
+      router.push(`/share/${route.params.id}?user=${getUser().name}`)
     }
   })
 }
@@ -127,9 +127,18 @@ const fileOperatorsShare = [
   {
     title: '查看原文件',
     icon: iconFile,
-    action: () => {
-      toDetail(+route.params.id)
-      Message.success('已进入编辑模式')
+    action: async () => {
+      // 检查该用户是否存在该文件
+      if (!getUser()) {
+        await userConnect()
+      }
+      const data = await getDetail(+route.params.id)
+      if (data) {
+        toDetail(+route.params.id)
+        Message.success('已进入编辑模式')
+      } else {
+        Dialog.confirm(`您没有该文件，可以联系 ${route.query.name} 导出给您～`)
+      }
     }
   }
 ]
@@ -217,9 +226,12 @@ onMounted(() => {
 <template>
   <Process>
     <template #user>
-      <div @click="onSwitchUser">
+      <div v-if="isShare" @click="onSwitchUser">
         <span style="margin-right: 10px">你好，{{ getUser()?.name }}</span>
         <img :src="iconTriangle" width="8">
+      </div>
+      <div v-if="route.query.name">
+        <span>来自{{ route.query.name }}的分享</span>
       </div>
     </template>
     <template v-slot:list-panel>
