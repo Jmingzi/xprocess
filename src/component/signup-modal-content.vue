@@ -1,9 +1,12 @@
 <script setup lang="ts">
-defineEmits(['updateText'])
+const emit = defineEmits(['updateText'])
 defineProps<{
   text: string
   tip: string
 }>()
+const onInput = (e: Event) => {
+  emit('updateText', (e.target as HTMLInputElement).value)
+}
 </script>
 
 <template>
@@ -14,7 +17,7 @@ defineProps<{
       :value="text"
       maxlength="10"
       placeholder="请输入"
-      @input="e => $emit('updateText', e.target.value)"
+      @input="onInput"
     >
   </div>
 </template>

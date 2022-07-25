@@ -18,6 +18,7 @@ export async function userConnect () {
   return new Promise((resolve, reject) => {
     Dialog({
       title: '欢迎体验 XProcess',
+      // @ts-ignore
       content: h(Signup, {
         text: userData.name,
         onUpdateText: (v: string) => {
