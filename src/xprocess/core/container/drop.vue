@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, provide, computed } from 'vue'
+import {ref, onMounted, provide, computed, inject} from 'vue'
 import { useCanvas } from './use-canvas'
 import { useDrag, IEventHandler } from '../../component/use-drag'
 import { setCurrentLine, currentLine } from '../operator/state'
@@ -18,11 +18,13 @@ import {
 import { SvgType, SVG_TYPE, DEFAULT_FONT } from '../svg/base'
 import XText from '../operator/rich-text.vue'
 import { getLineInfo, onSegment } from '../svg/utils/line'
+import { IConfig } from '../../index'
 
 const { inCanvasRect, isStartInCanvas, calCanvasSize } = useCanvas()
 const { onMouseDown: handleMouseDown, registerCallback } = useDrag()
 const elRef = ref<HTMLElement | null>(null)
 const emits = defineEmits(['move', 'drop'])
+const config = inject<IConfig>('config')
 const props = defineProps<{
   id: number
   type: SvgType
@@ -144,6 +146,9 @@ const onClick = () => {
 }
 
 const onDoubleClick = () => {
+  if (config?.isReadonly()) {
+    return
+  }
   const createFont = (node: XProcessNode | NodeLine) => {
     // 创建空的文本内容
     node.fontEditable = true
