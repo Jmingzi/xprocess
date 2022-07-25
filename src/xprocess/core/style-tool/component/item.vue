@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import iconTriangleDownFill from '../../../editor/icon/triangle_down_fill.png'
+import iconTriangleDownFill from '../../../../views/index/icon/triangle_down_fill.png'
 import { state as editorState, isNodeLine } from '../../../editor/state'
 import { currentLine } from '../../operator/state'
 import { computed, provide } from 'vue'
