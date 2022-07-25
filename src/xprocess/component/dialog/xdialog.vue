@@ -11,7 +11,9 @@ withDefaults(defineProps<{
   onCancel?: () => void
   onConfirm?: () => void
 }>(), {
-  title: '提示'
+  title: '提示',
+  onCancel () {},
+  onConfirm () {}
 })
 
 const emit = defineEmits(['close'])

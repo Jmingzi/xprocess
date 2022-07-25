@@ -84,8 +84,8 @@ const onShare = async () => {
   await Dialog({
     // @ts-ignore
     content: h(ShareModalContent, { url: shareLink }),
-    cancelText: '打开链接',
-    onCancel: () => {
+    confirmText: '打开链接',
+    onConfirm: () => {
       router.push(shareLink)
     }
   })
