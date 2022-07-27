@@ -264,6 +264,7 @@ export const handleOperationDotMouseMove = (evData: IEventHandlerData) => {
 }
 
 export const handleOperationDotMouseUp = (data: IEventHandlerData) => {
+  editorState.hoverNode = undefined
   // 移动距离大于 10 才触发
   if (Math.abs(data.deltaX) < 10 && Math.abs(data.deltaY) < 10) {
     removeCreatedLine()

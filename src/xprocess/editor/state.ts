@@ -328,10 +328,10 @@ export function isMovable (id: number) {
 }
 
 export function getDirection (start: number[], end: number[]) {
-  const isLeftTop = start[0] > end[0] && start[1] > end[1]
+  const isLeftTop = start[0] >= end[0] && start[1] >= end[1]
   const isLeftBottom = start[0] > end[0] && start[1] < end[1]
   const isRightTop = start[0] < end[0] && start[1] > end[1]
-  const isRightBottom = start[0] < end[0] && start[1] < end[1]
+  const isRightBottom = start[0] <= end[0] && start[1] <= end[1]
   return {
     isLeftTop,
     isRightBottom,
