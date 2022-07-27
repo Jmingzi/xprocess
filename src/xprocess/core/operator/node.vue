@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { watchEffect, ref, inject, computed } from 'vue'
-import { state as editorState, isMultiSelect } from '../../editor/state'
+import { state as editorState, isMultiSelect, XProcessNode } from '../../editor/state'
 import { SvgType, SVG_TYPE } from '../svg/base'
 import { useDrag } from '../../component/use-drag'
 import {
@@ -22,24 +22,27 @@ const refDotEls = ref<Array<HTMLElement>>([])
 const refDotEl = ref<HTMLElement | null>()
 const refSizeEls = ref<Array<HTMLElement>>([])
 const refSizeEl = ref<HTMLElement | null>()
-const hasOperation = computed(() => editorState.currentNode?.type !== SVG_TYPE.LINE)
-const isSelected = computed(() => editorState.currentNode && !isMultiSelect.value)
-const isHover = computed(() => editorState.hoverNode && !isMultiSelect.value)
 
-const style = computed(() => {
-  const node = editorState.currentNode || editorState.hoverNode
-  if (node && hasOperation) {
-    const { start, end, strokeWidth } = node
+const styles = computed(() =>
+  [editorState.currentNode, editorState.hoverNode].filter(Boolean).map(node => {
+    // const isHoverNode = node === editorState.hoverNode
+    const isCurrentNode = node === editorState.currentNode
+    const hasOperation = node!.type !== SVG_TYPE.LINE && !isMultiSelect.value
+    const { start, end, strokeWidth } = node as XProcessNode
     const width = Math.abs(start[0] - end[0]) + (strokeWidth ?? 0) * 2
     const height = Math.abs(start[1] - end[1]) + (strokeWidth ?? 0) * 2
     return {
-      left: `${start[0]}px`,
-      top: `${start[1]}px`,
-      width: `${width}px`,
-      height: `${height}px`
+      style: {
+        left: `${start[0]}px`,
+        top: `${start[1]}px`,
+        width: `${width}px`,
+        height: `${height}px`
+      },
+      dot: hasOperation,
+      size: hasOperation && isCurrentNode
     }
-  }
-})
+  })
+)
 
 const onOperationDotMouseDown = (e: MouseEvent, i: number, edgeString: Edge) => {
   handleOperationDotMouseDown(e, editorState.currentNode?.id!, edgeString, e => {
@@ -82,14 +85,14 @@ watchEffect(() => {
 
 <template>
   <div
-    v-show="style"
+    v-for="item in styles"
+    v-show="styles.length"
     class="xprocess__drop-wrap"
-    :style="style"
+    :style="item.style"
   >
     <template v-for="(edge, i) in lineDot">
       <div
-        v-if="hasOperation"
-        v-show="isSelected || isHover"
+        v-if="item.dot"
         class="xprocess__drop-wrap-dot"
         :class="edge"
         ref="refDotEls"
@@ -98,7 +101,7 @@ watchEffect(() => {
     </template>
     <template v-for="(dir, i) in sizeDot">
       <div
-        v-if="hasOperation && isSelected"
+        v-if="item.size"
         class="xprocess__drop-wrap-size"
         :class="dir"
         ref="refSizeEls"
