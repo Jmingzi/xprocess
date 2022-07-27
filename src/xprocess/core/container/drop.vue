@@ -128,11 +128,17 @@ const onMouseDown = (e: MouseEvent) => {
   }
 }
 
+/**
+ * hover node 仅仅在连线时赋值
+ * 而不是鼠标移上去时就赋值
+ */
 const onMouseOver = () => {
-  editorState.hoverNode = editorState.nodes.find(x => x.id === props.id)
+  // editorState.hoverNode = editorState.nodes.find(x => x.id === props.id)
+  // console.log('mouse enter', props.id)
 }
 const onMouseOut = () => {
-  editorState.hoverNode = undefined
+  // editorState.hoverNode = undefined
+  // console.log('mouse out')
 }
 
 const handlerMove: IEventHandler = (data, e) => {

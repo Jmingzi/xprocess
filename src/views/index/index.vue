@@ -108,7 +108,7 @@ const fileOperators = [
     icon: iconSave,
     action: async (data: IProcessState) => {
       const isEdit = !!route.params.id
-      const dataId = await save(data)
+      const dataId = await save(data, route.params.id as string)
       Message.success('保存成功')
       await getList()
       if (!isEdit && dataId) {

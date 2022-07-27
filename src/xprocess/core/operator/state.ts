@@ -141,11 +141,16 @@ export const handleOperationDotMouseMove = (evData: IEventHandlerData) => {
       // 线条有这个属性，需要排出
       !x.getAttribute('line-type')
     )
+  // 重置状态
+  editorState.hoverNode = undefined
+  line.toNode.nodeId = 0
   if (els.length) {
     // 计算处于节点的哪个象限，决定属于哪条边界
     // 从而获取 ratioX, ratioY
     const toNodeId = Number(els[0].id)
     const toNode = editorState.nodes.find(x => x.id === toNodeId)!
+    // 赋值 hover
+    editorState.hoverNode = toNode
     const toNodeWidth = Math.abs(toNode.end[0] - toNode.start[0])
     const toNodeHeight = Math.abs(toNode.end[1] - toNode.start[1])
     const toNodeCenter = [toNode.start[0] + toNodeWidth / 2, toNode.start[1] + toNodeHeight / 2]
@@ -258,6 +263,27 @@ export const handleOperationDotMouseMove = (evData: IEventHandlerData) => {
   }
 }
 
+export const handleOperationDotMouseUp = (data: IEventHandlerData) => {
+  // 移动距离大于 10 才触发
+  if (Math.abs(data.deltaX) < 10 && Math.abs(data.deltaY) < 10) {
+    removeCreatedLine()
+    return
+  }
+  // 标记是鼠标移动后
+  // 而不是单纯的点击事件
+  preventCanvasClick(Math.abs(data.endX - data.startX) > 5 || Math.abs(data.endY - data.startY) > 5)
+  const line = currentLine.value!
+  if (line.toNode.nodeId > 0) {
+    // 目标节点已自动吸附
+    return
+  }
+  lineUpActionPanelData.value = {
+    x: data.endX,
+    y: data.endY,
+    mouseData: data
+  }
+}
+
 function removeCreatedLine () {
   const line = currentLine.value
   lineUpActionPanelData.value = null
@@ -334,27 +360,6 @@ document.body.addEventListener('keydown', (e: KeyboardEvent) => {
     }
   }
 })
-
-export const handleOperationDotMouseUp = (data: IEventHandlerData) => {
-  // 移动距离大于 10 才触发
-  if (Math.abs(data.deltaX) < 10 && Math.abs(data.deltaY) < 10) {
-    removeCreatedLine()
-    return
-  }
-  // 标记是鼠标移动后
-  // 而不是单纯的点击事件
-  preventCanvasClick(Math.abs(data.endX - data.startX) > 5 || Math.abs(data.endY - data.startY) > 5)
-  const line = currentLine.value!
-  if (line.toNode.nodeId > 0) {
-    // 目标节点已自动吸附
-    return
-  }
-  lineUpActionPanelData.value = {
-    x: data.endX,
-    y: data.endY,
-    mouseData: data
-  }
-}
 
 /**
  * 线条末端的 action-panel 点击回调

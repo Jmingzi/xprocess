@@ -26,6 +26,10 @@ const refSizeEl = ref<HTMLElement | null>()
 const styles = computed(() =>
   [editorState.currentNode, editorState.hoverNode].filter(Boolean).map(node => {
     // const isHoverNode = node === editorState.hoverNode
+    /**
+     * hover node 仅仅在连线时赋值
+     * 而不是鼠标移上去时就赋值
+     */
     const isCurrentNode = node === editorState.currentNode
     const hasOperation = node!.type !== SVG_TYPE.LINE && !isMultiSelect.value
     const { start, end, strokeWidth } = node as XProcessNode
@@ -92,7 +96,7 @@ watchEffect(() => {
   >
     <template v-for="(edge, i) in lineDot">
       <div
-        v-if="item.dot"
+        v-show="item.dot"
         class="xprocess__drop-wrap-dot"
         :class="edge"
         ref="refDotEls"
@@ -101,7 +105,7 @@ watchEffect(() => {
     </template>
     <template v-for="(dir, i) in sizeDot">
       <div
-        v-if="item.size"
+        v-show="item.size"
         class="xprocess__drop-wrap-size"
         :class="dir"
         ref="refSizeEls"
