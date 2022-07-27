@@ -329,9 +329,8 @@ document.body.addEventListener('click', (e: MouseEvent) => {
     circleSelect.value.start = []
     circleSelect.value.end = []
   }
-  const line = currentLine.value
-  // line.toNode.nodeId 默认是 0
-  if (line && line.toNode.nodeId === 0) {
+  const line = editorState.lines.find(x => x.toNode.nodeId === 0)
+  if (line?.toNode.nodeId === 0) {
     removeCreatedLine()
   } else {
     setCurrentNode()
