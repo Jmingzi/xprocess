@@ -129,13 +129,15 @@ watchEffect(() => {
   height: fit-content;
   // 适配 safari
   -webkit-user-select: text;
+  // 线条垂直时的宽度撑开
+  white-space: nowrap;
   &:focus {
     outline: 2px #F4DDB0 solid;
   }
   &.line {
     width: fit-content;
     min-width: 20px;
-    max-width: 80%;
+    //max-width: 80%;
     background-color: #fff;
     left: 50%;
     transform: translateX(-50%);
