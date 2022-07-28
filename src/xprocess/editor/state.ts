@@ -27,7 +27,7 @@ type IBase = {
   id: number
   fromLines: NodeLine[]
   toLines: NodeLine[]
-  font?: IFont
+  font: IFont
   fontEditable?: boolean
   zIndex: number
 }
@@ -38,7 +38,7 @@ export type NodeText = Omit<IPropsText, 'width' | 'height'> & IBase
 
 export type NodeLine = IPropsLine & {
   id: number
-  font?: IFont
+  font: IFont
   fontEditable?: boolean
   zIndex: number
 }

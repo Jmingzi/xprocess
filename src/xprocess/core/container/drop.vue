@@ -15,7 +15,7 @@ import {
   canvasNodeMoving,
   getPointFromCanvas
 } from '../../editor/state'
-import { SvgType, SVG_TYPE, DEFAULT_FONT } from '../svg/base'
+import { SvgType, SVG_TYPE } from '../svg/base'
 import XText from '../operator/rich-text.vue'
 import { getLineInfo, onSegment } from '../svg/utils/line'
 import { IConfig } from '../../index'
@@ -96,6 +96,28 @@ const position = computed(() => {
   }
 })
 
+const getMouseOnSegmentInfo = (e: MouseEvent, line: NodeLine) => {
+  const { isPolyline, lineSegment } = getLineInfo(line)
+  let isMouseOnSegment
+  let mousePositionOfLine
+  if (isPolyline) {
+    const mousePoint = getPointFromCanvas([e.clientX, e.clientY])
+    // 鼠标点击坐标转换为当前线条的相对坐标
+    const linePosition = getLinePosition(line.start, line.end)
+    mousePoint[0] -= linePosition.x
+    mousePoint[1] -= linePosition.y
+    // 当前点击点是否在线段上
+    isMouseOnSegment = lineSegment.some(segment => onSegment(segment[0], segment[1], mousePoint))
+    mousePositionOfLine = mousePoint
+  } else {
+    isMouseOnSegment = false
+  }
+  return {
+    isMouseOnSegment,
+    mousePositionOfLine
+  }
+}
+
 const onMouseDown = (e: MouseEvent) => {
   if (isMovable(props.id)) {
     const hasMetaKey = e.metaKey
@@ -108,21 +130,7 @@ const onMouseDown = (e: MouseEvent) => {
     // 判断当前点击位置在线条上
     const line = editorState.lines.find(x => x.id === props.id)
     if (line) {
-      const { isPolyline, lineSegment } = getLineInfo(line)
-      const mousePoint = getPointFromCanvas([e.clientX, e.clientY])
-      // 鼠标点击坐标转换为当前线条的相对坐标
-      const linePosition = getLinePosition(line.start, line.end)
-      mousePoint[0] -= linePosition.x
-      mousePoint[1] -= linePosition.y
-      if (isPolyline) {
-        // 当前点击点是否在线段上
-        if (lineSegment.some(segment => onSegment(segment[0], segment[1], mousePoint))) {
-          setCurrentLine(props.id)
-          // console.log('set current line.')
-        } else {
-          setCurrentLine()
-        }
-      }
+      setCurrentLine(getMouseOnSegmentInfo(e, line).isMouseOnSegment ? props.id : undefined)
     }
     setCurrentNode()
   }
@@ -156,21 +164,19 @@ const onClick = () => {
   removeCreatedLine()
 }
 
-const onDoubleClick = () => {
+const onDoubleClick = (e: MouseEvent) => {
   if (config?.isReadonly()) {
     return
   }
-  const createFont = (node: XProcessNode | NodeLine) => {
-    // 创建空的文本内容
-    node.fontEditable = true
-    if (!node.font) {
-      node.font = { ...DEFAULT_FONT }
-    }
-  }
   if (isNodeLine(props.id) && currentLine.value) {
-    createFont(currentLine.value)
+    const line = currentLine.value
+    line.fontEditable = true
+    if (!line.font.fontPositionOfLine) {
+      const { mousePositionOfLine } = getMouseOnSegmentInfo(e, line)
+      line.font.fontPositionOfLine = mousePositionOfLine
+    }
   } else if (editorState.currentNode) {
-    createFont(editorState.currentNode)
+    editorState.currentNode.fontEditable = true
   }
 }
 

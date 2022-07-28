@@ -63,6 +63,7 @@ export type IFont = {
   underline: boolean
   color: string
   horizontalAlign: 'left' | 'center' | 'right'
+  fontPositionOfLine?: number[]
 }
 
 export const STROKE_WIDTH = CANVAS_STROKE_WIDTH
