@@ -296,8 +296,8 @@ export function removeCreatedLine () {
   const lineIndex = editorState.lines.findIndex(x => x.id === line?.id)
   if (lineIndex > -1) {
     editorState.lines.splice(lineIndex, 1)
+    currentLine.value = undefined
   }
-  currentLine.value = undefined
 }
 
 /**
