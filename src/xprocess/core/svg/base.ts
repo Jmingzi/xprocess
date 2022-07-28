@@ -159,7 +159,8 @@ export const LOCAL_LIST = [
 const removeKeys = [
   'fromLines',
   'toLines',
-  'lineType',
+  // 线条得带上
+  // 'lineType',
   'fromNode',
   'toNode',
   'font',

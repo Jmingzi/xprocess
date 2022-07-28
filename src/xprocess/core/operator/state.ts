@@ -285,15 +285,18 @@ export const handleOperationDotMouseUp = (data: IEventHandlerData) => {
   }
 }
 
-function removeCreatedLine () {
-  const line = currentLine.value
+export function removeCreatedLine () {
+  const line = editorState.lines.find(x => x.toNode.nodeId === 0)
   lineUpActionPanelData.value = null
   // 撤销创建的线条
   const index = editorState.currentNode?.fromLines.findIndex(x => x.id === line?.id) ?? -1
   if (index > -1) {
     editorState.currentNode?.fromLines.splice(index, 1)
   }
-  editorState.lines.splice(editorState.lines.findIndex(x => x.id === line?.id), 1)
+  const lineIndex = editorState.lines.findIndex(x => x.id === line?.id)
+  if (lineIndex > -1) {
+    editorState.lines.splice(lineIndex, 1)
+  }
   currentLine.value = undefined
 }
 

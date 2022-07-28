@@ -2,7 +2,7 @@
 import {ref, onMounted, provide, computed, inject} from 'vue'
 import { useCanvas } from './use-canvas'
 import { useDrag, IEventHandler } from '../../component/use-drag'
-import { setCurrentLine, currentLine } from '../operator/state'
+import { setCurrentLine, currentLine, removeCreatedLine } from '../operator/state'
 import {
   state as editorState,
   setCurrentNode,
@@ -149,6 +149,11 @@ const handlerMove: IEventHandler = (data, e) => {
 }
 
 const onClick = () => {
+  /**
+   * 因为没法做冒泡
+   * 只能在点击时去掉面板
+   */
+  removeCreatedLine()
 }
 
 const onDoubleClick = () => {
