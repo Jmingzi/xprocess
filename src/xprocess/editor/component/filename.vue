@@ -28,7 +28,7 @@ const onAlter = (e: FocusEvent) => {
       :readonly="isPreview"
       ref="refEl"
       type="text"
-      maxlength="20"
+      maxlength="50"
       v-model="editorState.filename"
       @blur="onAlter"
       @keyup.stop=""
@@ -53,6 +53,7 @@ const onAlter = (e: FocusEvent) => {
     font: inherit;
     background-color: transparent;
     color: inherit;
+    width: 300px;
     &[readonly] {
       cursor: pointer;
     }
