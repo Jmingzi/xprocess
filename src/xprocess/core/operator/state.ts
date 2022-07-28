@@ -324,7 +324,7 @@ document.body.addEventListener('click', (e: MouseEvent) => {
     preventCanvasClick(false)
     return
   }
-  console.log('canvas click: 清空选择状态')
+  // console.log('canvas click: 清空选择状态')
   // 置空多选
   editorState.selectedNodes = []
   // 清空圈选

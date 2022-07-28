@@ -18,6 +18,7 @@ export default function Line (props: IPropsLine) {
   } = getLineInfo(props)
 
   const currentLine = inject<Ref<{ id: number }>>('currentLine')
+  const markerId = `triangle_${props.id}`
 
   let lineVnode
   let activeCircle
@@ -28,7 +29,7 @@ export default function Line (props: IPropsLine) {
       y1: y,
       x2: endX,
       y2: endY,
-      markerEnd: 'url(#triangle)'
+      markerEnd: `url(#${markerId})`
     }))
   } else if (isPolyline) {
     const points = `${x} ${y}, ${x1.join(' ')},${x2.length ? ` ${x2.join(' ')},` : ''} ${endX} ${endY}`
@@ -36,7 +37,7 @@ export default function Line (props: IPropsLine) {
       ...props,
       fill: 'transparent',
       points,
-      markerEnd: 'url(#triangle)',
+      markerEnd: `url(#${markerId})`,
       strokeLinejoin: 'round'
     }))
     // 高亮当前连线
@@ -60,7 +61,7 @@ export default function Line (props: IPropsLine) {
   }
 
   const marker = h('marker', {
-    id: 'triangle',
+    id: markerId,
     markerUnits: 'strokeWidth',
     markerWidth: 10,
     markerHeight: 10,
@@ -70,7 +71,7 @@ export default function Line (props: IPropsLine) {
   }, [
     h('path', {
       d: 'M0,3 L0,9 L10,6 L0,3',
-      style: `fill: ${props.stroke}`
+      fill: props.stroke
     })
   ])
 
