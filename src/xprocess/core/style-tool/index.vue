@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { state as editorState, canvasNodeMoving, isMultiSelect } from '../../editor/state'
 import { currentLine } from '../operator/state'
-import { computed, watchEffect, ref, nextTick } from 'vue'
+import { computed, watchEffect, ref, nextTick, watch } from 'vue'
 import TextTool from './component/text-tool.vue'
 import SvgTool from './component/svg-tool.vue'
 import Item from './component/item.vue'
@@ -41,16 +41,8 @@ watchEffect(() => {
     showTextPanel.value = false
   }
 })
-watchEffect(() => {
-  // console.log('canvasNodeMoving.value', canvasNodeMoving.value)
-  if (data.value?.id && !canvasNodeMoving.value) {
-    show.value = false
-    setTimeout(() => {
-      show.value = true
-    })
-  } else {
-    show.value = false
-  }
+watch(() => data.value?.id && !canvasNodeMoving.value, value => {
+  show.value = !!value
 })
 </script>
 

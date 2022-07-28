@@ -104,8 +104,8 @@ export function initState (data: Pick<State, 'nodes' | 'lines' | 'filename'>) {
   state.hoverNode = undefined
   stateCanvasDataChange.value = false
   state.nodes = data.nodes.map(node => {
-    node.fromLines = node.fromLines.filter(Boolean).map(x => data.lines.find(y => x.id === y.id)!)
-    node.toLines = node.toLines.filter(Boolean).map(x => data.lines.find(y => x.id === y.id)!)
+    node.fromLines = node.fromLines.filter(Boolean).map(x => data.lines.find(y => x.id === y.id)!).filter(Boolean)
+    node.toLines = node.toLines.filter(Boolean).map(x => data.lines.find(y => x.id === y.id)!).filter(Boolean)
     return node
   })
   state.lines = data.lines
