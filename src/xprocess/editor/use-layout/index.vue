@@ -1,39 +1,44 @@
 <script setup lang="ts">
-import { ref, reactive, provide, inject, Ref, watchPostEffect } from 'vue'
+import { ref, reactive, provide, inject, Ref, watchPostEffect, onMounted } from 'vue'
 import logo from './logo.png'
-import { CANVAS_PADDING, CANVAS_MARGIN_LEFT, CANVAS_MARGIN_TOP } from '../../constant'
+// import { CANVAS_PADDING, CANVAS_MARGIN_LEFT, CANVAS_MARGIN_TOP } from '../../constant'
 import { IConfig } from '../../index'
 import iconZhankai from '../icon/zhankai.png'
 
+const emit = defineEmits(['scroll', 'mounted'])
 const config = inject<IConfig>('config')!
 
 const el = ref()
 const elSidebar = ref()
 const sidebarRect = ref()
 const showSidebar = ref(true)
-const state = reactive({
-  scrollLeft: CANVAS_PADDING - CANVAS_MARGIN_LEFT,
-  scrollTop: CANVAS_PADDING - CANVAS_MARGIN_TOP
-})
-const handleScroll = () => {
-  const box = el.value!
-  state.scrollTop = box.scrollTop
-  state.scrollLeft = box.scrollLeft
-}
-const setScroll = (top = state.scrollTop, left = state.scrollLeft) => {
-  const box = el.value
-  if (box) {
-    box.scrollTop = top
-    box.scrollLeft = left
-  }
-}
-provide('layout', state)
-provide('layoutSetScroll', setScroll)
+// const state = reactive({
+//   scrollLeft: CANVAS_PADDING - CANVAS_MARGIN_LEFT,
+//   scrollTop: CANVAS_PADDING - CANVAS_MARGIN_TOP
+// })
+// const handleScroll = () => {
+//   const box = el.value!
+//   state.scrollTop = box.scrollTop
+//   state.scrollLeft = box.scrollLeft
+// }
+// const setScroll = (top = state.scrollTop, left = state.scrollLeft) => {
+//   const box = el.value
+//   if (box) {
+//     box.scrollTop = top
+//     box.scrollLeft = left
+//   }
+// }
+// provide('layout', state)
+// provide('layoutSetScroll', setScroll)
 
 watchPostEffect(() => {
   if (elSidebar.value) {
     sidebarRect.value = elSidebar.value.getBoundingClientRect()
   }
+})
+
+onMounted(() => {
+  emit('mounted', el.value)
 })
 </script>
 
@@ -71,7 +76,7 @@ watchPostEffect(() => {
   <div
     ref="el"
     class="xprocess__content"
-    @scroll="handleScroll"
+    @scroll="$emit('scroll')"
   >
     <slot name="content" />
   </div>

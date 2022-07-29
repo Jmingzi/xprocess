@@ -13,7 +13,7 @@ import iconAdd from './icon/add.png'
 import iconFile from './icon/file.png'
 import iconTriangle from './icon/triangle_down_fill.png'
 import ShareModalContent from '../../component/share-modal-content.vue'
-import { selectFile, download, formatTime } from '../../assets/util'
+import { selectFile, download, formatTime, calCanvasNodesEdge } from '../../assets/util'
 import { switchUser, getUser, login, userConnect } from '../../assets/user-connect'
 
 const route = useRoute()
@@ -80,32 +80,6 @@ const onExport = (item: Item) => {
 }
 
 const onShare = async (data: IProcessState) => {
-  // 获取节点边界
-  let left = 0
-  let right = 0
-  let top = 0
-  let bottom = 0
-  data.nodes.forEach((node, i) => {
-    if (i === 0) {
-      left = node.start[0]
-      top = node.start[1]
-      right = node.end[0]
-      bottom = node.end[1]
-    } else {
-      if (node.start[0] < left) {
-        left = node.start[0]
-      }
-      if (node.start[1] < top) {
-        top = node.start[1]
-      }
-      if (node.end[0] > right) {
-        right = node.end[0]
-      }
-      if (node.end[1] > bottom) {
-        bottom = node.end[1]
-      }
-    }
-  })
   const shareLink = `/share/${route.params.id}?user=${getUser().name}&uid=${getUser().id}`
   await Dialog({
     // @ts-ignore
@@ -113,7 +87,7 @@ const onShare = async (data: IProcessState) => {
       url: shareLink,
       name: data.filename,
       route,
-      edgeRect: { left, top, bottom, right }
+      edgeRect: calCanvasNodesEdge(data)
     })
   })
 }
@@ -187,6 +161,7 @@ const config = ref<IConfig>({
 const {
   Process,
   initState,
+  layoutSetScroll,
   // stateCanvasDataChange,
   Message,
   Dialog,
@@ -226,6 +201,46 @@ const onSwitchUser = () => {
 const getProcessDetail = async (id: string) => {
   const data = await getDetail<IProcessState>(+id)
   initState(data)
+  scrollShapeToCenter(data)
+}
+
+// 滚动元素窗口居中
+const scrollShapeToCenter = (data?: IProcessState) => {
+  if (!data || !data.nodes.length) {
+    layoutSetScroll(0, 0, true)
+    return
+  }
+  const screenWidth = document.body.clientWidth
+  const screenHeight = document.body.clientHeight
+  const { width, left, height, top } = calCanvasNodesEdge(data)
+  // 水平方向
+  if (width + left > screenWidth) {
+    // 向左滚动
+    const leftSafeDistance = 120
+    if (width + leftSafeDistance > screenWidth) {
+      console.log('left safe distance')
+      layoutSetScroll(undefined, left - leftSafeDistance, true)
+    } else {
+      // 左右居中
+      console.log('horizontal center')
+      layoutSetScroll(undefined, left - (screenWidth - width) / 2, true)
+    }
+  } else {
+    // do nothing
+  }
+  // 垂直方向
+  if (height + top > screenHeight) {
+    // 向左滚动
+    const topSafeDistance = 60
+    if (height + topSafeDistance > screenHeight) {
+      console.log('top safe distance')
+      layoutSetScroll(top - topSafeDistance, undefined, true)
+    } else {
+      // 左右居中
+      console.log('vertical center')
+      layoutSetScroll(top - (screenHeight - height) / 2, undefined,  true)
+    }
+  }
 }
 
 watch(() => route.params.id, (id) => {
@@ -238,6 +253,7 @@ watch(() => route.params.id, (id) => {
       nodes: [],
       lines: []
     })
+    scrollShapeToCenter()
   }
 }, { immediate: true })
 

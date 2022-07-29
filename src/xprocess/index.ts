@@ -1,5 +1,6 @@
 import Editor from './editor/index.vue'
 import { State, initState, state, stateCanvasDataChange } from './editor/state'
+import { useLayout } from './editor/use-layout'
 import { h, provide, SetupContext, Ref } from 'vue'
 import { Message } from './component/message'
 import { Dialog } from './component/dialog'
@@ -19,12 +20,15 @@ export type IFileOperatorItem = {
 
 export type IProcessState = State
 
+const { layoutSetScroll } = useLayout()
+
 export function useProcess (config: Ref<IConfig>) {
   return {
     initState,
     stateCanvasDataChange,
     Message,
     Dialog,
+    layoutSetScroll,
     openListPanel: () => {
       state.showListPanel = true
     },
