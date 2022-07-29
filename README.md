@@ -1,24 +1,39 @@
 <img width="900" alt="image" src="https://user-images.githubusercontent.com/9743418/179227718-81876ae1-080c-4b73-95c1-1513ec13e211.png">
 
-### 设计思想
+## Idea
 
-基于 vue3 和 typescript，仅仅依赖 `lodash^4.17.21`。
+:raised_eyebrow: I just want to replace those charging tools that are commonly used at work.
 
-特性：
+## Tech Stack
 
-- 流程图编辑器 xprocess-editor
-- 图形注册机制
-- 画布插件机制
-- UI 组件
-- 系统独立对接
-- 导入导出
-- 独立复制成图片分享
+<code><img height="20" alt="javascript" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/vue/vue.png"></code>
+<code><img height="20" alt="javascript" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/typescript/typescript.png"></code>
+<code><img height="20" alt="javascript" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/express/express.png"></code>
+<code><img height="20" alt="javascript" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/nodejs/nodejs.png"></code>
 
-### 效果图
+:rocket: based on vite-ts template  
+:kick_scooter: use express for service
 
-Image shared by xprocess on the workflow of pnpm + changeset in a monorepo project.
+## Features
 
-<img src="https://iming.work/xprocess/xprocess/img/1658740194604_745/1658974315138" width=800>
+the editor core without any dependencies
+
+- share file page
+- generate images with watermarker
+- auto size for canvas
+- UI component
+- user profile
+- import & export
+
+## Architecture diagram
+
+![](https://iming.work/xprocess/xprocess/img/1658740194604_745/1658740218814)
+
+## More
+
+:bike: Image shared by xprocess on the workflow of pnpm + changeset in a monorepo project.
+
+![](https://iming.work/xprocess/xprocess/img/1658740194604_745/1658974315138?a=1)
 
 
 
