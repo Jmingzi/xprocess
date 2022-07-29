@@ -16,7 +16,9 @@
 
 ### 效果图
 
-<img width="1492" alt="image" src="https://user-images.githubusercontent.com/9743418/179229876-020d3c8d-0a1d-45db-86bc-309e7f99dea0.png">
+Image shared by xprocess on the workflow of pnpm + changeset in a monorepo project.
+
+<img src="https://iming.work/xprocess/xprocess/img/1658740194604_745/1658974315138" width=800>
 
 
 
