@@ -35,5 +35,22 @@ the editor core without any dependencies
 
 ![](https://iming.work/xprocess/xprocess/img/1658740194604_745/1658974315138?a=1)
 
+## Dependences
+
+System dependencies instead of editors.
+
+- html-to-image for sharing
+- axios for browser request
+- leancloud-storage for file upload and save
+- urllib for node request(should use axios)
+
+
+
+
+
+
+
+
+
 
 
