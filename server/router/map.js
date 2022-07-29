@@ -1,5 +1,7 @@
 const controller = require('../controller')
+const fs = require('fs')
 const path = require('path')
+const { request } = require('urllib')
 
 module.exports = {
   '/': {
@@ -61,4 +63,34 @@ module.exports = {
       res.json({ success, data })
     }
   },
+
+  '/xprocess/fileimg': {
+    post: async (req, res) => {
+      const data = await controller.fileImgSave(req)
+      const success = typeof data !== 'string'
+      res.json({ success, data })
+    },
+
+    get: async (req, res) => {
+      const data = await controller.fileImgGet(req.query)
+      const success = typeof data !== 'string'
+      res.json({ success, data })
+    }
+  },
+
+  '/xprocess/img/:uid/:id': {
+    get: async (req, res) => {
+      const data = await controller.fileImgGet(req.params)
+      const imgRes = await request(data.img, {
+        streaming: true
+      })
+      imgRes.res.on('data', d => {
+        res.write(d)
+      })
+      imgRes.res.on('end', () => {
+        res.status(200)
+        res.end()
+      })
+    }
+  }
 }

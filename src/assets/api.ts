@@ -58,3 +58,13 @@ export async function signUp (user: User) {
   const res = await axios.post('/xprocess/userSave', user)
   return res.data.data
 }
+
+export async function fileImgSave (id: string, img: string) {
+  const res = await axios.post('/xprocess/fileimg', { id, img })
+  return res.data.data
+}
+
+export async function fileImgGet (id: string) {
+  const res = await axios.get('/xprocess/fileimg', { params: { id } })
+  return res.data.data
+}

@@ -3,6 +3,12 @@ import App from './App.vue'
 import router from './router'
 import axios from 'axios'
 import { userConnect, getUser } from './assets/user-connect'
+import AV from 'leancloud-storage'
+
+const appId = 'iYzWnL2H72jtQgNQPXUvjFqU-gzGzoHsz'
+const appKey = 'OR3zEynwWJ7f8bk95AdiGFzJ'
+const serverURLs = 'https://api.iming.work'
+AV.init({ appId, appKey, serverURLs })
 
 axios.defaults.baseURL = './'
 axios.interceptors.request.use(req => {

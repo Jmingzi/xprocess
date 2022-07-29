@@ -25,11 +25,11 @@ export default function SvgWrapper (props: {
 <style lang="less">
 .xprocess__svg {
   overflow: visible;
-  &.move {
-    &:not(.line) {
-      cursor: move;
-    }
-  }
+  //&.move {
+  //  &:not(.line) {
+  //    cursor: move;
+  //  }
+  //}
 }
 </style>
 

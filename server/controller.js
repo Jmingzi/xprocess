@@ -66,5 +66,18 @@ module.exports = {
       db.push(file, Object.assign(req.body, { id }))
     }
     return db.getData(file)
+  },
+
+  async fileImgSave (req) {
+    const { uid, id } = req.body
+    const file = `/process/img/${uid}/${id}`
+    db.push(file, req.body)
+    return req.body
+  },
+
+  async fileImgGet (data) {
+    const { uid, id } = data
+    const file = `/process/img/${uid}/${id}`
+    return db.getData(file)
   }
 }
