@@ -21,9 +21,9 @@ const emit = defineEmits(['close'])
 
 <template>
   <teleport to="body">
-    <transition name="dialog">
-      <div v-if="show.value" class="xdialog" @click.stop="emit('close'), onCancel()">
-        <div class="xdialog__content" @click.stop="">
+    <div class="xdialog" @click.stop="emit('close'), onCancel()">
+      <transition name="dialog">
+        <div v-if="show.value" class="xdialog__content" @click.stop="">
           <div class="xdialog__header">
             <img :src="iconInfo" alt="" width="16">
             <span>{{ title }}</span>
@@ -38,8 +38,8 @@ const emit = defineEmits(['close'])
             <div v-if="confirmText" class="xdialog__button xdialog__button--primary" @click="onConfirm">{{ confirmText }}</div>
           </div>
         </div>
-      </div>
-    </transition>
+      </transition>
+    </div>
   </teleport>
 </template>
 
@@ -51,7 +51,7 @@ const emit = defineEmits(['close'])
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0.3);
   z-index: @z-index-max;
 
   &__content {
@@ -123,6 +123,6 @@ const emit = defineEmits(['close'])
 .dialog-enter-from,
 .dialog-leave-to {
   opacity: 0;
-  transform: translateY(-30%);
+  transform: translateX(-50%) translateY(-30%);
 }
 </style>

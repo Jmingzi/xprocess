@@ -55,6 +55,6 @@ function closeDialog () {
     // unmount vNode
     setTimeout(() => {
       render(null, div)
-    }, 500)
+    }, 200)
   }
 }
