@@ -36,7 +36,14 @@ const handleGenImage = async () => {
   }
   genLoading.value = true
   const el = document.querySelector('.xprocess-canvas') as HTMLElement
-  const canvas = await toCanvas(el)
+  const canvas = await toCanvas(el, {
+    // quality: 0.9,
+    // style: {
+    //   border: '1px #eeeee solid',
+    //   borderRadius: '10px'
+    // }
+  })
+
   // 裁剪边角
   const newCanvas = document.createElement('canvas')
   const newCtx = newCanvas.getContext('2d')!
@@ -44,16 +51,20 @@ const handleGenImage = async () => {
   const width = right - left
   const height = bottom - top
   const scale = canvas.width / el.offsetWidth
-  const padding = 50
+  const padding = 100
 
-  newCanvas.width = width * scale + padding * 2
-  newCanvas.height = height * scale + padding * 2
+  // 得到图片的真实大小
+  const canvasImageWidth = width * scale + padding * 2
+  const canvasImageHeight = height * scale + padding * 2
+  // 根据屏幕像素比缩放
+  newCanvas.width = canvasImageWidth / devicePixelRatio
+  newCanvas.height = canvasImageHeight / devicePixelRatio
   newCtx.drawImage(
       canvas,
       left * scale - padding,
       top * scale - padding,
-      newCanvas.width,
-      newCanvas.height,
+      canvasImageWidth,
+      canvasImageHeight,
       0,
       0,
       newCanvas.width,
@@ -61,8 +72,11 @@ const handleGenImage = async () => {
   )
   // 添加水印
   newCtx.fillStyle = '#999999'
-  newCtx.font = `${14 * scale}px system`
-  newCtx.fillText(`@${getUser().name} 绘制于 XProcess`, padding, padding)
+  newCtx.font = `${14 * scale / devicePixelRatio}px system`
+  newCtx.fillText(`@${getUser().name} 绘制于 XProcess`, padding / devicePixelRatio, padding / devicePixelRatio - 10)
+  newCtx.strokeStyle = '#eeeeee'
+  newCtx.strokeRect(0, 0, newCanvas.width, newCanvas.height)
+  newCtx.lineJoin = 'round'
   const base64 = newCanvas.toDataURL('image/png')
 
   // const img = document.createElement('img')
