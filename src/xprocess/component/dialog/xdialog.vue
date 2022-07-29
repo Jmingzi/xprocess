@@ -16,12 +16,12 @@ withDefaults(defineProps<{
   onConfirm () {}
 })
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'clickOnLayer'])
 </script>
 
 <template>
   <teleport to="body">
-    <div class="xdialog" @click.stop="emit('close'), onCancel()">
+    <div class="xdialog" @click.stop="emit('clickOnLayer')">
       <transition name="dialog">
         <div v-if="show.value" class="xdialog__content" @click.stop="">
           <div class="xdialog__header">

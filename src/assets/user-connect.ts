@@ -45,7 +45,8 @@ export async function userConnect () {
       onCancel () {
         reject()
         Message.info('取消注册用户，停止体验!')
-      }
+      },
+      closeOnClickLayer: false
     })
   })
 }
@@ -80,7 +81,8 @@ export function login (title = '登录') {
       },
       onCancel () {
         Dialog.close()
-      }
+      },
+      closeOnClickLayer: false
     })
   })
 }

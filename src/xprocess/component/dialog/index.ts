@@ -9,18 +9,28 @@ interface IDialogConfig {
   onCancel?: () => void
   onConfirm?: () => void
   content?: VNode
+  closeOnClickLayer?: boolean
 }
 
 const showDialog = ref(false)
 let div: HTMLDivElement
 
-export function Dialog (config?: IDialogConfig) {
-  const content = config?.content
-  delete config?.content
+export function Dialog (config: IDialogConfig) {
+  const content = config.content
+  delete config.content
   const vNode = h(Component, {
     ...config,
     show: showDialog,
-    onClose: closeDialog
+    onClose: closeDialog,
+    onClickOnLayer: () => {
+      if (config.closeOnClickLayer !== false) {
+        if (config.onCancel) {
+          config.onCancel()
+        } else {
+          closeDialog()
+        }
+      }
+    }
   }, {
     default: () => content
   })
