@@ -32,7 +32,7 @@ watch(() => ([editorState.currentNode?.start, editorState.currentNode?.end]), ([
     if (width !== oWidth || height !== oHeight) {
       show.value = true
       clearTimeout(handle)
-      handle = setTimeout(() => {
+      handle = window.setTimeout(() => {
         show.value = false
       }, 1000)
     }
