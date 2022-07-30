@@ -277,11 +277,11 @@ onMounted(() => {
 <template>
   <Process>
     <template #user>
-      <div v-if="getUser()?.name" @click="onSwitchUser">
+      <span v-if="getUser()?.name" @click="onSwitchUser">
         <span style="margin-right: 10px">你好，{{ getUser()?.name }}</span>
         <img :src="iconTriangle" width="8">
-        <span v-if="route.query.user" style="margin-left: 10px">—— 来自{{ route.query.user }}的分享</span>
-      </div>
+      </span>
+      <span v-if="route.query.user" style="margin-left: 10px">—— 来自{{ route.query.user }}的分享</span>
     </template>
     <template v-slot:list-panel>
       <div class="my-list">
