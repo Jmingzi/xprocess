@@ -73,7 +73,7 @@ const handleGenImage = async () => {
   // 添加水印
   newCtx.fillStyle = '#999999'
   newCtx.font = `${14 * scale / devicePixelRatio}px system`
-  newCtx.fillText(`@${getUser().name} 绘制于 XProcess`, padding / devicePixelRatio, padding / devicePixelRatio - 10)
+  newCtx.fillText(`${props.name} - @${getUser().name} 绘制于 XProcess`, padding / devicePixelRatio, padding / devicePixelRatio - 10)
   newCtx.strokeStyle = '#eeeeee'
   newCtx.strokeRect(0, 0, newCanvas.width, newCanvas.height)
   newCtx.lineJoin = 'round'
