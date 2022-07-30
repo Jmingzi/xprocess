@@ -78,6 +78,8 @@ module.exports = {
   async fileImgGet (data) {
     const { uid, id } = data
     const file = `/process/img/${uid}/${id}`
-    return db.getData(file)
+    const fileData = db.getData(file)
+    const detail = await this.getDetail({ query: data })
+    return Object.assign({}, fileData, detail)
   }
 }

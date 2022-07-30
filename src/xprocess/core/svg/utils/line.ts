@@ -92,7 +92,7 @@ export function getLineInfo (lineProps: IPropsLine): {
       } else {
         // 竖着的矩形
         // 只需要 1 个
-        x1.push(endY, y)
+        x1.push(endX, y)
       }
     } else if (fromEdge.isTop || fromEdge.isBottom) {
       // 垂直方向

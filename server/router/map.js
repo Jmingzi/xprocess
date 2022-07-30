@@ -84,6 +84,7 @@ module.exports = {
       const imgRes = await request(data.img, {
         streaming: true
       })
+      // res.attachment(`${data.filename}.png`)
       imgRes.res.on('data', d => {
         res.write(d)
       })
