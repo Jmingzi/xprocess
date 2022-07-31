@@ -56,7 +56,7 @@ const onOperationDotMouseDown = (e: MouseEvent, curEl: HTMLElement, edgeString: 
   })
 }
 
-const onOperationSizeMouseDown = (e: MouseEvent, curEl: HTMLElement, dir: DirectionString) => {
+const onOperationSizeMouseDown = (e: MouseEvent, curEl: HTMLElement, dir: DirectionString & Edge) => {
   handleOperationSizeMouseDown(e, dir, () => {
     refSizeEl.value = curEl
     onMouseDown(e, el => el === curEl)
