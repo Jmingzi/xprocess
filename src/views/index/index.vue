@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useProcess, IProcessState, IConfig } from '../../xprocess'
+import { useProcess, IProcessState, IConfig, calEdgeFromNodes } from '../../xprocess'
 import { save, getDetail, getUserList, deleteById } from '../../assets/api'
 import { useRouter, useRoute } from 'vue-router'
 import { reactive, ref, watch, onMounted, h, computed, watchEffect } from 'vue'
@@ -13,7 +13,7 @@ import iconAdd from './icon/add.png'
 import iconFile from './icon/file.png'
 import iconTriangle from './icon/triangle_down_fill.png'
 import ShareModalContent from '../../component/share-modal-content.vue'
-import { selectFile, download, formatTime, calCanvasNodesEdge } from '../../assets/util'
+import { selectFile, download, formatTime } from '../../assets/util'
 import { switchUser, getUser, login, userConnect } from '../../assets/user-connect'
 
 const route = useRoute()
@@ -87,7 +87,7 @@ const onShare = async (data: IProcessState) => {
       url: shareLink,
       name: data.filename,
       route,
-      edgeRect: calCanvasNodesEdge(data)
+      edgeRect: calEdgeFromNodes(data.nodes)
     })
   })
 }
@@ -212,7 +212,7 @@ const scrollShapeToCenter = (data?: IProcessState) => {
   }
   const screenWidth = document.body.clientWidth
   const screenHeight = document.body.clientHeight
-  const { width, left, height, top } = calCanvasNodesEdge(data)
+  const { width, left, height, top } = calEdgeFromNodes(data.nodes)
   // 水平方向
   if (width + left > screenWidth) {
     // 向左滚动

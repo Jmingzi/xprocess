@@ -20,6 +20,7 @@ import {
   ENLARGE_TIMES_FROM_LOCAL_STROKE,
   REFERENCE_ATTACH_RANGE
 } from '../constant'
+import { calEdgeFromNodes } from '../utils'
 
 const { rect: canvasRect, calCanvasSize } = useCanvas()
 
@@ -210,7 +211,7 @@ export function moveNodeLines (node: XProcessNode) {
  * 2. 自动吸附参考线
  * 思路：在节点中匹配当前节点的 6 个边界：x, x1, x2, y, y1, y2
  */
-export function getReferenceLine (node: XProcessNode, autoAttach: boolean = true) {
+export function getReferenceLine (node: XProcessNode, autoAttach: boolean = true, excludeIds: number[] = []) {
   const broadPx = REFERENCE_ATTACH_RANGE
   state.referenceLines = []
   const _getNodePoint = (node: XProcessNode) => {
@@ -228,7 +229,8 @@ export function getReferenceLine (node: XProcessNode, autoAttach: boolean = true
   // 计算当前节点与所有其它节点线条的差值距离
   const resultCols: ReferenceLine[] = []
   const resultRows: ReferenceLine[] = []
-  state.nodes.filter(x => x.id !== node.id).map(item => {
+  const filterIds = [node.id, ...excludeIds]
+  state.nodes.filter(x => filterIds.every(id => id !== x.id)).forEach(item => {
     const itemPoint = _getNodePoint(item)
     itemPoint.colsX.forEach(x => {
       colsX.forEach((y, index) => {
@@ -456,11 +458,17 @@ export function handleMultiNodesMove (copySelectedNodes: XProcessNode[], delta: 
       moveNodeLines(originNode)
     }
   })
+  // 辅助线
+  // 圈选起来生成假的节点
+  const { left, top, width, height } = calEdgeFromNodes(state.selectedNodes)
+  const virtualNode = { id: -1, start: [left, top], end: [left + width, top + height] }
+  getReferenceLine(virtualNode as XProcessNode, false, copySelectedNodes.map(x => x.id))
 }
 
 export function handleMultiNodesUp () {
   preventCanvasClickToggle()
   calCanvasSize()
+  state.referenceLines = []
 }
 
 export const onCalCanvasSize = calCanvasSize

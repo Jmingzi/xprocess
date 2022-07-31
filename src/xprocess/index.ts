@@ -5,6 +5,8 @@ import { h, provide, SetupContext, Ref } from 'vue'
 import { Message } from './component/message'
 import { Dialog } from './component/dialog'
 
+export { calEdgeFromNodes } from './utils'
+
 export type IConfig = {
   toHome: () => void
   fileOperators: IFileOperatorItem[]

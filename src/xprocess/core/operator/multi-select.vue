@@ -92,7 +92,7 @@ watchEffect(() => {
 .multi-select {
   position: absolute;
   z-index: 0;
-  border: 1px @main-color solid;
+  border: 1px @focus-color solid;
   cursor: move;
   &:hover {
     box-shadow: @shadow-hover;

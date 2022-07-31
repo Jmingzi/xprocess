@@ -139,6 +139,7 @@ watchEffect(() => {
 </template>
 
 <style lang="less">
+@import '../../var';
 .xprocess__text {
   position: absolute;
   min-width: 20px;
@@ -152,7 +153,7 @@ watchEffect(() => {
   // 线条垂直时的宽度撑开
   white-space: nowrap;
   &:focus {
-    outline: 2px #F4DDB0 solid;
+    outline: 2px @focus-color solid;
   }
 }
 </style>
