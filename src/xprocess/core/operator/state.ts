@@ -447,10 +447,10 @@ export const handleCreateToNode = (item: LocalListItem) => {
 }
 
 let copyNode: NodeRect
-let direction: DirectionString
+let direction: DirectionString & Edge
 export const handleOperationSizeMouseDown = (
   e: MouseEvent,
-  directionString: DirectionString,
+  directionString: DirectionString & Edge,
   callback: () => void
 ) => {
   copyNode = JSON.parse(JSON.stringify(editorState.currentNode))
@@ -464,6 +464,7 @@ export const handleOperationSizeMouseMove = (evData: IEventHandlerData) => {
   const isRightTop = direction === 'rightTop'
   const isLeftBottom = direction === 'leftBottom'
   const isRightBottom = direction === 'rightBottom'
+  const { isTop, isBottom, isLeft, isRight } = getEdge(direction)
   let deltaX = evData.endX - evData.startX
   let deltaY = evData.endY - evData.startY
 
@@ -483,6 +484,14 @@ export const handleOperationSizeMouseMove = (evData: IEventHandlerData) => {
       copyNode.end[0] + deltaX,
       copyNode.end[1] + deltaY
     ]
+  } else if (isTop) {
+    currentNode.start[1] = copyNode.start[1] + deltaY
+  } else if (isBottom) {
+    currentNode.end[1] = copyNode.end[1] + deltaY
+  } else if (isLeft) {
+    currentNode.start[0] = copyNode.start[0] + deltaX
+  } else if (isRight) {
+    currentNode.end[0] = copyNode.end[0] + deltaX
   }
 
   // 先生成参考线，并自动吸附

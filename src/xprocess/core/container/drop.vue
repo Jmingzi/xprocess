@@ -52,7 +52,11 @@ provide('nodeId', props.id)
  */
 provide('currentLine', currentLine)
 
-const isActive = computed(() => editorState.currentNode?.id === props.id || editorState.selectedNodes.some(x => x.id === props.id))
+const isActive = computed(() =>
+    !config?.isReadonly() &&
+    (editorState.currentNode?.id === props.id ||
+    editorState.selectedNodes.some(x => x.id === props.id))
+)
 const getLinePosition = (start: number[], end: number[]) => {
   // x, y 是图形左上角的点
   let x: number = start[0]

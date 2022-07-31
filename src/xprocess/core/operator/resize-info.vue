@@ -25,17 +25,17 @@ const style = computed(() => {
 let handle = 0
 watch(() => ([editorState.currentNode?.start, editorState.currentNode?.end]), ([start, end], [oldStart, oldEnd]) => {
   if (start && end && oldStart && oldEnd) {
-    const width = Math.abs(start[0] - end[0])
-    const height = Math.abs(start[1] - end[1])
-    const oWidth = Math.abs(oldStart[0] - oldEnd[0])
-    const oHeight = Math.abs(oldStart[1] - oldEnd[1])
-    if (width !== oWidth || height !== oHeight) {
-      show.value = true
-      clearTimeout(handle)
-      handle = window.setTimeout(() => {
-        show.value = false
-      }, 1000)
-    }
+    // const width = Math.abs(start[0] - end[0])
+    // const height = Math.abs(start[1] - end[1])
+    // const oWidth = Math.abs(oldStart[0] - oldEnd[0])
+    // const oHeight = Math.abs(oldStart[1] - oldEnd[1])
+    // if (width !== oWidth || height !== oHeight) {
+    show.value = true
+    clearTimeout(handle)
+    handle = window.setTimeout(() => {
+      show.value = false
+    }, 1000)
+    // }
   }
 }, { deep: true })
 

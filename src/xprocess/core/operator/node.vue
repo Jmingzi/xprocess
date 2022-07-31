@@ -21,6 +21,7 @@ const { onMouseDown, registerCallback } = useDrag()
 const refDotEls = ref<Array<HTMLElement>>([])
 const refDotEl = ref<HTMLElement | null>()
 const refSizeEls = ref<Array<HTMLElement>>([])
+const refSizeEdgeEls = ref<Array<HTMLElement>>([])
 const refSizeEl = ref<HTMLElement | null>()
 
 const styles = computed(() =>
@@ -48,17 +49,17 @@ const styles = computed(() =>
   })
 )
 
-const onOperationDotMouseDown = (e: MouseEvent, i: number, edgeString: Edge) => {
+const onOperationDotMouseDown = (e: MouseEvent, curEl: HTMLElement, edgeString: Edge) => {
   handleOperationDotMouseDown(e, editorState.currentNode?.id!, edgeString, e => {
-    refDotEl.value = refDotEls.value[i]
-    onMouseDown(e, el => el === refDotEl.value)
+    refDotEl.value = curEl
+    onMouseDown(e, el => el === curEl)
   })
 }
 
-const onOperationSizeMouseDown = (e: MouseEvent, i: number, dir: DirectionString) => {
+const onOperationSizeMouseDown = (e: MouseEvent, curEl: HTMLElement, dir: DirectionString) => {
   handleOperationSizeMouseDown(e, dir, () => {
-    refSizeEl.value = refSizeEls.value[i]
-    onMouseDown(e, el => el === refSizeEl.value)
+    refSizeEl.value = curEl
+    onMouseDown(e, el => el === curEl)
   })
 }
 
@@ -74,6 +75,8 @@ watchEffect(() => {
       draggedWrapperEl: refDotEl.value!
     })
   }
+})
+watchEffect(() => {
   if (refSizeEl.value) {
     registerCallback('mousemove', {
       handler: handleOperationSizeMouseMove,
@@ -94,22 +97,34 @@ watchEffect(() => {
     class="xprocess__drop-wrap"
     :style="item.style"
   >
+    <!--四条边改大小-->
+    <template v-for="(dir, i) in lineDot">
+      <div
+        v-show="item.size"
+        class="xprocess__drop-wrap-size-edge"
+        :class="dir"
+        ref="refSizeEdgeEls"
+        @mousedown.stop="(e) => onOperationSizeMouseDown(e, refSizeEdgeEls[i], dir)"
+      />
+    </template>
+    <!--四条边中心点连线-->
     <template v-for="(edge, i) in lineDot">
       <div
         v-show="item.dot"
         class="xprocess__drop-wrap-dot"
         :class="edge"
         ref="refDotEls"
-        @mousedown.stop="(e) => onOperationDotMouseDown(e, i, edge)"
+        @mousedown.stop="(e) => onOperationDotMouseDown(e, refDotEls[i], edge)"
       />
     </template>
+    <!--四个顶点改大小-->
     <template v-for="(dir, i) in sizeDot">
       <div
         v-show="item.size"
         class="xprocess__drop-wrap-size"
         :class="dir"
         ref="refSizeEls"
-        @mousedown.stop="(e) => onOperationSizeMouseDown(e, i, dir)"
+        @mousedown.stop="(e) => onOperationSizeMouseDown(e, refSizeEls[i], dir)"
       />
     </template>
   </div>
@@ -192,6 +207,37 @@ watchEffect(() => {
       bottom: 0;
       transform: translate(50%, 50%);
       cursor: se-resize;
+    }
+  }
+
+  &-size-edge {
+    pointer-events: all;
+    position: absolute;
+    background-color: transparent;
+    @size: 4px;
+    &.top {
+      top: 0;
+      width: 100%;
+      height: @size;
+      cursor: n-resize;
+    }
+    &.left {
+      left: 0;
+      height: 100%;
+      width: @size;
+      cursor: w-resize;
+    }
+    &.bottom {
+      bottom: 0;
+      width: 100%;
+      height: @size;
+      cursor: s-resize;
+    }
+    &.right {
+      right: 0;
+      width: @size;
+      height: 100%;
+      cursor: e-resize;
     }
   }
 }
