@@ -206,106 +206,133 @@ export function moveNodeLines (node: XProcessNode) {
   })
 }
 
+const _getNodePoint = (node: XProcessNode) => {
+  const { start, end } = node
+  const width = Math.abs(end[0] - start[0])
+  const height = Math.abs(end[1] - start[1])
+  return {
+    rowsY: [start[1] + height / 2, start[1], end[1]],
+    colsX: [start[0] + width / 2, start[0], end[0]],
+    width,
+    height
+  }
+}
 /**
- * 1. 计算当前节点的参考线
- * 2. 自动吸附参考线
- * 思路：在节点中匹配当前节点的 6 个边界：x, x1, x2, y, y1, y2
+ * 思路：
+ * 1. 在节点中匹配当前节点的 6 个边界：x, x1, x2, y, y1, y2
+ * 2. 收集符合范围的节点上的线条，及差值
+ * 3. 找到最小差值的节点，并显示横向和竖向最接近的线条
+ * 4. 吸附当前节点，横向和竖向线条差值最小的那根
  */
 export function getReferenceLine (node: XProcessNode, autoAttach: boolean = true, excludeIds: number[] = []) {
-  const broadPx = REFERENCE_ATTACH_RANGE
   state.referenceLines = []
-  const _getNodePoint = (node: XProcessNode) => {
-    const { start, end } = node
-    const width = Math.abs(end[0] - start[0])
-    const height = Math.abs(end[1] - start[1])
-    return {
-      rowsY: [start[1] + height / 2, start[1], end[1]],
-      colsX: [start[0] + width / 2, start[0], end[0]],
-      width,
-      height
-    }
-  }
+  const filterIds = [node.id, ...excludeIds]
+  const referenceNodes = state.nodes.filter(x => filterIds.every(id => id !== x.id))
   const { rowsY, colsX, width, height } = _getNodePoint(node)
   // 计算当前节点与所有其它节点线条的差值距离
-  const resultCols: ReferenceLine[] = []
-  const resultRows: ReferenceLine[] = []
-  const filterIds = [node.id, ...excludeIds]
-  state.nodes.filter(x => filterIds.every(id => id !== x.id)).forEach(item => {
-    const itemPoint = _getNodePoint(item)
-    itemPoint.colsX.forEach(x => {
-      colsX.forEach((y, index) => {
-        resultCols.push({
-          index,
-          delta: Math.abs(x - y),
-          type: 'col',
-          height: Math.max(
-            Math.abs(node.start[1] - item.end[1]),
-            Math.abs(node.end[1] - item.start[1])
-          ),
-          heightTop: Math.min(node.start[1], item.start[1]),
-          left: x
-        })
-      })
-    })
-    itemPoint.rowsY.forEach(x => {
-      rowsY.forEach((y, index) => {
-        resultRows.push({
-          index,
-          delta: Math.abs(x - y),
-          type: 'row',
-          width: Math.max(
-            Math.abs(node.start[0] - item.end[0]),
-            Math.abs(node.end[0] - item.start[0])
-          ),
-          widthLeft: Math.min(node.start[0], item.start[0]),
-          top: x
-        })
-      })
-    })
-  })
-  // 找到最小的差值
-  const minCol = minBy(resultCols, 'delta') as ReferenceLineCol
-  if (minCol && minCol.delta < broadPx) {
-    state.referenceLines.push(minCol)
-    // 自动吸附
-    if (!autoAttach) {
-      return
+  const resultCols: Array<{ delta: number, lines: ReferenceLine[] }> = []
+  const resultRows: Array<{ delta: number, lines: ReferenceLine[] }> = []
+
+  for (const nodeTarget of referenceNodes) {
+    const itemPoint = _getNodePoint(nodeTarget)
+    const nodeTargetCols = itemPoint.colsX.map(x => {
+      // 3根线条最近的那根
+      const singleDeltaArr = colsX.map((y, index) => {
+        const delta = Math.abs(x - y)
+        if (delta < REFERENCE_ATTACH_RANGE) {
+          // 距离差值在范围内
+          return {
+            index,
+            delta,
+            type: 'col',
+            height: Math.max(
+              Math.abs(node.start[1] - nodeTarget.end[1]),
+              Math.abs(node.end[1] - nodeTarget.start[1])
+            ),
+            heightTop: Math.min(node.start[1], nodeTarget.start[1]),
+            left: x
+          }
+        }
+      }).filter(Boolean)
+      if (singleDeltaArr.length) {
+        return minBy(singleDeltaArr, 'delta')!
+      }
+    }).filter(Boolean) as ReferenceLine[]
+    if (nodeTargetCols.length) {
+      // 收集当前 node 中接近的线与距离
+      resultCols.push({ delta: minBy(nodeTargetCols, 'delta')!.delta, lines: nodeTargetCols })
     }
-    const x = minCol.left
-    if (minCol.index === 0) {
-      // 中位线
-      node.start[0] = x - width / 2
-      node.end[0] = x + width / 2
-    } else if (minCol.index === 1) {
-      // 头线
-      node.start[0] = x
-      node.end[0] = x + width
-    } else {
-      // 底线
-      node.start[0] = x - width
-      node.end[0] = x
+
+    const nodeTargetRows = itemPoint.rowsY.map(row => {
+      // 3根线条最近的那根
+      const singleDeltaArr = rowsY.map((y, index) => {
+        const delta = Math.abs(row - y)
+        if (delta < REFERENCE_ATTACH_RANGE) {
+          return {
+            index,
+            delta,
+            type: 'row',
+            width: Math.max(
+              Math.abs(node.start[0] - nodeTarget.end[0]),
+              Math.abs(node.end[0] - nodeTarget.start[0])
+            ),
+            widthLeft: Math.min(node.start[0], nodeTarget.start[0]),
+            top: row
+          }
+        }
+      }).filter(Boolean)
+      if (singleDeltaArr.length) {
+        return minBy(singleDeltaArr, 'delta')!
+      }
+    }).filter(Boolean) as ReferenceLine[]
+    if (nodeTargetRows.length) {
+      resultRows.push({ delta: minBy(nodeTargetRows, 'delta')!.delta, lines: nodeTargetRows })
     }
   }
-  const minRow = minBy(resultRows, 'delta') as ReferenceLineRow
-  if (minRow && minRow.delta < broadPx) {
-    state.referenceLines.push(minRow)
-    // 自动吸附
-    if (!autoAttach) {
-      return
+
+  if (resultCols.length) {
+    const minCol = minBy(resultCols, 'delta')!
+    Array.prototype.push.apply(state.referenceLines, minCol.lines)
+    if (autoAttach) {
+      // 找到最小的差值去吸附
+      const minColLine = minBy(minCol.lines, 'delta') as ReferenceLineCol
+      const x = minColLine.left
+      if (minColLine.index === 0) {
+        // 中位线
+        node.start[0] = x - width / 2
+        node.end[0] = x + width / 2
+      } else if (minColLine.index === 1) {
+        // 头线
+        node.start[0] = x
+        node.end[0] = x + width
+      } else {
+        // 底线
+        node.start[0] = x - width
+        node.end[0] = x
+      }
     }
-    const y = minRow.top
-    if (minRow.index === 0) {
-      // 中位线
-      node.start[1] = y - height / 2
-      node.end[1] = y + height / 2
-    } else if (minRow.index === 1) {
-      // 头线
-      node.start[1] = y
-      node.end[1] = y + height
-    } else {
-      // 底线
-      node.start[1] = y - height
-      node.end[1] = y
+  }
+  if (resultRows.length) {
+    const minRow = minBy(resultRows, 'delta')!
+    Array.prototype.push.apply(state.referenceLines, minRow.lines)
+    // 自动吸附
+    if (autoAttach) {
+      // 找到最小的差值去吸附
+      const minRowLine = minBy(minRow.lines, 'delta') as ReferenceLineRow
+      const y = minRowLine.top
+      if (minRowLine.index === 0) {
+        // 中位线
+        node.start[1] = y - height / 2
+        node.end[1] = y + height / 2
+      } else if (minRowLine.index === 1) {
+        // 头线
+        node.start[1] = y
+        node.end[1] = y + height
+      } else {
+        // 底线
+        node.start[1] = y - height
+        node.end[1] = y
+      }
     }
   }
 }
