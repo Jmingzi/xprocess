@@ -210,7 +210,7 @@ export function moveNodeLines (node: XProcessNode) {
  * 2. 自动吸附参考线
  * 思路：在节点中匹配当前节点的 6 个边界：x, x1, x2, y, y1, y2
  */
-export function getReferenceLine (node: XProcessNode) {
+export function getReferenceLine (node: XProcessNode, autoAttach: boolean = true) {
   const broadPx = REFERENCE_ATTACH_RANGE
   state.referenceLines = []
   const _getNodePoint = (node: XProcessNode) => {
@@ -265,7 +265,10 @@ export function getReferenceLine (node: XProcessNode) {
   const minCol = minBy(resultCols, 'delta') as ReferenceLineCol
   if (minCol && minCol.delta < broadPx) {
     state.referenceLines.push(minCol)
-    // 吸附
+    // 自动吸附
+    if (!autoAttach) {
+      return
+    }
     const x = minCol.left
     if (minCol.index === 0) {
       // 中位线
@@ -285,6 +288,9 @@ export function getReferenceLine (node: XProcessNode) {
   if (minRow && minRow.delta < broadPx) {
     state.referenceLines.push(minRow)
     // 自动吸附
+    if (!autoAttach) {
+      return
+    }
     const y = minRow.top
     if (minRow.index === 0) {
       // 中位线

@@ -494,8 +494,8 @@ export const handleOperationSizeMouseMove = (evData: IEventHandlerData) => {
     currentNode.end[0] = copyNode.end[0] + deltaX
   }
 
-  // 先生成参考线，并自动吸附
-  getReferenceLine(copyNode)
+  // 先生成参考线，不用自动吸附
+  getReferenceLine(currentNode, false)
   moveNodeLines(currentNode)
 }
 
