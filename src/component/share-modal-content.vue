@@ -105,8 +105,8 @@ watch(() => props.route.params.id, async (id) => {
     <p>分享网页链接：</p>
     <div class="share-modal-content__input">
       <input type="text" :value="shareLink" readonly>
-      <span @click="handleOpen">打开链接</span>
-      <span @click="handleCopy(shareLink)">复制链接</span>
+      <span @click="handleOpen">查看分享</span>
+      <span @click="handleCopy(`${getUser().name}分享给你【${name}】~ ${shareLink}`)">复制分享</span>
     </div>
     <p style="margin-top: 50px;">分享图片链接：</p>
     <div class="share-modal-content__input">
