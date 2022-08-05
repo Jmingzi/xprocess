@@ -80,7 +80,7 @@ const onExport = (item: Item) => {
 }
 
 const onShare = async (data: IProcessState) => {
-  const shareLink = `/share/${route.params.id}?user=${getUser().name}&uid=${getUser().id}`
+  const shareLink = `/share/${route.params.id}?user=${encodeURIComponent(getUser().name)}&uid=${getUser().id}`
   await Dialog({
     // @ts-ignore
     content: h(ShareModalContent, {
