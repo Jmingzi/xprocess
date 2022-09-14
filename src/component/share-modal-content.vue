@@ -52,6 +52,12 @@ const handleGenImage = async () => {
   const height = bottom - top
   const scale = canvas.width / el.offsetWidth
   const padding = 100
+  /**
+   * 生成几倍图的控制
+   */
+  if (devicePixelRatio >= 2) {
+    devicePixelRatio = devicePixelRatio / 1.5
+  }
 
   // 得到图片的真实大小
   const canvasImageWidth = width * scale + padding * 2
@@ -79,17 +85,17 @@ const handleGenImage = async () => {
   newCtx.lineJoin = 'round'
   const base64 = newCanvas.toDataURL('image/png')
 
-  // const img = document.createElement('img')
-  // img.src = base64
-  // document.body.appendChild(img)
+  const img = document.createElement('img')
+  img.src = base64
+  document.body.appendChild(img)
 
-  const currentUser = AV.User.current()
-  if (!currentUser) {
-    await AV.User.logIn('jmingzi', 'ck.123456')
-  }
-  const avFile = await (new AV.File(filename.value, { base64: base64.split(',')[1] })).save({ keepFileName: true })
-  const avUrl = avFile.toJSON().url
-  fileImgGenData.value = await fileImgSave(props.route.params.id as string, avUrl)
+  // const currentUser = AV.User.current()
+  // if (!currentUser) {
+  //   await AV.User.logIn('jmingzi', 'ck.123456')
+  // }
+  // const avFile = await (new AV.File(filename.value, { base64: base64.split(',')[1] })).save({ keepFileName: true })
+  // const avUrl = avFile.toJSON().url
+  // fileImgGenData.value = await fileImgSave(props.route.params.id as string, avUrl)
 
   Message.success('生成链接成功')
   genLoading.value = false
