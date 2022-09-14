@@ -52,6 +52,12 @@ const handleGenImage = async () => {
   const height = bottom - top
   const scale = canvas.width / el.offsetWidth
   const padding = 100
+  /**
+   * 生成几倍图的控制
+   */
+  if (devicePixelRatio >= 2) {
+    devicePixelRatio = devicePixelRatio / 1.5
+  }
 
   // 得到图片的真实大小
   const canvasImageWidth = width * scale + padding * 2
